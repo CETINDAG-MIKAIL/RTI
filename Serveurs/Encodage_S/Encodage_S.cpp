@@ -28,14 +28,9 @@ int indiceEcriture=0, indiceLecture=0;
 pthread_mutex_t mutexSocketsAcceptees;
 pthread_cond_t condSocketsAcceptees;
 
-int main(int argc,char* argv[])
+int main()
 {
-    if (argc != 2)
-    {
-        printf("Erreur...\n");
-        printf("USAGE : Serveur portServeur\n");
-        exit(1);
-    }
+    int portServeur = 50000;
 
     // Initialisation socketsAcceptees
     pthread_mutex_init(&mutexSocketsAcceptees,NULL);
@@ -58,7 +53,7 @@ int main(int argc,char* argv[])
     }
 
     // ---------- Creation de la socket d'écoute ---------- //
-    if ((sEcoute = ServerSocket(atoi(argv[1]))) == -1)
+    if ((sEcoute = ServerSocket(portServeur)) == -1)
     {
         perror("Erreur de ServeurSocket");
         exit(1);

@@ -18,6 +18,10 @@ int sClient;
 
 int main(int argc, char *argv[])
 {
+    int portServeur = 50000;
+    char *ipServeur[1] = {"192.168.216.128"};
+
+
     QApplication a(argc, argv);
     MainWindowClientBookEncoder w;
     w.show();
@@ -39,7 +43,7 @@ int main(int argc, char *argv[])
 
 
     // Connexion sur le serveur  
-    if ((sClient = ClientSocket(argv[1], atoi(argv[2]))) == -1) 
+    if ((sClient = ClientSocket(*ipServeur, portServeur)) == -1) 
     { 
         perror("Erreur de ClientSocket"); 
         exit(1); 
