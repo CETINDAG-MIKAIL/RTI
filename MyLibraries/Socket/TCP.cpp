@@ -100,9 +100,7 @@ int Accept(int sEcoute,char *ipClient)
 
 int ClientSocket(char *ipServeur,int portServeur)
 {
-
 	int sClient = CreationSocket();
-
 
 	// Construction de l'adresse
 	struct addrinfo hints;
@@ -112,18 +110,23 @@ int ClientSocket(char *ipServeur,int portServeur)
     sprintf(portStr, "%d", portServeur);
 
 	memset(&hints,0,sizeof(struct addrinfo)); 
+
 	hints.ai_family = AF_INET; 
 	hints.ai_socktype = SOCK_STREAM; 
 	hints.ai_flags = AI_NUMERICSERV;   // pour une connexion passive 
-	char buffer[100];
+
+	printf("-------1\n");
 	
 	if (getaddrinfo(ipServeur, portStr, &hints, &results) != 0) 
 		exit(1);
-
+	printf("-------2\n");
+	printf("-------3 : sClient = %d\n", sClient);
+	//printf("-------4 connect = %d\n", connect(sClient, results->ai_addr, results->ai_addrlen));
 
 	// Demande de connexion 
-	if (connect(sClient,results->ai_addr,results->ai_addrlen) == -1) 
+	if (connect(sClient, results->ai_addr, results->ai_addrlen) == -1) 
 	{ 
+	printf("-------5\n");
 		perror("Erreur de connect()"); 
 		exit(1); 
 	} 
@@ -135,8 +138,10 @@ int ClientSocket(char *ipServeur,int portServeur)
 
 int Send(int sSocket, string trame) 
 {
-	printf("------SEND----------\n");
-
+	printf("------SENDDDDDDD----------\n");
+	printf("-----SEND----sSocket = %d------1-----\n", sSocket);
+	printf("-----SEND----trame.c_str() = %s------1-----\n", trame.c_str());
+	printf("-----SEND----taille trame = %d------1-----\n", trame.size());
 
 	return write(sSocket, trame.c_str(), trame.size());
 }

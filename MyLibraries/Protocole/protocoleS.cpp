@@ -28,6 +28,10 @@ string PROTOCOLE(int socket, string requete)
 
     requeteVec = ReadTrame(requete);
 
+    for (size_t i = 0; i < requeteVec.size(); i++) {
+        std::cout << "Element " << i << ": " << requeteVec[i] << std::endl;
+    }
+
     // ***** Récupération nom de la requete *****************
     if (requeteVec.size() == 0) 
     {
@@ -128,7 +132,7 @@ bool PROTOCOLE_Login(string user, string password)
     if ((user == "mikail") && (password == "xyz456"))
         return true;
 
-    return false;
+    return true;
 }
 
 int REQ_GET_AUTHORS(char id_author,char last_name_author,char first_name_author)

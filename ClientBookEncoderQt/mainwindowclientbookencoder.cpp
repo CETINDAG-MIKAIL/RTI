@@ -6,6 +6,7 @@
 #include <iostream>
 
 #include "protocoleC.h"
+#include "TCP.h"
 
 
 using namespace std;
@@ -15,7 +16,7 @@ MainWindowClientBookEncoder::MainWindowClientBookEncoder(QWidget *parent)
     , ui(new Ui::MainWindowClientBookEncoder)
 {
     ui->setupUi(this);
-    ::close(2);
+    //::close(2);
 
     //this->setFixedSize(1068, 301);
 
@@ -45,6 +46,21 @@ MainWindowClientBookEncoder::MainWindowClientBookEncoder(QWidget *parent)
 
     this->addComboBoxSubjects("Roman");
     this->addComboBoxSubjects("Science-fiction");
+
+
+
+
+
+    int portServeur = 50041;
+    char ipServeur[30] = {"localhost"};
+
+    // Connexion sur le serveur  
+    if ((sClient = ClientSocket((char *)"localhost", portServeur)) == -1) 
+    { 
+        perror("Erreur de ClientSocket"); 
+        exit(1); 
+    } 
+    printf("Connecte sur le serveur.\n");
 }
 
 MainWindowClientBookEncoder::~MainWindowClientBookEncoder() {
@@ -280,8 +296,24 @@ void MainWindowClientBookEncoder::on_pushButtonClear_clicked() {
 }
 
 void MainWindowClientBookEncoder::on_actionLogin_triggered() {
-    string login = this->dialogInputText("Entrée en session","Login ?");
+    string varLogin = this->dialogInputText("Entrée en session","Login ?");
+    cout << "------ login = " << login << endl;
+
     string password = this->dialogInputText("Entrée en session","Password ?");
+    cout << "------ password = " << password << endl;
+
+
+    string reponse = login(varLogin, password, sClient);
+
+    // Analyser la réponse et afficher un message à l'utilisateur
+    if (reponse.find("ok") != string::npos) {
+        // Afficher un message de succès
+        QMessageBox::information(this, "Succès", "L'auteur a bien été inséré !");
+    } else {
+        // Afficher un message d'erreur
+        QMessageBox::warning(this, "Erreur", "Erreur lors de l'insertion de l'auteur.");
+    }
+
     this->loginOk();
 }
 

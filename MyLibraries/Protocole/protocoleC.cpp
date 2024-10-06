@@ -16,25 +16,56 @@ using namespace std;
 string ajouterAuteur(string lastName, string firstName, string birthDate, int sClient)
 {
 	vector<string> champs;
+	champs.push_back("ADD_AUTHOR");
 	champs.push_back(lastName);
 	champs.push_back(firstName);
 	champs.push_back(birthDate);
 
 	string trame = CreateTrame(champs);
+
+	cout << "ajouterAuteur------1 tramea envoyer au serveur = " << trame << endl;
+
 	// Le code suivant a été fait rapidement, à vérifier !
 	// ici on va recevoir la trame en string
 	// envoie au protocole Serveur (avec Send dans TCP.cpp)
-	if(Send(sClient, trame)){
-		printf("Erreur send (PtrocoleC)\n");
+	if(Send(sClient, trame) == -1){
+		printf("Erreur send (ProtocoleC)\n");
 		return "ko";
 	}
 
+	printf("ajouterAuteur------2-----\n");
+
 	if(Receive(sClient).empty())
 	{
-		printf("Erreur receive (PtrocoleC)\n");
+		printf("Erreur receive (ProtocoleC)\n");
 		return "ko";
 	}
-		
+	printf("ajouterAuteur------3-----\n");
 	
+	return "ok";
+}
+
+string login(string login, string password, int sClient)
+{
+	vector<string> champs;
+	champs.push_back("LOGIN");
+	champs.push_back(login);
+	champs.push_back(password);
+
+	string trame = CreateTrame(champs);
+
+	if(Send(sClient, trame) == -1){
+		printf("Erreur send (ProtocoleC)\n");
+		return "ko";
+	}
+
+	printf("login------1-----\n");
+
+	if(Receive(sClient).empty())
+	{
+		printf("Erreur receive (ProtocoleC)\n");
+		return "ko";
+	}
+
 	return "ok";
 }

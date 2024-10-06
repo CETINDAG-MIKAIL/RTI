@@ -121,6 +121,7 @@ CMakeFiles/ClientApp.dir/ClientBookEncoderQt/main.cpp.o
  /usr/include/qt5/QtWidgets/qwidget.h
 CMakeFiles/ClientApp.dir/ClientBookEncoderQt/mainwindowclientbookencoder.cpp.o
  ../MyLibraries/Protocole/protocoleC.h
+ ../MyLibraries/Socket/TCP.h
  /home/student/Documents/RTI/RTI/ClientBookEncoderQt/mainwindowclientbookencoder.cpp
  /home/student/Documents/RTI/RTI/ClientBookEncoderQt/mainwindowclientbookencoder.h
  /home/student/Documents/RTI/RTI/ClientBookEncoderQt/ui_mainwindowclientbookencoder.h

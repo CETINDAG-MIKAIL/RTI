@@ -4,7 +4,6 @@
 #include <QMainWindow>
 #include <string>
 
-extern int sClient;
 
 using namespace std;
 
@@ -14,6 +13,8 @@ QT_END_NAMESPACE
 
 class MainWindowClientBookEncoder : public QMainWindow
 {
+    int sClient;
+
     Q_OBJECT
 
 public:

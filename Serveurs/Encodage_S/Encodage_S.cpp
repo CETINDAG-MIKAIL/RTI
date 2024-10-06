@@ -30,7 +30,7 @@ pthread_cond_t condSocketsAcceptees;
 
 int main()
 {
-    int portServeur = 50000;
+    int portServeur = 50041;
 
     // Initialisation socketsAcceptees
     pthread_mutex_init(&mutexSocketsAcceptees,NULL);
@@ -76,6 +76,7 @@ int main()
     while(1)
     {
         printf("Attente d'une connexion...\n");
+        printf("------- sEcoute = %d\n", sEcoute);
 
         if ((sService = Accept(sEcoute, ipClient)) == -1)
         {
@@ -158,7 +159,15 @@ void TraitementConnexion(int sService)
     while (onContinue)
     {
         printf("\t[THREAD %p] Attente requete...\n",pthread_self());
+
+
+
         requeteRecue = Receive(sService);
+
+        printf("TraitementConnexion------receive fait-----\n");
+        cout << endl << "1-------- requeteRecue = ---" << requeteRecue << "------" << endl << endl;
+
+
         // ***** Reception Requete ******************
         if (requeteRecue.empty())
         {
@@ -167,12 +176,16 @@ void TraitementConnexion(int sService)
             HandlerSIGINT(0);
         }
    
-        printf("\t[THREAD %p] Requete recue = %s\n",pthread_self(),requeteRecue);
+        //printf("\t[THREAD %p] Requete recue = %s\n",pthread_self(), requeteRecue);
 
         // char reponseBuffer[1024];               // Assuming reponse will be max 1024 chars, adjust if needed
         // strcpy(requete, requeteRecue.c_str());  // Copy the string to the char buffer
 
+        cout << "2-------- sService = " << sService << endl;
+        
         reponse = PROTOCOLE(sService, requeteRecue);
+
+        cout << "3-------- reponse = " << reponse << endl;
 
         // Convert reponseBuffer back to std::string to send
         // reponse = std::string(reponseBuffer);
@@ -188,7 +201,12 @@ void TraitementConnexion(int sService)
             HandlerSIGINT(0);
         }
 
-        printf("\t[THREAD %p] Reponse envoyee = %s\n", pthread_self(), reponse);
+
+        cout << "4-------- nbEcrits = " << nbEcrits << endl;
+
+        //printf("\t[THREAD %p] Reponse envoyee = %s\n", pthread_self(), reponse);
+
+        cout << "4-------- onContinue = " << onContinue << endl;
         
         if (!onContinue) 
             printf("\t[THREAD %p] Fin de connexion de la socket %d\n", pthread_self(), sService);

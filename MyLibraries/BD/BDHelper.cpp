@@ -19,7 +19,7 @@ int ConnexionBD()
 {
 	connexion = mysql_init(NULL);
 
-	if (mysql_real_connect(connexion,"localhost", "Student", "PassStudent1_","PourStudent",0,NULL,0) == NULL)
+	if (mysql_real_connect(connexion,"localhost", "Student", "PassStudent1_", "PourStudent", 0, NULL, 0) == NULL)
 	{
 		return -1;
 	}
