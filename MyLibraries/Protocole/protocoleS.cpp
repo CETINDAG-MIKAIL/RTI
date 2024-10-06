@@ -10,9 +10,11 @@
 using namespace std;
 
 #include "protocoleS.h"
+#include "protocole.h"
+#include "Encodage_S.h"
 
 //***** Etat du protocole : liste des clients loggés ****************
-int clients[NB_MAX_CLIENTS];
+int clients[10];
 int nbClients = 0;
 
 pthread_mutex_t mutexClients = PTHREAD_MUTEX_INITIALIZER;
@@ -50,7 +52,7 @@ string PROTOCOLE(int socket, string requete)
         }
         else
         {
-            if (PROTOCOLE_Login(user,password))
+            if (PROTOCOLE_Login(user, password))
             {
                 ajoute(socket);
                 return CreateTrame(vector<string>{"LOGIN", "ok", "Client logge", to_string(socket)});            } 
@@ -113,25 +115,29 @@ string PROTOCOLE(int socket, string requete)
             return AjoutAuteurS(ReadTrame(requete));
         }
     }
-    return true;
+    return "";
 }
 
 
 //***** Traitement des requetes *************************************
-bool PROTOCOLE_Login(const char* user,const char* password)
+bool PROTOCOLE_Login(string user, string password)
 {
-    if (strcmp(user,"luca")==0 && strcmp(password,"abc123")==0) return true;
-    if (strcmp(user,"mikail")==0 && strcmp(password,"xyz456")==0) return true;
+    if ((user == "luca") && (password == "abc123"))
+        return true;
+
+    if ((user == "mikail") && (password == "xyz456"))
+        return true;
+
     return false;
 }
 
 int REQ_GET_AUTHORS(char id_author,char last_name_author,char first_name_author)
 {
-    if (getAuthor("authors") == 1) {
-        printf("Requête exécutée avec succès.\n");
-    } else {
-        printf("Erreur lors de l'exécution de la requête.\n");
-    }
+    // if (getAuthor("authors") == 1) {
+    //     printf("Requête exécutée avec succès.\n");
+    // } else {
+    //     printf("Erreur lors de l'exécution de la requête.\n");
+    // }
     return 0;
 }
 

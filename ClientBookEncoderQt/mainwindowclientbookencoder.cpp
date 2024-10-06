@@ -4,6 +4,9 @@
 #include <QInputDialog>
 #include <QMessageBox>
 #include <iostream>
+
+#include "protocoleC.h"
+
 using namespace std;
 
 MainWindowClientBookEncoder::MainWindowClientBookEncoder(QWidget *parent)
@@ -239,7 +242,7 @@ void MainWindowClientBookEncoder::on_pushButtonAddAuthor_clicked() {
 
     string reponse = ajouterAuteur(lastName, firstName, birthDate);
 
-     // Analyser la réponse et afficher un message à l'utilisateur
+    // Analyser la réponse et afficher un message à l'utilisateur
     if (reponse.find("ok") != string::npos) {
         // Afficher un message de succès
         QMessageBox::information(this, "Succès", "L'auteur a bien été inséré !");

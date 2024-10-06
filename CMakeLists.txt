@@ -3,6 +3,10 @@ cmake_minimum_required(VERSION 3.10)
 # Nom du projet
 project(ProjetRTI)
 
+# Trouver les paquets MySQL
+set(CMAKE_PREFIX_PATH /usr/lib/x86_64-linux-gnu/cmake/mysql)  # Ajuste ce chemin si nécessaire
+find_package(MySQL REQUIRED)
+
 # Spécifier le standard C++
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
@@ -18,6 +22,7 @@ include_directories(
     MyLibraries/BD
     MyLibraries/Protocole
     MyLibraries/Socket
+    Serveurs/Encodage_S
     /usr/include/mysql  # Chemin vers mysql.h
 )
 
@@ -27,6 +32,7 @@ set(SERVER_SOURCES
     MyLibraries/Protocole/protocole.cpp   # Ajout du fichier protocole pour le serveur
     MyLibraries/BD/BDHelper.cpp           # Ajout du fichier BDHelper pour la base de données
     Serveurs/Encodage_S/Encodage_S.cpp
+    MyLibraries/Protocole/protocoleS.cpp
 )
 
 # Fichiers sources du client
@@ -53,7 +59,7 @@ add_executable(ServerApp
 )
 
 # Lier la bibliothèque pthread et MySQL pour le serveur
-target_link_libraries(ServerApp pthread mysqlclient)
+target_link_libraries(ServerApp PRIVATE pthread ${MySQL_LIBRARIES})
 
 # Créer l'exécutable du client et ajouter les fichiers sources, MOC générés
 add_executable(ClientApp
@@ -62,4 +68,4 @@ add_executable(ClientApp
 )
 
 # Lier Qt5::Widgets et pthread au client
-target_link_libraries(ClientApp Qt5::Widgets pthread)
+target_link_libraries(ClientApp PRIVATE Qt5::Widgets pthread ${MySQL_LIBRARIES})

@@ -177,7 +177,6 @@ void TraitementConnexion(int sService)
         // char reponseBuffer[1024];               // Assuming reponse will be max 1024 chars, adjust if needed
         // strcpy(requete, requeteRecue.c_str());  // Copy the string to the char buffer
 
-        // Call the PROTOCOLE function
         reponse = PROTOCOLE(sService, requeteRecue);
 
         // Convert reponseBuffer back to std::string to send

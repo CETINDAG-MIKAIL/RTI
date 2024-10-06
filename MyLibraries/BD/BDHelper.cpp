@@ -7,6 +7,7 @@
 #include <mysql.h>
 #include <vector>
 #include <sstream>
+#include <mysql/mysql.h>
 
 #include "BDHelper.h"
 

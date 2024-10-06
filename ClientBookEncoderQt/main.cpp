@@ -3,6 +3,11 @@
 #include <string.h>
 #include <stdio.h>
 #include <unistd.h>
+#include <iostream>
+#include <string>
+
+using namespace std;
+
 #include "TCP.h"
 
 #include <QApplication>
@@ -42,17 +47,20 @@ int main(int argc, char *argv[])
     printf("Connecte sur le serveur.\n");
 
 
-    char requete[200],reponse[200]; 
+    char requete[200], reponse[200];
+    string requeteString, reponseString; 
     int nbEcrits, nbLus; 
 
     while(1) 
     { 
         printf("Requete a envoyer (<CTRL-C> four fin) : "); 
-        fgets(requete,200,stdin); 
-        requete[strlen(requete)-1] = 0;                         // pour retirer le '\n' 
+        fgets(requete, 200, stdin); 
+        requete[strlen(requete)-1] = 0;                         // pour retirer le '\n'
+
+        requeteString = requete;
     
         // ***** Envoi de la requete ****************** 
-        if ((nbEcrits = Send(sClient,requete,strlen(requete))) == -1) 
+        if ((nbEcrits = Send(sClient, requeteString)) == -1) 
         { 
             perror("Erreur de Send"); 
             HandlerSIGINT(0); 
@@ -61,19 +69,15 @@ int main(int argc, char *argv[])
         printf("Requete envoyee = %s\n",requete); 
     
         // ***** Attente de la reponse **************** 
-        if ((nbLus = Receive(sClient,reponse)) < 0) 
+        reponseString = Receive(sClient);
+
+        if (reponseString.empty()) 
         { 
             perror("Erreur de Receive"); 
             HandlerSIGINT(0); 
         } 
-        if (nbLus == 0) 
-        { 
-            printf("Serveur arrete, pas de reponse reçue..."); 
-            HandlerSIGINT(0); 
-        } 
 
-        reponse[nbLus] = 0; 
-        printf("Reponse recue = %s\n",reponse); 
+        printf("Reponse recue = %s\n", reponseString); 
     } 
 }
 
