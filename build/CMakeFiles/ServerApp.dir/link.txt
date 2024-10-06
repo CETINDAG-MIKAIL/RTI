@@ -1,0 +1,1 @@
+/usr/bin/c++ CMakeFiles/ServerApp.dir/MyLibraries/Socket/TCP.cpp.o CMakeFiles/ServerApp.dir/Serveurs/Encodage_S/Encodage_S.cpp.o -o ServerApp  -lpthread 

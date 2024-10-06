@@ -1,0 +1,2 @@
+# Hashes of file build rules.
+152401151885c6d4066b3776808713a3 ClientBookEncoderQt/moc_mainwindowclientbookencoder.cpp
