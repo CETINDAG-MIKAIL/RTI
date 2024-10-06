@@ -6,6 +6,8 @@
 
 #IncludeRegexTransform: 
 
+../MyLibraries/BD/BDHelper.h
+
 ../MyLibraries/Protocole/protocole.h
 
 ../MyLibraries/Protocole/protocoleS.h
@@ -15,8 +17,6 @@ string
 -
 string.h
 -
-
-/home/student/Documents/Bac3/RTI/MyLibraries/BD/BDHelper.h
 
 /home/student/Documents/Bac3/RTI/MyLibraries/Socket/TCP.cpp
 TCP.h
@@ -67,9 +67,9 @@ Encodage_S.h
 /home/student/Documents/Bac3/RTI/Serveurs/Encodage_S/Encodage_S.h
 TCP.h
 /home/student/Documents/Bac3/RTI/Serveurs/Encodage_S/TCP.h
-../../MyLibraries/BD/BDHelper.h
-/home/student/Documents/Bac3/RTI/MyLibraries/BD/BDHelper.h
-./protocoleS.h
+BDHelper.h
+/home/student/Documents/Bac3/RTI/Serveurs/Encodage_S/BDHelper.h
+protocoleS.h
 /home/student/Documents/Bac3/RTI/Serveurs/Encodage_S/protocoleS.h
 protocole.h
 /home/student/Documents/Bac3/RTI/Serveurs/Encodage_S/protocole.h

@@ -4,10 +4,10 @@
 CMakeFiles/ServerApp.dir/MyLibraries/Socket/TCP.cpp.o: ../MyLibraries/Socket/TCP.cpp
 CMakeFiles/ServerApp.dir/MyLibraries/Socket/TCP.cpp.o: ../MyLibraries/Socket/TCP.h
 
+CMakeFiles/ServerApp.dir/Serveurs/Encodage_S/Encodage_S.cpp.o: ../MyLibraries/BD/BDHelper.h
 CMakeFiles/ServerApp.dir/Serveurs/Encodage_S/Encodage_S.cpp.o: ../MyLibraries/Protocole/protocole.h
 CMakeFiles/ServerApp.dir/Serveurs/Encodage_S/Encodage_S.cpp.o: ../MyLibraries/Protocole/protocoleS.h
 CMakeFiles/ServerApp.dir/Serveurs/Encodage_S/Encodage_S.cpp.o: ../MyLibraries/Socket/TCP.h
-CMakeFiles/ServerApp.dir/Serveurs/Encodage_S/Encodage_S.cpp.o: ../MyLibraries/BD/BDHelper.h
 CMakeFiles/ServerApp.dir/Serveurs/Encodage_S/Encodage_S.cpp.o: ../Serveurs/Encodage_S/Encodage_S.cpp
 CMakeFiles/ServerApp.dir/Serveurs/Encodage_S/Encodage_S.cpp.o: ../Serveurs/Encodage_S/Encodage_S.h
 
