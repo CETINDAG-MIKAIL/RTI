@@ -1,1 +1,1 @@
-/usr/bin/c++ CMakeFiles/ServerApp.dir/MyLibraries/Socket/TCP.cpp.o CMakeFiles/ServerApp.dir/Serveurs/Encodage_S/Encodage_S.cpp.o -o ServerApp  -lpthread 
+/usr/bin/c++ CMakeFiles/ServerApp.dir/MyLibraries/Socket/TCP.cpp.o CMakeFiles/ServerApp.dir/MyLibraries/Protocole/protocole.cpp.o CMakeFiles/ServerApp.dir/MyLibraries/BD/BDHelper.cpp.o CMakeFiles/ServerApp.dir/Serveurs/Encodage_S/Encodage_S.cpp.o -o ServerApp   -L/usr/lib64/mysql  -Wl,-rpath,/usr/lib64/mysql -lpthread -lmysqlclient 

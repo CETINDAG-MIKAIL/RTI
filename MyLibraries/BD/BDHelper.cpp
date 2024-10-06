@@ -1,11 +1,15 @@
-#include "BDHelper.h"
 #include <iostream>
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
-#include <string>
 #include <string.h>
+#include <string>
 #include <mysql.h>
+#include <vector>
+#include <sstream>
+
+#include "BDHelper.h"
+
 using namespace std;
 
 MYSQL* connexion;
@@ -121,7 +125,7 @@ string getAuthors(char* table) {
 	return "OK";
 }
 
-string getSubjects(char* table) {
+string getBooks(char* table) {
 	return "...";
 }
 

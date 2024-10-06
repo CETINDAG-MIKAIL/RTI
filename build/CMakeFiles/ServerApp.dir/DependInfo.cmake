@@ -4,8 +4,10 @@ set(CMAKE_DEPENDS_LANGUAGES
   )
 # The set of files for implicit dependencies of each language:
 set(CMAKE_DEPENDS_CHECK_CXX
-  "/home/student/Documents/Bac3/RTI/MyLibraries/Socket/TCP.cpp" "/home/student/Documents/Bac3/RTI/build/CMakeFiles/ServerApp.dir/MyLibraries/Socket/TCP.cpp.o"
-  "/home/student/Documents/Bac3/RTI/Serveurs/Encodage_S/Encodage_S.cpp" "/home/student/Documents/Bac3/RTI/build/CMakeFiles/ServerApp.dir/Serveurs/Encodage_S/Encodage_S.cpp.o"
+  "/home/student/Documents/RTI/RTI/MyLibraries/BD/BDHelper.cpp" "/home/student/Documents/RTI/RTI/build/CMakeFiles/ServerApp.dir/MyLibraries/BD/BDHelper.cpp.o"
+  "/home/student/Documents/RTI/RTI/MyLibraries/Protocole/protocole.cpp" "/home/student/Documents/RTI/RTI/build/CMakeFiles/ServerApp.dir/MyLibraries/Protocole/protocole.cpp.o"
+  "/home/student/Documents/RTI/RTI/MyLibraries/Socket/TCP.cpp" "/home/student/Documents/RTI/RTI/build/CMakeFiles/ServerApp.dir/MyLibraries/Socket/TCP.cpp.o"
+  "/home/student/Documents/RTI/RTI/Serveurs/Encodage_S/Encodage_S.cpp" "/home/student/Documents/RTI/RTI/build/CMakeFiles/ServerApp.dir/Serveurs/Encodage_S/Encodage_S.cpp.o"
   )
 set(CMAKE_CXX_COMPILER_ID "GNU")
 
@@ -14,6 +16,7 @@ set(CMAKE_CXX_TARGET_INCLUDE_PATH
   "../MyLibraries/BD"
   "../MyLibraries/Protocole"
   "../MyLibraries/Socket"
+  "/usr/include/mysql"
   )
 
 # Targets to which this target links.

@@ -7,22 +7,33 @@ project(ProjetRTI)
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
+# Ajouter le répertoire contenant libmysqlclient
+link_directories(/usr/lib64/mysql)
+
 # Trouver les paquets Qt (Widgets pour les interfaces graphiques)
 find_package(Qt5 COMPONENTS Widgets REQUIRED)
 
-include_directories(MyLibraries/BD MyLibraries/Protocole MyLibraries/Socket)
+# Inclure les répertoires où se trouvent les headers
+include_directories(
+    MyLibraries/BD
+    MyLibraries/Protocole
+    MyLibraries/Socket
+    /usr/include/mysql  # Chemin vers mysql.h
+)
 
 # Fichiers sources du serveur
 set(SERVER_SOURCES
     MyLibraries/Socket/TCP.cpp
+    MyLibraries/Protocole/protocole.cpp   # Ajout du fichier protocole pour le serveur
+    MyLibraries/BD/BDHelper.cpp           # Ajout du fichier BDHelper pour la base de données
     Serveurs/Encodage_S/Encodage_S.cpp
 )
 
 # Fichiers sources du client
 set(CLIENT_SOURCES
     MyLibraries/Socket/TCP.cpp
-    MyLibraries/Protocole/protocole.cpp
-    MyLibraries/BD/BDHelper.cpp   
+    MyLibraries/Protocole/protocole.cpp   # Déjà inclus pour le client
+    MyLibraries/BD/BDHelper.cpp           # Déjà inclus pour le client
     Clients/Encodage_C/Encodage_C.cpp
     ClientBookEncoderQt/main.cpp
     ClientBookEncoderQt/mainwindowclientbookencoder.cpp
@@ -41,8 +52,8 @@ add_executable(ServerApp
     ${SERVER_SOURCES}
 )
 
-# Lier la bibliothèque pthread pour le serveur
-target_link_libraries(ServerApp pthread)
+# Lier la bibliothèque pthread et MySQL pour le serveur
+target_link_libraries(ServerApp pthread mysqlclient)
 
 # Créer l'exécutable du client et ajouter les fichiers sources, MOC générés
 add_executable(ClientApp

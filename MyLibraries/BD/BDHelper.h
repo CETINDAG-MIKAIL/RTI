@@ -1,6 +1,9 @@
-#ifndef DBHELPER_H 
-#define DBHELPER_H
+#ifndef BDHELPER_H 
+#define BDHELPER_H
 
+#include <string>
+
+using namespace std;
 
 int ConnexionBD();
 int DeconnexionBD();

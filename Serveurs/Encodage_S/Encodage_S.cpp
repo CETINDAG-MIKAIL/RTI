@@ -6,6 +6,7 @@
 #include <pthread.h>
 #include <iostream>
 #include <string>
+#include <vector>
 
 using namespace std;
 
@@ -157,10 +158,8 @@ void TraitementConnexion(int sService)
 {
     int nbEcrits, nbLus ;
     bool onContinue = true;
-    string  requeteRecue,reponse;
+    string requeteRecue,reponse;
 
-
-    char requete[requeteRecue.size() + 1];
     while (onContinue)
     {
         printf("\t[THREAD %p] Attente requete...\n",pthread_self());
@@ -179,7 +178,7 @@ void TraitementConnexion(int sService)
         // strcpy(requete, requeteRecue.c_str());  // Copy the string to the char buffer
 
         // Call the PROTOCOLE function
-        PROTOCOLE(sService, requete);
+        reponse = PROTOCOLE(sService, requeteRecue);
 
         // Convert reponseBuffer back to std::string to send
         // reponse = std::string(reponseBuffer);
@@ -237,16 +236,15 @@ string AjoutAuteurS(vector<string> champs) // le premier champ du vector champs 
             }
         }
         else
-            printf("ERREUR : Insertion echouee.\n");
+            return CreateTrame(vector<string>{"ADD_AUTHOR", "ko", "Insertion echouee."});
 
 
-        if(DeconnexionBD() == 1)
-            printf("Deconnexion reussie.\n");
-        else
-            printf("ERREUR : Deconnexion echouee.\n");
+        if(DeconnexionBD() != 1)
+            return CreateTrame(vector<string>{"ADD_AUTHOR", "ko", "Deconnexion echouee."});
     }
     else {
-        printf("ERREUR : Erreur de connexion a la base de donnees.\n");
+        return CreateTrame(vector<string>{"ADD_AUTHOR", "ko", "Erreur de connexion a la base de donnees."});
     }
 
+    return CreateTrame(vector<string>{"ADD_AUTHOR", "ok", "Ajout reussi."});
 }

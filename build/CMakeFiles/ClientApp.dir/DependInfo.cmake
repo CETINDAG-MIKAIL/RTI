@@ -4,13 +4,13 @@ set(CMAKE_DEPENDS_LANGUAGES
   )
 # The set of files for implicit dependencies of each language:
 set(CMAKE_DEPENDS_CHECK_CXX
-  "/home/student/Documents/Bac3/RTI/ClientBookEncoderQt/main.cpp" "/home/student/Documents/Bac3/RTI/build/CMakeFiles/ClientApp.dir/ClientBookEncoderQt/main.cpp.o"
-  "/home/student/Documents/Bac3/RTI/ClientBookEncoderQt/mainwindowclientbookencoder.cpp" "/home/student/Documents/Bac3/RTI/build/CMakeFiles/ClientApp.dir/ClientBookEncoderQt/mainwindowclientbookencoder.cpp.o"
-  "/home/student/Documents/Bac3/RTI/build/ClientBookEncoderQt/moc_mainwindowclientbookencoder.cpp" "/home/student/Documents/Bac3/RTI/build/CMakeFiles/ClientApp.dir/ClientBookEncoderQt/moc_mainwindowclientbookencoder.cpp.o"
-  "/home/student/Documents/Bac3/RTI/Clients/Encodage_C/Encodage_C.cpp" "/home/student/Documents/Bac3/RTI/build/CMakeFiles/ClientApp.dir/Clients/Encodage_C/Encodage_C.cpp.o"
-  "/home/student/Documents/Bac3/RTI/MyLibraries/BD/BDHelper.cpp" "/home/student/Documents/Bac3/RTI/build/CMakeFiles/ClientApp.dir/MyLibraries/BD/BDHelper.cpp.o"
-  "/home/student/Documents/Bac3/RTI/MyLibraries/Protocole/protocole.cpp" "/home/student/Documents/Bac3/RTI/build/CMakeFiles/ClientApp.dir/MyLibraries/Protocole/protocole.cpp.o"
-  "/home/student/Documents/Bac3/RTI/MyLibraries/Socket/TCP.cpp" "/home/student/Documents/Bac3/RTI/build/CMakeFiles/ClientApp.dir/MyLibraries/Socket/TCP.cpp.o"
+  "/home/student/Documents/RTI/RTI/ClientBookEncoderQt/main.cpp" "/home/student/Documents/RTI/RTI/build/CMakeFiles/ClientApp.dir/ClientBookEncoderQt/main.cpp.o"
+  "/home/student/Documents/RTI/RTI/ClientBookEncoderQt/mainwindowclientbookencoder.cpp" "/home/student/Documents/RTI/RTI/build/CMakeFiles/ClientApp.dir/ClientBookEncoderQt/mainwindowclientbookencoder.cpp.o"
+  "/home/student/Documents/RTI/RTI/build/ClientBookEncoderQt/moc_mainwindowclientbookencoder.cpp" "/home/student/Documents/RTI/RTI/build/CMakeFiles/ClientApp.dir/ClientBookEncoderQt/moc_mainwindowclientbookencoder.cpp.o"
+  "/home/student/Documents/RTI/RTI/Clients/Encodage_C/Encodage_C.cpp" "/home/student/Documents/RTI/RTI/build/CMakeFiles/ClientApp.dir/Clients/Encodage_C/Encodage_C.cpp.o"
+  "/home/student/Documents/RTI/RTI/MyLibraries/BD/BDHelper.cpp" "/home/student/Documents/RTI/RTI/build/CMakeFiles/ClientApp.dir/MyLibraries/BD/BDHelper.cpp.o"
+  "/home/student/Documents/RTI/RTI/MyLibraries/Protocole/protocole.cpp" "/home/student/Documents/RTI/RTI/build/CMakeFiles/ClientApp.dir/MyLibraries/Protocole/protocole.cpp.o"
+  "/home/student/Documents/RTI/RTI/MyLibraries/Socket/TCP.cpp" "/home/student/Documents/RTI/RTI/build/CMakeFiles/ClientApp.dir/MyLibraries/Socket/TCP.cpp.o"
   )
 set(CMAKE_CXX_COMPILER_ID "GNU")
 
@@ -27,6 +27,7 @@ set(CMAKE_CXX_TARGET_INCLUDE_PATH
   "../MyLibraries/BD"
   "../MyLibraries/Protocole"
   "../MyLibraries/Socket"
+  "/usr/include/mysql"
   "/usr/include/qt5"
   "/usr/include/qt5/QtWidgets"
   "/usr/include/qt5/QtGui"

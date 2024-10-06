@@ -67,10 +67,10 @@ RM = /usr/bin/cmake -E rm -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/student/Documents/Bac3/RTI
+CMAKE_SOURCE_DIR = /home/student/Documents/RTI/RTI
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/student/Documents/Bac3/RTI/build
+CMAKE_BINARY_DIR = /home/student/Documents/RTI/RTI/build
 
 #=============================================================================
 # Targets provided globally by CMake.
@@ -99,9 +99,9 @@ edit_cache/fast: edit_cache
 
 # The main all target
 all: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/student/Documents/Bac3/RTI/build/CMakeFiles /home/student/Documents/Bac3/RTI/build//CMakeFiles/progress.marks
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/student/Documents/RTI/RTI/build/CMakeFiles /home/student/Documents/RTI/RTI/build//CMakeFiles/progress.marks
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 all
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/student/Documents/Bac3/RTI/build/CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/student/Documents/RTI/RTI/build/CMakeFiles 0
 .PHONY : all
 
 # The main clean target
@@ -269,6 +269,7 @@ MyLibraries/BD/BDHelper.o: MyLibraries/BD/BDHelper.cpp.o
 
 # target to build an object file
 MyLibraries/BD/BDHelper.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ServerApp.dir/build.make CMakeFiles/ServerApp.dir/MyLibraries/BD/BDHelper.cpp.o
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/ClientApp.dir/build.make CMakeFiles/ClientApp.dir/MyLibraries/BD/BDHelper.cpp.o
 .PHONY : MyLibraries/BD/BDHelper.cpp.o
 
@@ -278,6 +279,7 @@ MyLibraries/BD/BDHelper.i: MyLibraries/BD/BDHelper.cpp.i
 
 # target to preprocess a source file
 MyLibraries/BD/BDHelper.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ServerApp.dir/build.make CMakeFiles/ServerApp.dir/MyLibraries/BD/BDHelper.cpp.i
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/ClientApp.dir/build.make CMakeFiles/ClientApp.dir/MyLibraries/BD/BDHelper.cpp.i
 .PHONY : MyLibraries/BD/BDHelper.cpp.i
 
@@ -287,6 +289,7 @@ MyLibraries/BD/BDHelper.s: MyLibraries/BD/BDHelper.cpp.s
 
 # target to generate assembly for a file
 MyLibraries/BD/BDHelper.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ServerApp.dir/build.make CMakeFiles/ServerApp.dir/MyLibraries/BD/BDHelper.cpp.s
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/ClientApp.dir/build.make CMakeFiles/ClientApp.dir/MyLibraries/BD/BDHelper.cpp.s
 .PHONY : MyLibraries/BD/BDHelper.cpp.s
 
@@ -296,6 +299,7 @@ MyLibraries/Protocole/protocole.o: MyLibraries/Protocole/protocole.cpp.o
 
 # target to build an object file
 MyLibraries/Protocole/protocole.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ServerApp.dir/build.make CMakeFiles/ServerApp.dir/MyLibraries/Protocole/protocole.cpp.o
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/ClientApp.dir/build.make CMakeFiles/ClientApp.dir/MyLibraries/Protocole/protocole.cpp.o
 .PHONY : MyLibraries/Protocole/protocole.cpp.o
 
@@ -305,6 +309,7 @@ MyLibraries/Protocole/protocole.i: MyLibraries/Protocole/protocole.cpp.i
 
 # target to preprocess a source file
 MyLibraries/Protocole/protocole.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ServerApp.dir/build.make CMakeFiles/ServerApp.dir/MyLibraries/Protocole/protocole.cpp.i
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/ClientApp.dir/build.make CMakeFiles/ClientApp.dir/MyLibraries/Protocole/protocole.cpp.i
 .PHONY : MyLibraries/Protocole/protocole.cpp.i
 
@@ -314,6 +319,7 @@ MyLibraries/Protocole/protocole.s: MyLibraries/Protocole/protocole.cpp.s
 
 # target to generate assembly for a file
 MyLibraries/Protocole/protocole.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ServerApp.dir/build.make CMakeFiles/ServerApp.dir/MyLibraries/Protocole/protocole.cpp.s
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/ClientApp.dir/build.make CMakeFiles/ClientApp.dir/MyLibraries/Protocole/protocole.cpp.s
 .PHONY : MyLibraries/Protocole/protocole.cpp.s
 
