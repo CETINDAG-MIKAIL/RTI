@@ -30,7 +30,7 @@ pthread_cond_t condSocketsAcceptees;
 
 int main()
 {
-    int portServeur = 50041;
+    int portServeur = 50048;
 
     // Initialisation socketsAcceptees
     pthread_mutex_init(&mutexSocketsAcceptees,NULL);
@@ -223,32 +223,30 @@ string AjoutAuteurS(vector<string> champs) // le premier champ du vector champs 
         printf("Connexion etablie !\n");
 
 
-        if(InsererTuple(nomTable.c_str(), nomColonnes.c_str(), valeurs.c_str()) == 1) {
-            printf("Tuple bien insere.\n");
-
-
-            if(champs.size() <= 1) {
-                DeconnexionBD();
-                return CreateTrame(vector<string>{"ADD_AUTHOR", "ko", "Champs insuffisants !"});
-            }
-
-            valeurs += champs[1];
-
-            for(int i=2 ; champs.size() > i ; i++) {
-                valeurs += ", ";
-                valeurs += champs[1];
-            }
-
-            if(InsererTuple("authors", "last_name, first_name, birth_date", valeurs.c_str()) == 1) {
-                DeconnexionBD();
-                return CreateTrame(vector<string>{"ADD_AUTHOR", "ok", "Tuple bien insere."});
-            } else {
-                DeconnexionBD();
-                return CreateTrame(vector<string>{"ADD_AUTHOR", "ko", "Erreur insertion tuple."});
-            }
+        if(champs.size() <= 1) {
+            DeconnexionBD();
+            return CreateTrame(vector<string>{"ADD_AUTHOR", "ko", "Champs insuffisants !"});
         }
-        else
-            return CreateTrame(vector<string>{"ADD_AUTHOR", "ko", "Insertion echouee."});
+
+        valeurs += "\"" + champs[1];
+
+        for(int i=2 ; champs.size() > i ; i++) {
+            valeurs += "\", \"";
+            valeurs += champs[i];
+        }
+
+        valeurs += "\"";
+
+        cout << "------valeurs = " << valeurs << endl;
+
+
+        if(InsererTuple("authors", "last_name, first_name, birth_date", valeurs.c_str()) == 1) {
+            DeconnexionBD();
+            return CreateTrame(vector<string>{"ADD_AUTHOR", "ok", "Tuple bien insere."});
+        } else {
+            DeconnexionBD();
+            return CreateTrame(vector<string>{"ADD_AUTHOR", "ko", "Erreur insertion tuple."});
+        }
 
 
         if(DeconnexionBD() != 1)

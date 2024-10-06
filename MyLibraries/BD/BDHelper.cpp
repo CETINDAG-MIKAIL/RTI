@@ -36,14 +36,14 @@ int DeconnexionBD() {
 }
 
 
-int InsererTuple(const char* table,const  char* colonnes,const  char* valeurs) {
+int InsererTuple(const char* table, const  char* colonnes, const  char* valeurs) {
 	int longeur = strlen(table) + strlen(colonnes) + strlen(valeurs) + 30;
 	char* requete = (char*)malloc(longeur * sizeof(char));
 
 	sprintf(requete, "INSERT INTO %s (%s) VALUES (%s)", table, colonnes, valeurs);
 
 
-
+	printf("----------requete dans InsererTuple : %s\n", requete);
 
 	if (mysql_query(connexion,requete) != 0) {
 		free(requete);

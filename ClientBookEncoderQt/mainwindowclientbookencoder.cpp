@@ -51,7 +51,7 @@ MainWindowClientBookEncoder::MainWindowClientBookEncoder(QWidget *parent)
 
 
 
-    int portServeur = 50041;
+    int portServeur = 50048;
     char ipServeur[30] = {"localhost"};
 
     // Connexion sur le serveur  
@@ -308,10 +308,10 @@ void MainWindowClientBookEncoder::on_actionLogin_triggered() {
     // Analyser la réponse et afficher un message à l'utilisateur
     if (reponse.find("ok") != string::npos) {
         // Afficher un message de succès
-        QMessageBox::information(this, "Succès", "L'auteur a bien été inséré !");
+        QMessageBox::information(this, "Succès", "Login reussi !");
     } else {
         // Afficher un message d'erreur
-        QMessageBox::warning(this, "Erreur", "Erreur lors de l'insertion de l'auteur.");
+        QMessageBox::warning(this, "Erreur", "Erreur de login.");
     }
 
     this->loginOk();
