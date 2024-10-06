@@ -5,7 +5,6 @@ project(ProjetRTI)
 
 # Trouver les paquets MySQL
 set(CMAKE_PREFIX_PATH /usr/lib/x86_64-linux-gnu/cmake/mysql)  # Ajuste ce chemin si nécessaire
-find_package(MySQL REQUIRED)
 
 # Spécifier le standard C++
 set(CMAKE_CXX_STANDARD 11)
@@ -43,6 +42,7 @@ set(CLIENT_SOURCES
     Clients/Encodage_C/Encodage_C.cpp
     ClientBookEncoderQt/main.cpp
     ClientBookEncoderQt/mainwindowclientbookencoder.cpp
+    MyLibraries/Protocole/protocoleC.cpp
 )
 
 # Fichiers headers devant être traités par MOC (Meta-Object Compiler de Qt) pour le client
@@ -59,7 +59,7 @@ add_executable(ServerApp
 )
 
 # Lier la bibliothèque pthread et MySQL pour le serveur
-target_link_libraries(ServerApp PRIVATE pthread ${MySQL_LIBRARIES})
+target_link_libraries(ServerApp PRIVATE pthread mysqlclient)
 
 # Créer l'exécutable du client et ajouter les fichiers sources, MOC générés
 add_executable(ClientApp
@@ -67,5 +67,5 @@ add_executable(ClientApp
     ${CLIENT_MOC_SRCS}         # Fichiers générés par MOC (seulement pour le client)
 )
 
-# Lier Qt5::Widgets et pthread au client
-target_link_libraries(ClientApp PRIVATE Qt5::Widgets pthread ${MySQL_LIBRARIES})
+# Lier les bibliothèques Qt5::Widgets, pthread et MySQL pour le client
+target_link_libraries(ClientApp PRIVATE Qt5::Widgets pthread mysqlclient)

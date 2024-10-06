@@ -3,6 +3,9 @@
 
 #include <QMainWindow>
 #include <string>
+
+extern int sClient;
+
 using namespace std;
 
 QT_BEGIN_NAMESPACE

@@ -7,6 +7,7 @@
 
 #include "protocoleC.h"
 
+
 using namespace std;
 
 MainWindowClientBookEncoder::MainWindowClientBookEncoder(QWidget *parent)
@@ -240,7 +241,7 @@ void MainWindowClientBookEncoder::on_pushButtonAddAuthor_clicked() {
     cout << "Prénom : " << firstName << endl;
     cout << "Date de naissance : " << birthDate << endl;
 
-    string reponse = ajouterAuteur(lastName, firstName, birthDate);
+    string reponse = ajouterAuteur(lastName, firstName, birthDate, sClient);
 
     // Analyser la réponse et afficher un message à l'utilisateur
     if (reponse.find("ok") != string::npos) {

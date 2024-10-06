@@ -1,0 +1,8 @@
+-I/home/student/Documents/Bac3/RTI/MyLibraries/BD
+-I/home/student/Documents/Bac3/RTI/MyLibraries/Protocole
+-I/home/student/Documents/Bac3/RTI/MyLibraries/Socket
+-I/home/student/Documents/Bac3/RTI/Serveurs/Encodage_S
+-I/usr/include/mysql
+-o
+/home/student/Documents/Bac3/RTI/build/ClientBookEncoderQt/moc_mainwindowclientbookencoder.cpp
+/home/student/Documents/Bac3/RTI/ClientBookEncoderQt/mainwindowclientbookencoder.h

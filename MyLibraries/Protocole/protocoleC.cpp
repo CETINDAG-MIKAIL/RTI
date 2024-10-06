@@ -10,26 +10,31 @@ using namespace std;
 
 #include "protocoleC.h"
 #include "TCP.h"
+#include "protocole.h"
 
 
-string ajouterAuteur(string lastName, string firstName, string birthDate)
+string ajouterAuteur(string lastName, string firstName, string birthDate, int sClient)
 {
 	vector<string> champs;
-	int retourS, retourR; 
 	champs.push_back(lastName);
 	champs.push_back(firstName);
 	champs.push_back(birthDate);
 
-	string trame = protocole.createTrame(champs);
+	string trame = CreateTrame(champs);
 	// Le code suivant a été fait rapidement, à vérifier !
 	// ici on va recevoir la trame en string
 	// envoie au protocole Serveur (avec Send dans TCP.cpp)
-	if(retourS = Send(sSocket, trame)== - 1)printf("Erreur send (PtrocoleC)\n");
+	if(Send(sClient, trame)){
+		printf("Erreur send (PtrocoleC)\n");
+		return "ko";
+	}
 
-	if(retourR = receive(sSocket, trame)==-1)printf("Erreur receive (PtrocoleC)\n");
+	if(Receive(sClient).empty())
+	{
+		printf("Erreur receive (PtrocoleC)\n");
+		return "ko";
+	}
 		
-	if((retourR || retourS) == -1)
-		return 'KO'
-
-	return "OK";
+	
+	return "ok";
 }
