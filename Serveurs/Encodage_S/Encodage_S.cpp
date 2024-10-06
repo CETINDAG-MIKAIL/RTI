@@ -11,8 +11,8 @@ using namespace std;
 
 #include "Encodage_S.h"
 #include "TCP.h"
-#include "../../MyLibraries/BD/BDHelper.h"
-#include "./protocoleS.h"
+#include "BDHelper.h"
+#include "protocoleS.h"
 #include "protocole.h"
 
 int sEcoute;
@@ -164,21 +164,13 @@ void TraitementConnexion(int sService)
     while (onContinue)
     {
         printf("\t[THREAD %p] Attente requete...\n",pthread_self());
-
+        requeteRecue = Receive(sService);
         // ***** Reception Requete ******************
-        if ((nbLus = Receive(sService, requeteRecue)) < 0)
+        if (requeteRecue.empty())
         {
             perror("Erreur de Receive");
             close(sService);
             HandlerSIGINT(0);
-        }
-
-        // ***** Fin de connexion ? *****************
-        if (requeteRecue.empty())
-        {
-            printf("\t[THREAD %p] Fin de connexion du client.\n",pthread_self());
-            close(sService);
-            return;
         }
    
         printf("\t[THREAD %p] Requete recue = %s\n",pthread_self(),requeteRecue);

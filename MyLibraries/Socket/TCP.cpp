@@ -141,17 +141,19 @@ int Send(int sSocket, string trame)
 	return write(sSocket, trame.c_str(), trame.size());
 }
 
-int Receive(int sSocket, string trame) 
+string Receive(int sSocket) 
 {
 	printf("------RECEIVE----------\n");
-	char buffer[trame.size()];
+	char buffer[1024];
 
-	int bytesRead = read(sSocket, buffer ,trame.size()-1);
-	buffer[bytesRead] = '\0';
-	trame = buffer; // Assigner le buffer à la chaîne
+	int bytesRead = read(sSocket, buffer ,sizeof(buffer)-1);
 	
-	return bytesRead;
-	// !
-	// si on fait en String, on n'a pas besoin de renvoyer le nombre de bits lu 
-	// car la taille est dans le String et donc on renvoie la trame reçue en string
+	if (bytesRead < 0) {
+        perror("Erreur de lecture");
+        return "";
+    }
+
+    buffer[bytesRead] = '\0';
+	string maRequete = buffer;
+	return maRequete;
 }

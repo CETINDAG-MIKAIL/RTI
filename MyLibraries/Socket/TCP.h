@@ -9,6 +9,6 @@ int ServerSocket(int port);
 int Accept(int sEcoute, char *ipClient);
 int ClientSocket(char * ipServeur, int portServeur);
 int Send(int sSocket, string trame);
-int Receive(int sSocket, string trame);
+string Receive(int sSocket);
 
 #endif
