@@ -31,7 +31,7 @@ pthread_cond_t condSocketsAcceptees;
 
 int main()
 {
-    int portServeur = 50048;
+    int portServeur = 50054;
 
     // Initialisation socketsAcceptees
     pthread_mutex_init(&mutexSocketsAcceptees,NULL);
@@ -182,7 +182,7 @@ void TraitementConnexion(int sService)
         // char reponseBuffer[1024];               // Assuming reponse will be max 1024 chars, adjust if needed
         // strcpy(requete, requeteRecue.c_str());  // Copy the string to the char buffer
 
-        cout << "2-------- sService = " << sService << endl;
+        //cout << "2-------- sService = " << sService << endl;
         
         reponse = PROTOCOLE(sService, requeteRecue);
 
@@ -203,14 +203,47 @@ void TraitementConnexion(int sService)
         }
 
 
-        cout << "4-------- nbEcrits = " << nbEcrits << endl;
+        //cout << "4-------- nbEcrits = " << nbEcrits << endl;
 
         //printf("\t[THREAD %p] Reponse envoyee = %s\n", pthread_self(), reponse);
 
-        cout << "4-------- onContinue = " << onContinue << endl;
+        //cout << "4-------- onContinue = " << onContinue << endl;
         
         if (!onContinue) 
             printf("\t[THREAD %p] Fin de connexion de la socket %d\n", pthread_self(), sService);
+    }
+}
+
+bool VerifierLogin(string user, string password)
+{
+    string valeurs;
+    string nomTable = "authors"; // Ajout de la déclaration
+    string nomColonnes = "last_name, first_name, birth_date"; // Ajout de la déclaration
+    vector<string> tuples;
+
+    if(ConnexionBD() == 1) {
+        printf("Connexion etablie !\n");
+
+        valeurs = "login = \'" + user + "\' AND password = \'" + password + "\';";
+
+        cout << "------nomTable = " << nomTable << endl;
+        cout << "------valeurs = " << valeurs << endl;
+
+
+        tuples = getTuple(nomTable.c_str(), valeurs.c_str());
+
+
+
+        if(tuples.size() > 0) {
+            DeconnexionBD();
+            return true;
+        } else {
+            DeconnexionBD();
+            return false;
+        }
+    }
+    else {
+        return false;
     }
 }
 
@@ -248,10 +281,6 @@ string AjoutAuteurS(vector<string> champs) // le premier champ du vector champs 
             DeconnexionBD();
             return CreateTrame(vector<string>{"ADD_AUTHOR", "ko", "Erreur insertion tuple."});
         }
-
-
-        if(DeconnexionBD() != 1)
-            return CreateTrame(vector<string>{"ADD_AUTHOR", "ko", "Deconnexion echouee."});
     }
     else {
         return CreateTrame(vector<string>{"ADD_AUTHOR", "ko", "Erreur de connexion a la base de donnees."});

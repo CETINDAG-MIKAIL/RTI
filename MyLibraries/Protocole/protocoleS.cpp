@@ -56,7 +56,7 @@ string PROTOCOLE(int socket, string requete)
         }
         else
         {
-            if (PROTOCOLE_Login(user, password))
+            if (VerifierLogin(user, password))
             {
                 ajoute(socket);
                 return CreateTrame(vector<string>{"LOGIN", "ok", "Client logge", to_string(socket)});            } 
@@ -126,13 +126,15 @@ string PROTOCOLE(int socket, string requete)
 //***** Traitement des requetes *************************************
 bool PROTOCOLE_Login(string user, string password)
 {
-    if ((user == "luca") && (password == "abc123"))
-        return true;
-
-    if ((user == "mikail") && (password == "xyz456"))
-        return true;
-
+    
     return true;
+    // if ((user == "luca") && (password == "abc123"))
+    //     return true;
+
+    // if ((user == "mikail") && (password == "xyz456"))
+    //     return true;
+
+    // return true;
 }
 
 int REQ_GET_AUTHORS(char id_author,char last_name_author,char first_name_author)

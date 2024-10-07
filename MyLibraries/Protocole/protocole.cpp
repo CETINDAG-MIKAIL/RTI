@@ -17,7 +17,7 @@ string CreateTrame(vector<string> champs)
     //champs = ["sdlfjlsfd", ] - > ["5#sdlfjlsfd", ]
     string requete;
 
-    printf("------CreateTrame----------\n");
+    //printf("------CreateTrame----------\n");
     
     string longueurChamp;
 
@@ -44,7 +44,7 @@ vector<string> ReadTrame(string requete) {
     string longueurStr, champ;
     char *buffer;
 
-    printf("------ReadTrame----------\n");
+    //printf("------ReadTrame----------\n");
 
     // Lire la requête tant qu'il y a des données
     while (getline(ss, longueurStr, '#')) {

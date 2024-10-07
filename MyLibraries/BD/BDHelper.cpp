@@ -93,7 +93,7 @@ int SupprimerTuple(char* table, char* condition)
 
 
 
-string getAuthors(char* table) {
+string getAllFromTable(char* table) {
 	int longeur = strlen(table) + 30;
 	char* requete = (char*)malloc(longeur * sizeof(char));
 
@@ -118,7 +118,7 @@ string getAuthors(char* table) {
 	while ((ligne = mysql_fetch_row(ResultSet)) != NULL)
 	{
 		for(int i=0; i<nbChamps ; i++)
-			printf("%10s\t",ligne[i]);
+			printf("%10s\t", ligne[i]);
 		
 		printf("\n");
 	}
@@ -126,7 +126,53 @@ string getAuthors(char* table) {
 	return "OK";
 }
 
-string getBooks(char* table) {
-	return "...";
+vector<string> getTuple(const char* table, const char* condition)
+{
+    int longueur = strlen(table) + strlen(condition) + 40;  // Espace supp pour "SELECT * FROM et WHERE"
+    char* requete = (char*)malloc(longueur * sizeof(char));
+
+
+    sprintf(requete, "SELECT * FROM %s WHERE %s", table, condition);
+
+
+	cout << "1-getTuple---------requete = " << requete << endl;
+
+    if (mysql_query(connexion, requete) != 0) {
+        free(requete);
+        return {};
+    }
+    free(requete);
+
+
+
+    MYSQL_RES* ResultSet = mysql_store_result(connexion);
+    if (ResultSet == NULL) {
+        return {};
+    }
+
+
+    // Traitement des résultats
+    std::vector<std::string> tuples;
+    MYSQL_ROW ligne;
+    int nbChamps = mysql_num_fields(ResultSet);
+
+    printf("3-getTuple--------%d", nbChamps);
+
+
+    while ((ligne = mysql_fetch_row(ResultSet)) != NULL) {
+        for (int i = 0; i < nbChamps; ++i) {
+            if (ligne[i] != NULL) {
+                tuples.push_back(string(ligne[i]));
+            } else {
+                tuples.push_back("NULL");
+            }
+
+            cout << "4-getTuple---------" << ligne[i] << endl;
+        }
+    }
+
+    mysql_free_result(ResultSet);
+
+    return tuples;
 }
 

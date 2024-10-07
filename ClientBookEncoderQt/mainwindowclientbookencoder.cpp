@@ -51,7 +51,7 @@ MainWindowClientBookEncoder::MainWindowClientBookEncoder(QWidget *parent)
 
 
 
-    int portServeur = 50048;
+    int portServeur = 50054;
     char ipServeur[30] = {"localhost"};
 
     // Connexion sur le serveur  
