@@ -42,25 +42,21 @@ vector<string> ReadTrame(string requete) {
     vector<string> champs;      // Vecteur pour stocker les champs extraits
     stringstream ss(requete);   // Utilisation de stringstream pour savoir utiliser getline
     string longueurStr, champ;
-    char buffer[100];
+    char *buffer;
 
     printf("------ReadTrame----------\n");
 
     // Lire la requête tant qu'il y a des données
     while (getline(ss, longueurStr, '#')) {
 
+        buffer = new char[stoi(longueurStr)];
+
         //cout << "---ReadTrame--- longueurStr = " << longueurStr << endl;
 
         ss.read(buffer, stoi(longueurStr));
 
-
-        // faire malloc au lieu de char buffer[100]
-
-        // if (!getline(ss, champ, '#')) { 
-        //     break; // Sortir si on ne trouve pas de prochain champ
-        // }
-
         //cout << "---ReadTrame--- buffer = " << buffer << endl;
+
         champ = string(buffer, stoi(longueurStr));
 
         //cout << "---ReadTrame--- champ = " << champ << endl;

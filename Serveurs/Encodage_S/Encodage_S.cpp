@@ -22,7 +22,8 @@ int sEcoute;
 #define NB_THREADS_POOL 2
 #define TAILLE_FILE_ATTENTE 20
 
-int socketsAcceptees[TAILLE_FILE_ATTENTE];
+int socketsAcceptees[TAILLE_FILE_ATTENTE];      // queue<int> et faire pop et pup pour mettre à la fin et retirer au début
+                                                // au moins plus besoin des indices de lecture et écriture
 int indiceEcriture=0, indiceLecture=0;
 
 pthread_mutex_t mutexSocketsAcceptees;
