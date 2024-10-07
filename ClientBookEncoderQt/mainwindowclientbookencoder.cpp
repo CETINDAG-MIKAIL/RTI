@@ -6,6 +6,7 @@
 #include <iostream>
 
 #include "protocoleC.h"
+#include "protocole.h"
 #include "TCP.h"
 
 
@@ -256,18 +257,22 @@ void MainWindowClientBookEncoder::on_pushButtonAddAuthor_clicked() {
     cout << "Nom : " << lastName << endl;
     cout << "Prénom : " << firstName << endl;
     cout << "Date de naissance : " << birthDate << endl;
-
+    vector<string> VecRecu;
+    
     string reponse = ajouterAuteur(lastName, firstName, birthDate, sClient);
 
-    // Analyser la réponse et afficher un message à l'utilisateur
-    if (reponse.find("ok") != string::npos) {
-        // Afficher un message de succès
-        QMessageBox::information(this, "Succès", "L'auteur a bien été inséré !");
-    } else {
-        // Afficher un message d'erreur
-        QMessageBox::warning(this, "Erreur", "Erreur lors de l'insertion de l'auteur.");
+
+    VecRecu = ReadTrame(reponse);
+
+    
+        if(VecRecu[1] == "ok")
+            QMessageBox::information(this, "Succès", VecRecu[2].c_str());
+        else {
+            // Afficher un message d'erreur
+            QMessageBox::warning(this, "Erreur", VecRecu[2].c_str());
+        }
     }
-}
+    
 
 void MainWindowClientBookEncoder::on_pushButtonAddSubject_clicked() {
     string name = this->dialogInputText("Nouveau sujet","Nom ?");
@@ -301,19 +306,27 @@ void MainWindowClientBookEncoder::on_actionLogin_triggered() {
 
     string password = this->dialogInputText("Entrée en session","Password ?");
     cout << "------ password = " << password << endl;
+    vector<string> VecRecu;
 
 
     string reponse = login(varLogin, password, sClient);
 
-    // Analyser la réponse et afficher un message à l'utilisateur
-    if (reponse.find("ok") != string::npos) {
-        // Afficher un message de succès
-        QMessageBox::information(this, "Succès", "Login reussi !");
-    } else {
-        // Afficher un message d'erreur
-        QMessageBox::warning(this, "Erreur", "Erreur de login.");
-    }
+    VecRecu = ReadTrame(reponse);
 
+    std::cout << "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" <<  std::endl;
+
+    for (size_t i = 0; i < VecRecu.size(); i++) {
+        std::cout << "Element " << i << ": " << VecRecu[i] << std::endl;
+    }
+    std::cout << "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" << std::endl;
+
+    
+        if(VecRecu[1] == "ok")
+            QMessageBox::information(this, "Succès", VecRecu[2].c_str());
+        else {
+            // Afficher un message d'erreur
+            QMessageBox::warning(this, "Erreur", VecRecu[2].c_str());
+        }
     this->loginOk();
 }
 

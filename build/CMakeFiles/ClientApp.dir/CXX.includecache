@@ -6,6 +6,8 @@
 
 #IncludeRegexTransform: 
 
+../MyLibraries/Protocole/protocole.h
+
 ../MyLibraries/Protocole/protocoleC.h
 string
 -
@@ -16,13 +18,13 @@ string
 string.h
 -
 
-/home/student/Documents/RTI/RTI/ClientBookEncoderQt/mainwindowclientbookencoder.cpp
+/home/student/Documents/Bac3/RTI/ClientBookEncoderQt/mainwindowclientbookencoder.cpp
 mainwindowclientbookencoder.h
-/home/student/Documents/RTI/RTI/ClientBookEncoderQt/mainwindowclientbookencoder.h
+/home/student/Documents/Bac3/RTI/ClientBookEncoderQt/mainwindowclientbookencoder.h
 ui_mainwindowclientbookencoder.h
-/home/student/Documents/RTI/RTI/ClientBookEncoderQt/ui_mainwindowclientbookencoder.h
+/home/student/Documents/Bac3/RTI/ClientBookEncoderQt/ui_mainwindowclientbookencoder.h
 unistd.h
-/home/student/Documents/RTI/RTI/ClientBookEncoderQt/unistd.h
+/home/student/Documents/Bac3/RTI/ClientBookEncoderQt/unistd.h
 QInputDialog
 -
 QMessageBox
@@ -30,17 +32,19 @@ QMessageBox
 iostream
 -
 protocoleC.h
-/home/student/Documents/RTI/RTI/ClientBookEncoderQt/protocoleC.h
+/home/student/Documents/Bac3/RTI/ClientBookEncoderQt/protocoleC.h
+protocole.h
+/home/student/Documents/Bac3/RTI/ClientBookEncoderQt/protocole.h
 TCP.h
-/home/student/Documents/RTI/RTI/ClientBookEncoderQt/TCP.h
+/home/student/Documents/Bac3/RTI/ClientBookEncoderQt/TCP.h
 
-/home/student/Documents/RTI/RTI/ClientBookEncoderQt/mainwindowclientbookencoder.h
+/home/student/Documents/Bac3/RTI/ClientBookEncoderQt/mainwindowclientbookencoder.h
 QMainWindow
 -
 string
 -
 
-/home/student/Documents/RTI/RTI/ClientBookEncoderQt/ui_mainwindowclientbookencoder.h
+/home/student/Documents/Bac3/RTI/ClientBookEncoderQt/ui_mainwindowclientbookencoder.h
 QtCore/QVariant
 -
 QtWidgets/QAction
@@ -72,6 +76,34 @@ QtWidgets/QStatusBar
 QtWidgets/QTableWidget
 -
 QtWidgets/QWidget
+-
+
+/home/student/Documents/Bac3/RTI/MyLibraries/Socket/TCP.cpp
+TCP.h
+/home/student/Documents/Bac3/RTI/MyLibraries/Socket/TCP.h
+stdio.h
+-
+stdlib.h
+-
+string.h
+-
+unistd.h
+-
+sys/types.h
+-
+sys/socket.h
+-
+netdb.h
+-
+iostream
+-
+string
+-
+
+/home/student/Documents/Bac3/RTI/MyLibraries/Socket/TCP.h
+string
+-
+string.h
 -
 
 /usr/include/qt5/QtCore/QVariant

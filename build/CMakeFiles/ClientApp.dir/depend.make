@@ -119,6 +119,7 @@ CMakeFiles/ClientApp.dir/ClientBookEncoderQt/main.cpp.o: /usr/include/qt5/QtWidg
 CMakeFiles/ClientApp.dir/ClientBookEncoderQt/main.cpp.o: /usr/include/qt5/QtWidgets/qtwidgetsglobal.h
 CMakeFiles/ClientApp.dir/ClientBookEncoderQt/main.cpp.o: /usr/include/qt5/QtWidgets/qwidget.h
 
+CMakeFiles/ClientApp.dir/ClientBookEncoderQt/mainwindowclientbookencoder.cpp.o: ../MyLibraries/Protocole/protocole.h
 CMakeFiles/ClientApp.dir/ClientBookEncoderQt/mainwindowclientbookencoder.cpp.o: ../MyLibraries/Protocole/protocoleC.h
 CMakeFiles/ClientApp.dir/ClientBookEncoderQt/mainwindowclientbookencoder.cpp.o: ../MyLibraries/Socket/TCP.h
 CMakeFiles/ClientApp.dir/ClientBookEncoderQt/mainwindowclientbookencoder.cpp.o: ../ClientBookEncoderQt/mainwindowclientbookencoder.cpp

@@ -160,5 +160,6 @@ string Receive(int sSocket)
 
     buffer[bytesRead] = '\0';
 	string maRequete = buffer;
+	cout << "-----RECEIVE----maRequete : " << maRequete << endl;  
 	return maRequete;
 }

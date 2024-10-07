@@ -172,7 +172,7 @@ void TraitementConnexion(int sService)
         // ***** Reception Requete ******************
         if (requeteRecue.empty())
         {
-            perror("Erreur de Receive");
+            perror("Requete recu vide");
             close(sService);
             HandlerSIGINT(0);
         }

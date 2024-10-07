@@ -16,6 +16,7 @@ using namespace std;
 string ajouterAuteur(string lastName, string firstName, string birthDate, int sClient)
 {
 	vector<string> champs;
+	string RecuServeur;
 	champs.push_back("ADD_AUTHOR");
 	champs.push_back(lastName);
 	champs.push_back(firstName);
@@ -35,14 +36,18 @@ string ajouterAuteur(string lastName, string firstName, string birthDate, int sC
 
 	printf("ajouterAuteur------2-----\n");
 
-	if(Receive(sClient).empty())
+	if(Receive(sClient).empty()) // on attend la reponse du serveur qui a fait un send 1donc on recoit 0#AjoutAuteur#2ok#12clientlogge
 	{
 		printf("Erreur receive (ProtocoleC)\n");
-		return "ko";
+		return RecuServeur;
+	}
+	else
+	{
+		RecuServeur = Receive(sClient);
 	}
 	printf("ajouterAuteur------3-----\n");
 	
-	return "ok";
+	return RecuServeur;
 }
 
 string login(string login, string password, int sClient)
@@ -50,7 +55,7 @@ string login(string login, string password, int sClient)
 	vector<string> champs;
 	champs.push_back("LOGIN");
 	champs.push_back(login);
-	champs.push_back(password);
+	champs.push_back(password); // on cree un vecteur de string car createtram att un v de string pour pouvoir creer la trame et envoyer au serveur 
 
 	string trame = CreateTrame(champs);
 
@@ -61,7 +66,7 @@ string login(string login, string password, int sClient)
 
 	printf("login------1-----\n");
 
-	if(Receive(sClient).empty())
+	if(Receive(sClient).empty()) // on attend une reponse du serveur 
 	{
 		printf("Erreur receive (ProtocoleC)\n");
 		return "ko";
