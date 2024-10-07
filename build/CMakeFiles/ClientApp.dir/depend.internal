@@ -3,8 +3,8 @@
 
 CMakeFiles/ClientApp.dir/ClientBookEncoderQt/main.cpp.o
  ../MyLibraries/Socket/TCP.h
- /home/student/Documents/Bac3/RTI/ClientBookEncoderQt/main.cpp
- /home/student/Documents/Bac3/RTI/ClientBookEncoderQt/mainwindowclientbookencoder.h
+ /home/student/Documents/RTI/RTI/ClientBookEncoderQt/main.cpp
+ /home/student/Documents/RTI/RTI/ClientBookEncoderQt/mainwindowclientbookencoder.h
  /usr/include/qt5/QtCore/qalgorithms.h
  /usr/include/qt5/QtCore/qarraydata.h
  /usr/include/qt5/QtCore/qatomic.h
@@ -123,9 +123,9 @@ CMakeFiles/ClientApp.dir/ClientBookEncoderQt/mainwindowclientbookencoder.cpp.o
  ../MyLibraries/Protocole/protocole.h
  ../MyLibraries/Protocole/protocoleC.h
  ../MyLibraries/Socket/TCP.h
- /home/student/Documents/Bac3/RTI/ClientBookEncoderQt/mainwindowclientbookencoder.cpp
- /home/student/Documents/Bac3/RTI/ClientBookEncoderQt/mainwindowclientbookencoder.h
- /home/student/Documents/Bac3/RTI/ClientBookEncoderQt/ui_mainwindowclientbookencoder.h
+ /home/student/Documents/RTI/RTI/ClientBookEncoderQt/mainwindowclientbookencoder.cpp
+ /home/student/Documents/RTI/RTI/ClientBookEncoderQt/mainwindowclientbookencoder.h
+ /home/student/Documents/RTI/RTI/ClientBookEncoderQt/ui_mainwindowclientbookencoder.h
  /usr/include/qt5/QtCore/QVariant
  /usr/include/qt5/QtCore/qabstractitemmodel.h
  /usr/include/qt5/QtCore/qalgorithms.h
@@ -293,8 +293,8 @@ CMakeFiles/ClientApp.dir/ClientBookEncoderQt/mainwindowclientbookencoder.cpp.o
  /usr/include/qt5/QtWidgets/qtwidgetsglobal.h
  /usr/include/qt5/QtWidgets/qwidget.h
 CMakeFiles/ClientApp.dir/ClientBookEncoderQt/moc_mainwindowclientbookencoder.cpp.o
- /home/student/Documents/Bac3/RTI/ClientBookEncoderQt/mainwindowclientbookencoder.h
- /home/student/Documents/Bac3/RTI/build/ClientBookEncoderQt/moc_mainwindowclientbookencoder.cpp
+ /home/student/Documents/RTI/RTI/ClientBookEncoderQt/mainwindowclientbookencoder.h
+ /home/student/Documents/RTI/RTI/build/ClientBookEncoderQt/moc_mainwindowclientbookencoder.cpp
  /usr/include/qt5/QtCore/qalgorithms.h
  /usr/include/qt5/QtCore/qarraydata.h
  /usr/include/qt5/QtCore/qatomic.h
@@ -403,11 +403,11 @@ CMakeFiles/ClientApp.dir/ClientBookEncoderQt/moc_mainwindowclientbookencoder.cpp
  /usr/include/qt5/QtWidgets/qtwidgetsglobal.h
  /usr/include/qt5/QtWidgets/qwidget.h
 CMakeFiles/ClientApp.dir/Clients/Encodage_C/Encodage_C.cpp.o
- /home/student/Documents/Bac3/RTI/Clients/Encodage_C/Encodage_C.cpp
- /home/student/Documents/Bac3/RTI/MyLibraries/Socket/TCP.h
+ /home/student/Documents/RTI/RTI/Clients/Encodage_C/Encodage_C.cpp
+ /home/student/Documents/RTI/RTI/MyLibraries/Socket/TCP.h
 CMakeFiles/ClientApp.dir/MyLibraries/BD/BDHelper.cpp.o
- /home/student/Documents/Bac3/RTI/MyLibraries/BD/BDHelper.cpp
- /home/student/Documents/Bac3/RTI/MyLibraries/BD/BDHelper.h
+ /home/student/Documents/RTI/RTI/MyLibraries/BD/BDHelper.cpp
+ /home/student/Documents/RTI/RTI/MyLibraries/BD/BDHelper.h
  /usr/include/mysql/errmsg.h
  /usr/include/mysql/field_types.h
  /usr/include/mysql/my_command.h
@@ -421,13 +421,13 @@ CMakeFiles/ClientApp.dir/MyLibraries/BD/BDHelper.cpp.o
  /usr/include/mysql/mysql_time.h
  /usr/include/mysql/mysql_version.h
 CMakeFiles/ClientApp.dir/MyLibraries/Protocole/protocole.cpp.o
- /home/student/Documents/Bac3/RTI/MyLibraries/Protocole/protocole.cpp
- /home/student/Documents/Bac3/RTI/MyLibraries/Protocole/protocole.h
+ /home/student/Documents/RTI/RTI/MyLibraries/Protocole/protocole.cpp
+ /home/student/Documents/RTI/RTI/MyLibraries/Protocole/protocole.h
 CMakeFiles/ClientApp.dir/MyLibraries/Protocole/protocoleC.cpp.o
  ../MyLibraries/Socket/TCP.h
- /home/student/Documents/Bac3/RTI/MyLibraries/Protocole/protocole.h
- /home/student/Documents/Bac3/RTI/MyLibraries/Protocole/protocoleC.cpp
- /home/student/Documents/Bac3/RTI/MyLibraries/Protocole/protocoleC.h
+ /home/student/Documents/RTI/RTI/MyLibraries/Protocole/protocole.h
+ /home/student/Documents/RTI/RTI/MyLibraries/Protocole/protocoleC.cpp
+ /home/student/Documents/RTI/RTI/MyLibraries/Protocole/protocoleC.h
 CMakeFiles/ClientApp.dir/MyLibraries/Socket/TCP.cpp.o
- /home/student/Documents/Bac3/RTI/MyLibraries/Socket/TCP.cpp
- /home/student/Documents/Bac3/RTI/MyLibraries/Socket/TCP.h
+ /home/student/Documents/RTI/RTI/MyLibraries/Socket/TCP.cpp
+ /home/student/Documents/RTI/RTI/MyLibraries/Socket/TCP.h

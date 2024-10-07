@@ -31,7 +31,7 @@ pthread_cond_t condSocketsAcceptees;
 
 int main()
 {
-    int portServeur = 50054;
+    int portServeur = 50069;
 
     // Initialisation socketsAcceptees
     pthread_mutex_init(&mutexSocketsAcceptees,NULL);
@@ -217,7 +217,7 @@ void TraitementConnexion(int sService)
 bool VerifierLogin(string user, string password)
 {
     string valeurs;
-    string nomTable = "authors"; // Ajout de la déclaration
+    string nomTable = "employees"; // Ajout de la déclaration
     string nomColonnes = "last_name, first_name, birth_date"; // Ajout de la déclaration
     vector<string> tuples;
 

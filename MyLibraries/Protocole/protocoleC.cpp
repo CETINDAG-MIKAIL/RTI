@@ -69,12 +69,20 @@ string login(string login, string password, int sClient)
 
 	trame = Receive(sClient);
 	VecRecu = ReadTrame(trame);
-	EnvoyerQT = VecRecu[2];
+
+	if(VecRecu.size() != 3) {
+		cout << "ERROR : Le vecteur est de taille : " << VecRecu.size() << endl;
+		return "Vecteur recu incorrecte !";
+	}
+
+
+	EnvoyerQT = VecRecu[2];		// 10ADD_AUTHOR#2ko#18Auteur deja existant !"	
+								// -> ici VecRecu[2] équivaut au champ position 3 donc : "Auteur deja existant !"
 	
 	for (size_t i = 0; i < VecRecu.size(); i++) {
 	        cout << "VecRecu " << i << ": " << VecRecu[i] <<  endl;
 	}
 	cout << "Envoyer QT :  " << EnvoyerQT << endl;
 	
-	return EnvoyerQT[2];
+	return EnvoyerQT;
 }

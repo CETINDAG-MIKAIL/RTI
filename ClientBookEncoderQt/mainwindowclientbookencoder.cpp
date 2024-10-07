@@ -52,7 +52,7 @@ MainWindowClientBookEncoder::MainWindowClientBookEncoder(QWidget *parent)
 
 
 
-    int portServeur = 50054;
+    int portServeur = 50069;
     char ipServeur[30] = {"localhost"};
 
     // Connexion sur le serveur  
@@ -311,22 +311,8 @@ void MainWindowClientBookEncoder::on_actionLogin_triggered() {
 
     string reponse = login(varLogin, password, sClient);
 
-    VecRecu = ReadTrame(reponse);
+    QMessageBox::information(this, "Succès", reponse.c_str());
 
-    std::cout << "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" <<  std::endl;
-
-    for (size_t i = 0; i < VecRecu.size(); i++) {
-        std::cout << "Element " << i << ": " << VecRecu[i] << std::endl;
-    }
-    std::cout << "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" << std::endl;
-
-    
-        if(VecRecu[1] == "ok")
-            QMessageBox::information(this, "Succès", VecRecu[2].c_str());
-        else {
-            // Afficher un message d'erreur
-            QMessageBox::warning(this, "Erreur", VecRecu[2].c_str());
-        }
     this->loginOk();
 }
 

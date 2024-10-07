@@ -147,6 +147,7 @@ vector<string> getTuple(const char* table, const char* condition)
 
     MYSQL_RES* ResultSet = mysql_store_result(connexion);
     if (ResultSet == NULL) {
+    	printf("2---getTuple-----Rsultset == NULL--------");
         return {};
     }
 

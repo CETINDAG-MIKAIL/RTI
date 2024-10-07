@@ -59,7 +59,8 @@ string PROTOCOLE(int socket, string requete)
             if (VerifierLogin(user, password))
             {
                 ajoute(socket);
-                return CreateTrame(vector<string>{"LOGIN", "ok", "Client logge", to_string(socket)});            } 
+                return CreateTrame(vector<string>{"LOGIN", "ok", "Client logge"});
+            }
             else
             {
                 return CreateTrame(vector<string>{"LOGIN", "ko", "Mauvais identifiants !"});
