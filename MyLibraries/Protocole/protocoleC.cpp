@@ -53,24 +53,28 @@ string ajouterAuteur(string lastName, string firstName, string birthDate, int sC
 string login(string login, string password, int sClient)
 {
 	vector<string> champs;
+	vector<string> VecRecu;
 	champs.push_back("LOGIN");
 	champs.push_back(login);
 	champs.push_back(password); // on cree un vecteur de string car createtram att un v de string pour pouvoir creer la trame et envoyer au serveur 
 
 	string trame = CreateTrame(champs);
+	string EnvoyerQT;
+
 
 	if(Send(sClient, trame) == -1){
 		printf("Erreur send (ProtocoleC)\n");
-		return "ko";
+		return "Send erreur (ProtocoleC)";
 	}
 
-	printf("login------1-----\n");
-
-	if(Receive(sClient).empty()) // on attend une reponse du serveur 
-	{
-		printf("Erreur receive (ProtocoleC)\n");
-		return "ko";
+	trame = Receive(sClient);
+	VecRecu = ReadTrame(trame);
+	EnvoyerQT = VecRecu[2];
+	
+	for (size_t i = 0; i < VecRecu.size(); i++) {
+	        cout << "VecRecu " << i << ": " << VecRecu[i] <<  endl;
 	}
-
-	return "ok";
+	cout << "Envoyer QT :  " << EnvoyerQT << endl;
+	
+	return EnvoyerQT[2];
 }
