@@ -16,6 +16,9 @@ CMakeFiles/ServerApp.dir/MyLibraries/BD/BDHelper.cpp.o: /usr/include/mysql/mysql
 CMakeFiles/ServerApp.dir/MyLibraries/BD/BDHelper.cpp.o: /usr/include/mysql/mysql_time.h
 CMakeFiles/ServerApp.dir/MyLibraries/BD/BDHelper.cpp.o: /usr/include/mysql/mysql_version.h
 
+CMakeFiles/ServerApp.dir/MyLibraries/File/FileHelper.cpp.o: ../MyLibraries/File/FileHelper.cpp
+CMakeFiles/ServerApp.dir/MyLibraries/File/FileHelper.cpp.o: ../MyLibraries/File/FileHelper.h
+
 CMakeFiles/ServerApp.dir/MyLibraries/Protocole/protocole.cpp.o: ../MyLibraries/Protocole/protocole.cpp
 CMakeFiles/ServerApp.dir/MyLibraries/Protocole/protocole.cpp.o: ../MyLibraries/Protocole/protocole.h
 
@@ -28,6 +31,7 @@ CMakeFiles/ServerApp.dir/MyLibraries/Socket/TCP.cpp.o: ../MyLibraries/Socket/TCP
 CMakeFiles/ServerApp.dir/MyLibraries/Socket/TCP.cpp.o: ../MyLibraries/Socket/TCP.h
 
 CMakeFiles/ServerApp.dir/Serveurs/Encodage_S/Encodage_S.cpp.o: ../MyLibraries/BD/BDHelper.h
+CMakeFiles/ServerApp.dir/Serveurs/Encodage_S/Encodage_S.cpp.o: ../MyLibraries/File/FileHelper.h
 CMakeFiles/ServerApp.dir/Serveurs/Encodage_S/Encodage_S.cpp.o: ../MyLibraries/Protocole/protocole.h
 CMakeFiles/ServerApp.dir/Serveurs/Encodage_S/Encodage_S.cpp.o: ../MyLibraries/Protocole/protocoleS.h
 CMakeFiles/ServerApp.dir/Serveurs/Encodage_S/Encodage_S.cpp.o: ../MyLibraries/Socket/TCP.h

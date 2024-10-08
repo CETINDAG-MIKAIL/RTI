@@ -119,6 +119,7 @@ CMakeFiles/ClientApp.dir/ClientBookEncoderQt/main.cpp.o: /usr/include/qt5/QtWidg
 CMakeFiles/ClientApp.dir/ClientBookEncoderQt/main.cpp.o: /usr/include/qt5/QtWidgets/qtwidgetsglobal.h
 CMakeFiles/ClientApp.dir/ClientBookEncoderQt/main.cpp.o: /usr/include/qt5/QtWidgets/qwidget.h
 
+CMakeFiles/ClientApp.dir/ClientBookEncoderQt/mainwindowclientbookencoder.cpp.o: ../MyLibraries/File/FileHelper.h
 CMakeFiles/ClientApp.dir/ClientBookEncoderQt/mainwindowclientbookencoder.cpp.o: ../MyLibraries/Protocole/protocole.h
 CMakeFiles/ClientApp.dir/ClientBookEncoderQt/mainwindowclientbookencoder.cpp.o: ../MyLibraries/Protocole/protocoleC.h
 CMakeFiles/ClientApp.dir/ClientBookEncoderQt/mainwindowclientbookencoder.cpp.o: ../MyLibraries/Socket/TCP.h
@@ -419,6 +420,9 @@ CMakeFiles/ClientApp.dir/MyLibraries/BD/BDHelper.cpp.o: /usr/include/mysql/mysql
 CMakeFiles/ClientApp.dir/MyLibraries/BD/BDHelper.cpp.o: /usr/include/mysql/mysql_com.h
 CMakeFiles/ClientApp.dir/MyLibraries/BD/BDHelper.cpp.o: /usr/include/mysql/mysql_time.h
 CMakeFiles/ClientApp.dir/MyLibraries/BD/BDHelper.cpp.o: /usr/include/mysql/mysql_version.h
+
+CMakeFiles/ClientApp.dir/MyLibraries/File/FileHelper.cpp.o: ../MyLibraries/File/FileHelper.cpp
+CMakeFiles/ClientApp.dir/MyLibraries/File/FileHelper.cpp.o: ../MyLibraries/File/FileHelper.h
 
 CMakeFiles/ClientApp.dir/MyLibraries/Protocole/protocole.cpp.o: ../MyLibraries/Protocole/protocole.cpp
 CMakeFiles/ClientApp.dir/MyLibraries/Protocole/protocole.cpp.o: ../MyLibraries/Protocole/protocole.h

@@ -50,7 +50,7 @@ string AjouterAuteur(string lastName, string firstName, string birthDate, int sC
 	return RecuServeur;
 }
 
-string Login(string login, string password, int sClient)
+vector<string> Login(string login, string password, int sClient)
 {
 	vector<string> champs;
 	champs.push_back("LOGIN");
@@ -60,7 +60,7 @@ string Login(string login, string password, int sClient)
 	return ReponseAQT(sClient, champs);
 
 }
-string Logout(int sClient)
+vector<string> Logout(int sClient)
 {
 	vector<string> champs;
 	champs.push_back("LOGOUT");
@@ -68,7 +68,7 @@ string Logout(int sClient)
 	return ReponseAQT(sClient, champs);
 
 }
-string AjouterSujet(string name, int sClient)
+vector<string> AjouterSujet(string name, int sClient)
 {
 	vector<string> champs;
 	champs.push_back("ADD_SUBJECT");
@@ -77,7 +77,7 @@ string AjouterSujet(string name, int sClient)
 	return ReponseAQT(sClient, champs);
 
 }
-string AjouterLivre(vector<string> VecLivre, int sClient)
+vector<string> AjouterLivre(vector<string> VecLivre, int sClient)
 {
 	vector<string> champs;
 	champs.push_back("ADD_BOOK");
@@ -94,42 +94,85 @@ string AjouterLivre(vector<string> VecLivre, int sClient)
 
 	return ReponseAQT(sClient, champs);
 }
-string AjouterLivre(vector<string> VecLivre, int sClient)
+vector<string> GetSubjects(int sClient)
 {
+	vector<string> EnvoyerQT;
+	vector<string> champs;
+	champs.push_back("GET_SUBJECTS");
+	vector<string> VecRecu;
 	
+
+
+	string trame = CreateTrame(champs);
+
+
+	if(Send(sClient, trame) == -1){
+		printf("Erreur send (ProtocoleC) - logout\n");
+		return vector<string>{"Send erreur (ProtocoleC) - logout"};
+	}
+
+	trame = Receive(sClient);
+	VecRecu = ReadTrame(trame);
+
+								// -> ici VecRecu[2] équivaut au champ position 3 donc : "Auteur deja existant !"
+	
+	for (size_t i = 4; i < VecRecu.size(); i=i+2) {
+	        cout << "VecRecu " << i << ": " << VecRecu[i] <<  endl;
+			EnvoyerQT.push_back(VecRecu[i]);		// 10GET_SUB#11#18mikail#22mozdalzbda"	
+/*
+VecRecu 2: Tous les tuples bien recuperes.
+VecRecu 3: 1
+VecRecu 4: Science-Fiction
+VecRecu 5: 2
+VecRecu 6: Thriller
+VecRecu 7: 3
+VecRecu 8: Informatiqu*/
+	}
+	
+	return EnvoyerQT;
 }
 
 
-string ReponseAQT(int sClient, vector<string> champs)
+
+vector<string> ReponseAQT(int sClient, vector<string> champs)
 {
 
 	string trame = CreateTrame(champs);
-	string EnvoyerQT;
+	vector<string> EnvoyerQT;
 	vector<string> VecRecu;
 
 
 
 	if(Send(sClient, trame) == -1){
 		printf("Erreur send (ProtocoleC) - logout\n");
-		return "Send erreur (ProtocoleC) - logout";
-	}
+		
+		EnvoyerQT.push_back("ko");
+		EnvoyerQT.push_back("Send erreur (ProtocoleC) - logout");
 
-	trame = Receive(sClient);
+		return EnvoyerQT;
+	}
+	trame =  Receive(sClient);
 	VecRecu = ReadTrame(trame);
+	
+	if(VecRecu[1] == "ko"){
+		printf("Erreur send (ProtocoleC) - logout\n");
+		
+		EnvoyerQT.push_back("ko");
+		EnvoyerQT.push_back("Send erreur (ProtocoleC) - logout");
 
-	if(VecRecu.size() != 3) {
-		cout << "ERROR : Le vecteur est de taille : " << VecRecu.size() << endl;
-		return "Vecteur recu incorrecte !";
+		return EnvoyerQT;
 	}
 
 
-	EnvoyerQT = VecRecu[2];		// 10ADD_AUTHOR#2ko#18Auteur deja existant !"	
+
+
+	EnvoyerQT.push_back("ok");
+	EnvoyerQT.push_back(VecRecu[2]);		// 10ADD_AUTHOR#2ko#18Auteur deja existant !"	
 								// -> ici VecRecu[2] équivaut au champ position 3 donc : "Auteur deja existant !"
 	
 	for (size_t i = 0; i < VecRecu.size(); i++) {
 	        cout << "VecRecu " << i << ": " << VecRecu[i] <<  endl;
 	}
-	cout << "Envoyer QT :  " << EnvoyerQT << endl;
 	
 	return EnvoyerQT;
 }

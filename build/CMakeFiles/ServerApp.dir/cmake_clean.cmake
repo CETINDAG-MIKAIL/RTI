@@ -1,5 +1,6 @@
 file(REMOVE_RECURSE
   "CMakeFiles/ServerApp.dir/MyLibraries/BD/BDHelper.cpp.o"
+  "CMakeFiles/ServerApp.dir/MyLibraries/File/FileHelper.cpp.o"
   "CMakeFiles/ServerApp.dir/MyLibraries/Protocole/protocole.cpp.o"
   "CMakeFiles/ServerApp.dir/MyLibraries/Protocole/protocoleS.cpp.o"
   "CMakeFiles/ServerApp.dir/MyLibraries/Socket/TCP.cpp.o"

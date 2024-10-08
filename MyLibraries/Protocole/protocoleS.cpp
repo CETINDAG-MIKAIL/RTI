@@ -155,30 +155,6 @@ string PROTOCOLE(int socket, string requete)
 }
 
 
-//***** Traitement des requetes *************************************
-bool PROTOCOLE_Login(string user, string password)
-{
-    
-    return true;
-    // if ((user == "luca") && (password == "abc123"))
-    //     return true;
-
-    // if ((user == "mikail") && (password == "xyz456"))
-    //     return true;
-
-    // return true;
-}
-
-int REQ_GET_AUTHORS(char id_author,char last_name_author,char first_name_author)
-{
-    // if (getAuthor("authors") == 1) {
-    //     printf("Requête exécutée avec succès.\n");
-    // } else {
-    //     printf("Erreur lors de l'exécution de la requête.\n");
-    // }
-    return 0;
-}
-
 //***** Gestion de l'état du protocole ******************************
 int estPresent(int socket)
 {
@@ -197,6 +173,7 @@ int estPresent(int socket)
     
     return indice;
 }
+
 void ajoute(int socket)
 {
     pthread_mutex_lock(&mutexClients);
@@ -204,6 +181,7 @@ void ajoute(int socket)
     nbClients++;
     pthread_mutex_unlock(&mutexClients);
 }
+
 void retire(int socket)
 {
     int pos = estPresent(socket);
@@ -220,6 +198,7 @@ void retire(int socket)
     
     pthread_mutex_unlock(&mutexClients);
 }
+
 //***** Fin prématurée **********************************************
 void PROTOCOLE_Close()
 {

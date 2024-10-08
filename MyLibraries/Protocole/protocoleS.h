@@ -3,8 +3,6 @@
 
 
 string PROTOCOLE(int socket, string requete);
-bool PROTOCOLE_Login(string user, string password);
-int PROTOCOLE_Operation(char op,int a,int b);
 void PROTOCOLE_Close();
 
 int estPresent(int socket);

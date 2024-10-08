@@ -7,10 +7,12 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <fstream>
 
 using namespace std;
 
 #include "Encodage_S.h"
+#include "FileHelper.h"
 #include "TCP.h"
 #include "BDHelper.h"
 #include "protocoleS.h"
@@ -19,19 +21,25 @@ using namespace std;
 int sEcoute;
 // Gestion du pool de threads
 
-#define NB_THREADS_POOL 2
 #define TAILLE_FILE_ATTENTE 20
 
 int socketsAcceptees[TAILLE_FILE_ATTENTE];      // queue<int> et faire pop et pup pour mettre à la fin et retirer au début
                                                 // au moins plus besoin des indices de lecture et écriture
 int indiceEcriture=0, indiceLecture=0;
+int nbThreadsPool;
 
 pthread_mutex_t mutexSocketsAcceptees;
 pthread_cond_t condSocketsAcceptees;
 
 int main()
 {
-    int portServeur = 50069;
+    ifstream configFile("../config.txt");
+    string line;
+
+    int portServeur = GetSettingInt("../config.txt", "PORT_ENCODING");
+    nbThreadsPool = GetSettingInt("../config.txt", "NUM_THREADS");
+
+    printf("-----**************$ SSSSSS port serveur = %d\n\n", portServeur);
 
     // Initialisation socketsAcceptees
     pthread_mutex_init(&mutexSocketsAcceptees,NULL);
@@ -64,7 +72,7 @@ int main()
     printf("Création du pool de threads.\n");
     pthread_t th;
 
-    for (int i=0 ; i<NB_THREADS_POOL ; i++)
+    for (int i=0 ; i < nbThreadsPool ; i++)
         pthread_create(&th,NULL,FctThreadClient,NULL);
 
 
@@ -77,13 +85,12 @@ int main()
     while(1)
     {
         printf("Attente d'une connexion...\n");
-        printf("------- sEcoute = %d\n", sEcoute);
 
         if ((sService = Accept(sEcoute, ipClient)) == -1)
         {
             perror("Erreur de Accept");
             close(sEcoute);
-            // SMOP_Close();
+            PROTOCOLE_Close();
             exit(1);
         }
 
@@ -138,6 +145,7 @@ void HandlerSIGINT(int s)
 {
     printf("\nArret du serveur.\n");
     close(sEcoute);
+    PROTOCOLE_Close();
     pthread_mutex_lock(&mutexSocketsAcceptees);
 
     for (int i=0 ; i<TAILLE_FILE_ATTENTE ; i++) {
@@ -146,7 +154,7 @@ void HandlerSIGINT(int s)
     }
 
     pthread_mutex_unlock(&mutexSocketsAcceptees);
-    // SMOP_Close();
+
     exit(0);
 }
 
@@ -161,12 +169,7 @@ void TraitementConnexion(int sService)
     {
         printf("\t[THREAD %p] Attente requete...\n",pthread_self());
 
-
-
         requeteRecue = Receive(sService);
-
-        printf("TraitementConnexion------receive fait-----\n");
-        cout << endl << "1-------- requeteRecue = ---" << requeteRecue << "------" << endl << endl;
 
 
         // ***** Reception Requete ******************
@@ -174,40 +177,22 @@ void TraitementConnexion(int sService)
         {
             perror("Requete recu vide");
             close(sService);
+            PROTOCOLE_Close();
             HandlerSIGINT(0);
         }
    
-        //printf("\t[THREAD %p] Requete recue = %s\n",pthread_self(), requeteRecue);
-
-        // char reponseBuffer[1024];               // Assuming reponse will be max 1024 chars, adjust if needed
-        // strcpy(requete, requeteRecue.c_str());  // Copy the string to the char buffer
-
-        //cout << "2-------- sService = " << sService << endl;
         
         reponse = PROTOCOLE(sService, requeteRecue);
-
-        cout << "3-------- reponse = " << reponse << endl;
-
-        // Convert reponseBuffer back to std::string to send
-        // reponse = std::string(reponseBuffer);
-
-        // ***** Traitement de la requete ***********
-        // onContinue = SMOP(requete,reponse,sService);
-        // ***** Envoi de la reponse ****************
 
         if ((nbEcrits = Send(sService, reponse)) < 0)
         {
             perror("Erreur de Send");
             close(sService);
+            PROTOCOLE_Close();
             HandlerSIGINT(0);
         }
 
-
-        //cout << "4-------- nbEcrits = " << nbEcrits << endl;
-
         //printf("\t[THREAD %p] Reponse envoyee = %s\n", pthread_self(), reponse);
-
-        //cout << "4-------- onContinue = " << onContinue << endl;
         
         if (!onContinue) 
             printf("\t[THREAD %p] Fin de connexion de la socket %d\n", pthread_self(), sService);
@@ -226,12 +211,8 @@ bool VerifierLogin(string user, string password)
 
         condition = "login = \'" + user + "\' AND password = \'" + password + "\';";
 
-        //cout << "------nomTable = " << nomTable << endl;
-        //cout << "------condition = " << condition << endl;
-
 
         tuples = GetTuple(nomTable.c_str(), condition.c_str());
-
 
 
         if(tuples.size() > 0) {
@@ -287,11 +268,13 @@ string AjoutLivreS(vector<string> champs)
     string condition;
 
     // --- author_id ---
-    int endroitEspace = champs[1].find(" ");    // dans champs[1] c'est : "nom prénom" (avec un espace entre les 2)
+    int endroitEspace = champs[1].find(" ");        // dans champs[1] c'est : "nom prénom" (avec un espace entre les 2)
     string nom = champs[1].substr(0, endroitEspace);
+
     string prenom = champs[1].substr(endroitEspace + 1);
 
-    condition = "last_name = '" + nom + "' AND first_name = '" + prenom + "'";
+    condition = "last_name = '" + nom + "' AND first_name = '" + prenom + "';";
+
     tuple = GetTuple("authors", condition.c_str());
 
     if(tuple.size() < 1)
@@ -300,15 +283,16 @@ string AjoutLivreS(vector<string> champs)
     nomColonnes.push_back(tuple[0]);        // le premier champ c'est l'id et le second est le nom de l'auteur
 
 
+
     // --- subject_id ---
     condition = "name = '" + champs[2] + "'";
+
     tuple = GetTuple("subjects", condition.c_str());
 
     if(tuple.size() < 1)
         return CreateTrame(vector<string>{typeRequete, "ko", "Pas de sujet avec ce nom !"});
 
     nomColonnes.push_back(tuple[0]);        // le premier champ c'est l'id et le second est le nom du sujet
-
 
     nomColonnes.push_back("title");
     nomColonnes.push_back("isbn");
@@ -327,7 +311,7 @@ string AjouterTupleBD(string nomTable, vector<string> nomColonnes, vector<string
     if(ConnexionBD() == 1) {
         printf("Connexion etablie !\n");
 
-        if(nomColonnes.size() != champs.size()) {
+        if(nomColonnes.size() != (champs.size() - 1)) {     // le '-1' car dans les champs il y a le type de la requêt : "ADD_AUTHOR" etc
             DeconnexionBD();
             return CreateTrame(vector<string>{typeRequete, "ko", "Pas le meme nombre de champs que de valeurs !"});
         }
@@ -342,8 +326,6 @@ string AjouterTupleBD(string nomTable, vector<string> nomColonnes, vector<string
             DeconnexionBD();
             return CreateTrame(vector<string>{typeRequete, "ko", "Tuple deja dans la BD."});
         }
-
-
 
 
 
@@ -375,6 +357,7 @@ string AjouterTupleBD(string nomTable, vector<string> nomColonnes, vector<string
         }
 
 
+
         if(InsererTuple(nomTable.c_str(), nomColonnesString.c_str(), valeurs.c_str()) == 1) {
             DeconnexionBD();
             return CreateTrame(vector<string>{typeRequete, "ok", "Tuple bien insere."});
@@ -395,7 +378,7 @@ string CreerCondition(vector<string> nomColonnes, vector<string> champs)
     string condition;
 
     for (size_t i = 0; i < nomColonnes.size(); i++) {
-        condition += nomColonnes[i] + " = '" + champs[i] + "'";
+        condition += nomColonnes[i] + " = '" + champs[i+1] + "'";
 
         // Ajouter un " AND " sauf pour le dernier élément
         if (i < nomColonnes.size() - 1) {
@@ -423,7 +406,7 @@ string GetAuteursS(vector<string> champs)
 string GetSujetsS(vector<string> champs)
 { 
     string typeRequete = "GET_SUBJECTS";
-    string nomTable = "books";
+    string nomTable = "subjects";
 
     return GetTuplesBD(nomTable, typeRequete);
 }

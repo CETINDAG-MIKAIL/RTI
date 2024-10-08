@@ -43,9 +43,6 @@ int InsererTuple(const char* table, const char* colonnes, const char* valeurs)
 
 	sprintf(requete, "INSERT INTO %s (%s) VALUES (%s)", table, colonnes, valeurs);
 
-
-	printf("----------requete dans InsererTuple : %s\n", requete);
-
 	if (mysql_query(connexion,requete) != 0) {
 		free(requete);
 		return -1;
@@ -61,12 +58,6 @@ int ModifierTuple(char* table, char* modifications, char* condition)
     char* requete = (char*)malloc(longeur * sizeof(char));
 
     sprintf(requete, "UPDATE %s SET %s WHERE %s", table, modifications, condition);
-	//-------------------------------------------------------------------------------------------------------
-	printf("\nRequete :\n\t%s\n", requete);
-	//printf("Adresse du pointeur connexion: %p\n", (void*)connexion);
-	//printf("Hôte connecté : %s\n", mysql_get_host_info(connexion));
-	//printf("Version du serveur : %s\n", mysql_get_server_info(connexion));
-	//-------------------------------------------------------------------------------------------------------
 
     if (mysql_query(connexion, requete)) {
     	free(requete);
@@ -102,12 +93,11 @@ vector<string> GetAllFromTable(const char* table)
 
 	sprintf(requete, "SELECT * FROM %s", table);
 
-	printf("\n\n------debut de getAllFromTable-----requete = %s\n", requete);
-
 	if (mysql_query(connexion,requete) != 0) {
 		free(requete);
 		return vector<string>{};
 	}
+
 
 	// Affichage du Result Set
 	MYSQL_RES *ResultSet;
@@ -120,19 +110,14 @@ vector<string> GetAllFromTable(const char* table)
 	MYSQL_ROW ligne;
 	int nbChamps = mysql_num_fields(ResultSet);
 	
-	printf("-------getAllFromTable--Affichage des (nbChamps = %d) lignes :\n", nbChamps);
+
 
 	while ((ligne = mysql_fetch_row(ResultSet)) != NULL)
 	{
-		for(int i=0; i<nbChamps ; i++) {
-			printf("%10s\t", ligne[i]);
+		for(int i=0 ; i < nbChamps ; i++) {
 			tuples.push_back(ligne[i]);
 		}
-		
-		printf("\n");
 	}
-
-	printf("------fin de getAllFromTable-----\n\n");
 
 	return tuples;
 }
@@ -145,31 +130,40 @@ vector<string> GetTuple(const char* table, const char* condition)
 
     sprintf(requete, "SELECT * FROM %s WHERE %s", table, condition);
 
+    printf("-----GetTuple, requete = %s\n", requete);////////////////////////////////
 
-	cout << "1-getTuple---------requete = " << requete << endl;
 
+    if (connexion == NULL) {
+ 	   	printf("Erreur : connexion MySQL non initialisée.\n");
+    	return {};
+	}
+
+
+	if (requete == NULL) {
+    	printf("Erreur : allocation mémoire échouée.\n");
+    	return {};
+	}
+
+
+printf("-----GetTuple #### 1 ####\n");/////////////////////////////////////////////////
     if (mysql_query(connexion, requete) != 0) {
+printf("-----GetTuple #### 2 ####\n");/////////////////////////////////////////////////
         free(requete);
+printf("-----GetTuple #### 3 ####\n");/////////////////////////////////////////////////
         return {};
     }
+    printf("-----GetTuple #### 4 ####\n");/////////////////////////////////////////////////
     free(requete);
-
-
 
     MYSQL_RES* ResultSet = mysql_store_result(connexion);
     if (ResultSet == NULL) {
-    	printf("2---getTuple-----Rsultset == NULL--------");
         return {};
     }
-
 
     // Traitement des résultats
     std::vector<std::string> tuples;
     MYSQL_ROW ligne;
     int nbChamps = mysql_num_fields(ResultSet);
-
-    printf("3-getTuple--------%d", nbChamps);
-
 
     while ((ligne = mysql_fetch_row(ResultSet)) != NULL) {
         for (int i = 0; i < nbChamps; ++i) {
@@ -178,8 +172,6 @@ vector<string> GetTuple(const char* table, const char* condition)
             } else {
                 tuples.push_back("NULL");
             }
-
-            cout << "4-getTuple---------" << ligne[i] << endl;
         }
     }
 
@@ -187,4 +179,3 @@ vector<string> GetTuple(const char* table, const char* condition)
 
     return tuples;
 }
-

@@ -21,6 +21,7 @@ include_directories(
     MyLibraries/BD
     MyLibraries/Protocole
     MyLibraries/Socket
+    MyLibraries/File
     Serveurs/Encodage_S
     /usr/include/mysql  # Chemin vers mysql.h
 )
@@ -32,6 +33,7 @@ set(SERVER_SOURCES
     MyLibraries/BD/BDHelper.cpp           # Ajout du fichier BDHelper pour la base de données
     Serveurs/Encodage_S/Encodage_S.cpp
     MyLibraries/Protocole/protocoleS.cpp
+    MyLibraries/File/FileHelper.cpp
 )
 
 # Fichiers sources du client
@@ -43,6 +45,7 @@ set(CLIENT_SOURCES
     ClientBookEncoderQt/main.cpp
     ClientBookEncoderQt/mainwindowclientbookencoder.cpp
     MyLibraries/Protocole/protocoleC.cpp
+    MyLibraries/File/FileHelper.cpp
 )
 
 # Fichiers headers devant être traités par MOC (Meta-Object Compiler de Qt) pour le client

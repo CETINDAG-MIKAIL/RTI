@@ -8,6 +8,7 @@
 #include "protocoleC.h"
 #include "protocole.h"
 #include "TCP.h"
+#include "FileHelper.h"
 
 
 using namespace std;
@@ -49,10 +50,16 @@ MainWindowClientBookEncoder::MainWindowClientBookEncoder(QWidget *parent)
     this->addComboBoxSubjects("Science-fiction");
 
 
+    clearComboBoxAuthors();
+    clearComboBoxSubjects();
+   
 
 
+    int portServeur = GetSettingInt("../config.txt", "PORT_ENCODING");
 
-    int portServeur = 50070;
+
+    printf("-----**************$ port serveur = %d\n\n", portServeur);
+
     char ipServeur[30] = {"localhost"};
 
     // Connexion sur le serveur  
@@ -62,6 +69,8 @@ MainWindowClientBookEncoder::MainWindowClientBookEncoder(QWidget *parent)
         exit(1); 
     } 
     printf("Connecte sur le serveur.\n");
+
+
 }
 
 MainWindowClientBookEncoder::~MainWindowClientBookEncoder() {
@@ -260,7 +269,7 @@ void MainWindowClientBookEncoder::on_pushButtonAddAuthor_clicked() {
     
     string reponse = AjouterAuteur(lastName, firstName, birthDate, sClient);
     dialogMessage("Ajout auteur",reponse);//6le message
-    GetAuteur(); //1#15#lukas1#26#mikail 
+    // GetAuteur(sClient); //1#15#lukas1#26#mikail 
 }
     
 
@@ -268,9 +277,15 @@ void MainWindowClientBookEncoder::on_pushButtonAddSubject_clicked() {
     string name = this->dialogInputText("Nouveau sujet","Nom ?");
     cout << "Nom : " << name << endl;
 
-    string reponse =  AjouterSujet(name, sClient);
-    dialogMessage("Ajout sujet",reponse);
-
+    vector<string> reponse =  AjouterSujet(name, sClient);
+    dialogMessage("Ajout sujet",reponse[1]);
+    vector<string> VecSujet;
+    addComboBoxSubjects(name);
+    VecSujet = GetSubjects(sClient);
+    for (int i = 0; i < VecSujet.size(); ++i)
+    {
+        addComboBoxSubjects(VecSujet[i]);
+    }
 }
 
 void MainWindowClientBookEncoder::on_pushButtonAddBook_clicked() {
@@ -303,9 +318,11 @@ void MainWindowClientBookEncoder::on_pushButtonAddBook_clicked() {
 
     */
 
-    string reponse = AjouterLivre(VecLivre, sClient);
-    dialogMessage("Login",reponse);
-
+    vector<string> reponse = AjouterLivre(VecLivre, sClient);
+    if(reponse[1] == "ok")
+        dialogMessage("Ajouter Livre",reponse[1]);
+    else
+        dialogError("Ajouter Livre",reponse[1]);
  
 
 }
@@ -326,15 +343,43 @@ void MainWindowClientBookEncoder::on_actionLogin_triggered() {
     string password = this->dialogInputText("Entrée en session","Password ?");
     cout << "------ password = " << password << endl;
     
-    string reponse = Login(varLogin, password, sClient);
-    dialogMessage("Login",reponse);
-    this->loginOk();
+        cout << "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAaa" << endl;
+    vector<string> reponse = Login(varLogin, password, sClient);
+    cout << "reponse.size() : " << reponse.size() << endl;
+    for (int i = 0; i < reponse.size(); i++)
+    {
+        cout << "reponse : " <<  reponse[i] << endl;
+    }
+    
+    if(reponse[0] == "ok"){
+        dialogMessage("Login",reponse[1]);
+        vector<string> VecSujet;
+
+        VecSujet = GetSubjects(sClient);
+        for (int i = 0; i < VecSujet.size(); ++i)
+        {
+            addComboBoxSubjects(VecSujet[i]);
+        }
+        this->loginOk();
+    }
+    else
+        if(reponse[0] == "ko")
+        dialogError("Login",reponse[1]);
+
+
+    
 }
 
 void MainWindowClientBookEncoder::on_actionLogout_triggered() {
     // informer le serveur qu'il y a un logout 
-    string reponse = Logout(sClient);
-    dialogMessage("Login",reponse);
+    vector<string> reponse = Logout(sClient);
+
+    if(reponse[0] == "ok"){
+        dialogMessage("Logout",reponse[1]);
+        this->loginOk();
+    }
+    else
+        dialogError("Logout",reponse[1]);
 
     this->logoutOk();
 }

@@ -4,7 +4,7 @@
 # compile CXX with /usr/bin/c++
 CXX_DEFINES = -DQT_CORE_LIB -DQT_GUI_LIB -DQT_NO_DEBUG -DQT_WIDGETS_LIB
 
-CXX_INCLUDES = -I/home/student/Documents/Bac3/RTI/MyLibraries/BD -I/home/student/Documents/Bac3/RTI/MyLibraries/Protocole -I/home/student/Documents/Bac3/RTI/MyLibraries/Socket -I/home/student/Documents/Bac3/RTI/Serveurs/Encodage_S -I/usr/include/mysql -isystem /usr/include/qt5 -isystem /usr/include/qt5/QtWidgets -isystem /usr/include/qt5/QtGui -isystem /usr/include/qt5/QtCore -isystem /usr/lib64/qt5/mkspecs/linux-g++
+CXX_INCLUDES = -I/home/student/Documents/RTI/RTI/MyLibraries/BD -I/home/student/Documents/RTI/RTI/MyLibraries/Protocole -I/home/student/Documents/RTI/RTI/MyLibraries/Socket -I/home/student/Documents/RTI/RTI/MyLibraries/File -I/home/student/Documents/RTI/RTI/Serveurs/Encodage_S -I/usr/include/mysql -isystem /usr/include/qt5 -isystem /usr/include/qt5/QtWidgets -isystem /usr/include/qt5/QtGui -isystem /usr/include/qt5/QtCore -isystem /usr/lib64/qt5/mkspecs/linux-g++
 
 CXX_FLAGS = -fPIC -std=gnu++11
 

@@ -55,13 +55,36 @@ int main() {
 		else
 			printf("ERREUR : Insertion echouee.\n");
 
+		vector<string> tuples;
+		int nbColonnes;
 
-		printf("\nAffichage de tous les authors :");
-		GetAllFromTable("authors");
+
+		printf("\nAffichage de tous les authors :\n");
+		tuples = GetAllFromTable("authors");
+
+		nbColonnes = 4;
+	    for (size_t i = 0; i < tuples.size(); i++) {
+	        printf("%14s", tuples[i].c_str());
+
+	        if ((i + 1) % nbColonnes == 0) {
+	            printf("\n");
+	        }
+	    }
 
 
-		printf("\n\n\nAffichage de tous les employees :");
-		GetAllFromTable("employees");
+		printf("\n\n\nAffichage de tous les employees :\n");
+		tuples = GetAllFromTable("employees");
+
+		nbColonnes = 3;
+	    for (size_t i = 0; i < tuples.size(); i++) {
+	        printf("%14s", tuples[i].c_str());
+
+	        if ((i + 1) % nbColonnes == 0) {
+	            printf("\n");
+	        }
+	    }
+
+	    printf("\n\n");
 
 
 		if(DeconnexionBD() == 1)

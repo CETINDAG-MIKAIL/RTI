@@ -67,10 +67,10 @@ RM = /usr/bin/cmake -E rm -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/student/Documents/Bac3/RTI
+CMAKE_SOURCE_DIR = /home/student/Documents/RTI/RTI
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/student/Documents/Bac3/RTI/build
+CMAKE_BINARY_DIR = /home/student/Documents/RTI/RTI/build
 
 #=============================================================================
 # Targets provided globally by CMake.
@@ -99,9 +99,9 @@ edit_cache/fast: edit_cache
 
 # The main all target
 all: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/student/Documents/Bac3/RTI/build/CMakeFiles /home/student/Documents/Bac3/RTI/build//CMakeFiles/progress.marks
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/student/Documents/RTI/RTI/build/CMakeFiles /home/student/Documents/RTI/RTI/build//CMakeFiles/progress.marks
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 all
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/student/Documents/Bac3/RTI/build/CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/student/Documents/RTI/RTI/build/CMakeFiles 0
 .PHONY : all
 
 # The main clean target
@@ -293,6 +293,36 @@ MyLibraries/BD/BDHelper.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/ClientApp.dir/build.make CMakeFiles/ClientApp.dir/MyLibraries/BD/BDHelper.cpp.s
 .PHONY : MyLibraries/BD/BDHelper.cpp.s
 
+MyLibraries/File/FileHelper.o: MyLibraries/File/FileHelper.cpp.o
+
+.PHONY : MyLibraries/File/FileHelper.o
+
+# target to build an object file
+MyLibraries/File/FileHelper.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ServerApp.dir/build.make CMakeFiles/ServerApp.dir/MyLibraries/File/FileHelper.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ClientApp.dir/build.make CMakeFiles/ClientApp.dir/MyLibraries/File/FileHelper.cpp.o
+.PHONY : MyLibraries/File/FileHelper.cpp.o
+
+MyLibraries/File/FileHelper.i: MyLibraries/File/FileHelper.cpp.i
+
+.PHONY : MyLibraries/File/FileHelper.i
+
+# target to preprocess a source file
+MyLibraries/File/FileHelper.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ServerApp.dir/build.make CMakeFiles/ServerApp.dir/MyLibraries/File/FileHelper.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ClientApp.dir/build.make CMakeFiles/ClientApp.dir/MyLibraries/File/FileHelper.cpp.i
+.PHONY : MyLibraries/File/FileHelper.cpp.i
+
+MyLibraries/File/FileHelper.s: MyLibraries/File/FileHelper.cpp.s
+
+.PHONY : MyLibraries/File/FileHelper.s
+
+# target to generate assembly for a file
+MyLibraries/File/FileHelper.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ServerApp.dir/build.make CMakeFiles/ServerApp.dir/MyLibraries/File/FileHelper.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ClientApp.dir/build.make CMakeFiles/ClientApp.dir/MyLibraries/File/FileHelper.cpp.s
+.PHONY : MyLibraries/File/FileHelper.cpp.s
+
 MyLibraries/Protocole/protocole.o: MyLibraries/Protocole/protocole.cpp.o
 
 .PHONY : MyLibraries/Protocole/protocole.o
@@ -459,6 +489,9 @@ help:
 	@echo "... MyLibraries/BD/BDHelper.o"
 	@echo "... MyLibraries/BD/BDHelper.i"
 	@echo "... MyLibraries/BD/BDHelper.s"
+	@echo "... MyLibraries/File/FileHelper.o"
+	@echo "... MyLibraries/File/FileHelper.i"
+	@echo "... MyLibraries/File/FileHelper.s"
 	@echo "... MyLibraries/Protocole/protocole.o"
 	@echo "... MyLibraries/Protocole/protocole.i"
 	@echo "... MyLibraries/Protocole/protocole.s"
