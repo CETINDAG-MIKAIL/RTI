@@ -13,7 +13,7 @@ using namespace std;
 #include "protocole.h"
 
 
-string ajouterAuteur(string lastName, string firstName, string birthDate, int sClient)
+string AjouterAuteur(string lastName, string firstName, string birthDate, int sClient)
 {
 	vector<string> champs;
 	string RecuServeur;
@@ -50,21 +50,68 @@ string ajouterAuteur(string lastName, string firstName, string birthDate, int sC
 	return RecuServeur;
 }
 
-string login(string login, string password, int sClient)
+string Login(string login, string password, int sClient)
 {
 	vector<string> champs;
-	vector<string> VecRecu;
 	champs.push_back("LOGIN");
 	champs.push_back(login);
 	champs.push_back(password); // on cree un vecteur de string car createtram att un v de string pour pouvoir creer la trame et envoyer au serveur 
 
+	return ReponseAQT(sClient, champs);
+
+}
+string Logout(int sClient)
+{
+	vector<string> champs;
+	champs.push_back("LOGOUT");
+
+	return ReponseAQT(sClient, champs);
+
+}
+string AjouterSujet(string name, int sClient)
+{
+	vector<string> champs;
+	champs.push_back("ADD_SUBJECT");
+	champs.push_back(name);
+
+	return ReponseAQT(sClient, champs);
+
+}
+string AjouterLivre(vector<string> VecLivre, int sClient)
+{
+	vector<string> champs;
+	champs.push_back("ADD_BOOK");
+	
+	for (int i = 0; i < VecLivre.size(); i++)
+	{
+		champs.push_back(VecLivre[i]);
+	}
+	
+	for (int i = 0; i < VecLivre.size(); i++)
+	{
+		cout << "Element : " <<  champs[i] << endl;
+	}
+
+	return ReponseAQT(sClient, champs);
+}
+string AjouterLivre(vector<string> VecLivre, int sClient)
+{
+	
+}
+
+
+string ReponseAQT(int sClient, vector<string> champs)
+{
+
 	string trame = CreateTrame(champs);
 	string EnvoyerQT;
+	vector<string> VecRecu;
+
 
 
 	if(Send(sClient, trame) == -1){
-		printf("Erreur send (ProtocoleC)\n");
-		return "Send erreur (ProtocoleC)";
+		printf("Erreur send (ProtocoleC) - logout\n");
+		return "Send erreur (ProtocoleC) - logout";
 	}
 
 	trame = Receive(sClient);

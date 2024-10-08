@@ -52,7 +52,7 @@ MainWindowClientBookEncoder::MainWindowClientBookEncoder(QWidget *parent)
 
 
 
-    int portServeur = 50069;
+    int portServeur = 50070;
     char ipServeur[30] = {"localhost"};
 
     // Connexion sur le serveur  
@@ -257,26 +257,20 @@ void MainWindowClientBookEncoder::on_pushButtonAddAuthor_clicked() {
     cout << "Nom : " << lastName << endl;
     cout << "Prénom : " << firstName << endl;
     cout << "Date de naissance : " << birthDate << endl;
-    vector<string> VecRecu;
     
-    string reponse = ajouterAuteur(lastName, firstName, birthDate, sClient);
-
-
-    VecRecu = ReadTrame(reponse);
-
-    
-        if(VecRecu[1] == "ok")
-            QMessageBox::information(this, "Succès", VecRecu[2].c_str());
-        else {
-            // Afficher un message d'erreur
-            QMessageBox::warning(this, "Erreur", VecRecu[2].c_str());
-        }
-    }
+    string reponse = AjouterAuteur(lastName, firstName, birthDate, sClient);
+    dialogMessage("Ajout auteur",reponse);//6le message
+    GetAuteur(); //1#15#lukas1#26#mikail 
+}
     
 
 void MainWindowClientBookEncoder::on_pushButtonAddSubject_clicked() {
     string name = this->dialogInputText("Nouveau sujet","Nom ?");
     cout << "Nom : " << name << endl;
+
+    string reponse =  AjouterSujet(name, sClient);
+    dialogMessage("Ajout sujet",reponse);
+
 }
 
 void MainWindowClientBookEncoder::on_pushButtonAddBook_clicked() {
@@ -289,6 +283,31 @@ void MainWindowClientBookEncoder::on_pushButtonAddBook_clicked() {
 
     cout << "selection auteur = " << this->getSelectionAuthor() << endl;
     cout << "selection sujet  = " << this->getSelectionSubject() << endl;
+    vector<string> VecLivre; 
+
+    VecLivre.push_back(getSelectionAuthor());
+    VecLivre.push_back(getSelectionSubject());
+    VecLivre.push_back(getTitle());
+    VecLivre.push_back(getIsbn());
+    VecLivre.push_back(to_string(getPageCount()));
+    VecLivre.push_back(to_string(getStockQuantity()));
+    VecLivre.push_back(to_string(getPrice()));
+    VecLivre.push_back(to_string(getPublishYear()));
+
+    /*
+
+        int MainWindowClientBookEncoder::getStockQuantity() 
+        int MainWindowClientBookEncoder::getPublishYear()
+        float MainWindowClientBookEncoder::getPrice() const {
+        int MainWindowClientBookEncoder::getPageCount() const {
+
+    */
+
+    string reponse = AjouterLivre(VecLivre, sClient);
+    dialogMessage("Login",reponse);
+
+ 
+
 }
 
 void MainWindowClientBookEncoder::on_pushButtonClear_clicked() {
@@ -302,21 +321,21 @@ void MainWindowClientBookEncoder::on_pushButtonClear_clicked() {
 
 void MainWindowClientBookEncoder::on_actionLogin_triggered() {
     string varLogin = this->dialogInputText("Entrée en session","Login ?");
-    cout << "------ login = " << login << endl;
+    cout << "------ login = " << varLogin << endl;
 
     string password = this->dialogInputText("Entrée en session","Password ?");
     cout << "------ password = " << password << endl;
-    vector<string> VecRecu;
-
-
-    string reponse = login(varLogin, password, sClient);
-
-    QMessageBox::information(this, "Succès", reponse.c_str());
-
+    
+    string reponse = Login(varLogin, password, sClient);
+    dialogMessage("Login",reponse);
     this->loginOk();
 }
 
 void MainWindowClientBookEncoder::on_actionLogout_triggered() {
+    // informer le serveur qu'il y a un logout 
+    string reponse = Logout(sClient);
+    dialogMessage("Login",reponse);
+
     this->logoutOk();
 }
 
