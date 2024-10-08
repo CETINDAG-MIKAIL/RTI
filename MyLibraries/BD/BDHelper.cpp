@@ -115,6 +115,8 @@ string getAllFromTable(char* table) {
 	MYSQL_ROW ligne;
 	int nbChamps = mysql_num_fields(ResultSet);
 	
+	printf("-------getAllFromTable--Affichage des lignes :\n");
+
 	while ((ligne = mysql_fetch_row(ResultSet)) != NULL)
 	{
 		for(int i=0; i<nbChamps ; i++)
