@@ -71,43 +71,10 @@ string PROTOCOLE(int socket, string requete)
     // ***** LOGOUT *****************************************
     if (typeRequete == "LOGOUT")
     {
-        printf("\t[THREAD %p] LOGOUT\n",pthread_self());
+        printf("\t[THREAD %p] LOGOUT\n", pthread_self());
         retire(socket);
         return CreateTrame(vector<string>{"LOGOUT", "ok", "Deconnexion reussie."});
     }
-
-    // ***** GET Author **********************************
-/*    if (typeRequete == "GET_AUTHORS")
-    {
-        char *id_author; 
-        char *last_name_author;
-        char *first_name_author;
-        
-        ptr = strtok(NULL, "#");
-        id_author = ptr;
-        last_name_author = strtok(NULL, "#");
-        first_name_author = strtok(NULL, "#");
-        
-        printf("\t[THREAD %p] GET_AUTHORS %s %s %s\n", pthread_self(), id_author, last_name_author, first_name_author);
-        
-        if (estPresent(socket) == -1)
-        {
-            return CreateTrame(vector<string>{"GET_AUTHORS", "ko", "Client non logge !"});
-        }
-        else
-        {
-            int resultat = REQ_GET_AUTHORS(id_author, last_name_author, first_name_author);
-            if (resultat == -1)
-            {
-                return CreateTrame(vector<string>{"GET_AUTHORS", "ko", "Erreur lors de la récupération des auteurs !"});
-            }
-            else
-            {
-                return CreateTrame(vector<string>{"GET_AUTHORS", "ok", to_string(resultat)});
-            }
-        }
-    }
-*/
 
     // ***** Ajout Author **********************************
     if (typeRequete == "ADD_AUTHOR")
@@ -144,6 +111,45 @@ string PROTOCOLE(int socket, string requete)
             return AjoutLivreS(ReadTrame(requete));
         }
     }
+
+    // ***** GET Authors **********************************
+    if (typeRequete == "GET_AUTHORS")
+    {
+        
+        if (estPresent(socket) == -1) {
+            return CreateTrame(vector<string>{"GET_AUTHORS", "ko", "Client non logge !"});
+        }
+        else
+        {
+            return GetAuteursS(ReadTrame(requete));
+        }
+    }
+
+    // ***** GET Subject **********************************
+    if (typeRequete == "GET_SUBJECTS")
+    {
+        
+        if (estPresent(socket) == -1) {
+            return CreateTrame(vector<string>{"GET_SUBJECTS", "ko", "Client non logge !"});
+        }
+        else
+        {
+            return GetSujetsS(ReadTrame(requete));
+        }
+    }
+
+    // ***** GET Books **********************************
+    // if (typeRequete == "GET_BOOKS")
+    // {
+        
+    //     if (estPresent(socket) == -1) {
+    //         return CreateTrame(vector<string>{"GET_BOOKS", "ko", "Client non logge !"});
+    //     }
+    //     else
+    //     {
+    //         return GetLivresS(ReadTrame(requete));
+    //     }
+    // }
 
     return CreateTrame(vector<string>{"ko", "Aucun type de requete !"});
 }

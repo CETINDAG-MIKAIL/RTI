@@ -31,7 +31,7 @@ pthread_cond_t condSocketsAcceptees;
 
 int main()
 {
-    int portServeur = 50070;
+    int portServeur = 50069;
 
     // Initialisation socketsAcceptees
     pthread_mutex_init(&mutexSocketsAcceptees,NULL);
@@ -216,7 +216,7 @@ void TraitementConnexion(int sService)
 
 bool VerifierLogin(string user, string password)
 {
-    string valeurs;
+    string condition;
     string nomTable = "employees"; // Ajout de la déclaration
     string nomColonnes = "last_name, first_name, birth_date"; // Ajout de la déclaration
     vector<string> tuples;
@@ -224,13 +224,13 @@ bool VerifierLogin(string user, string password)
     if(ConnexionBD() == 1) {
         printf("Connexion etablie !\n");
 
-        valeurs = "login = \'" + user + "\' AND password = \'" + password + "\';";
+        condition = "login = \'" + user + "\' AND password = \'" + password + "\';";
 
-        cout << "------nomTable = " << nomTable << endl;
-        cout << "------valeurs = " << valeurs << endl;
+        //cout << "------nomTable = " << nomTable << endl;
+        //cout << "------condition = " << condition << endl;
 
 
-        tuples = getTuple(nomTable.c_str(), valeurs.c_str());
+        tuples = GetTuple(nomTable.c_str(), condition.c_str());
 
 
 
@@ -247,47 +247,104 @@ bool VerifierLogin(string user, string password)
     }
 }
 
+// --------------------------------------------------------------------------------------- //
+// ---------------------------------------- ADD_x ---------------------------------------- //
+// --------------------------------------------------------------------------------------- //
+
 string AjoutAuteurS(vector<string> champs) // le premier champ du vector champs est le nom de la requête, donc ADD_AUTHOR
 {
-    string valeurs;
     string typeRequete = "ADD_AUTHOR";
     string nomTable = "authors"; // Ajout de la déclaration
-    string nomColonnes = "last_name, first_name, birth_date"; // Ajout de la déclaration
+    vector<string> nomColonnes;
 
-    return ajouterTupleBD(nomTable, nomColonnes, champs, typeRequete);
+    nomColonnes.push_back("last_name");
+    nomColonnes.push_back("first_name");
+    nomColonnes.push_back("birth_date");
+
+    return AjouterTupleBD(nomTable, nomColonnes, champs, typeRequete);
 }
 
 
 
 string AjoutSujetS(vector<string> champs)
 {
-    string valeurs;
     string typeRequete = "ADD_SUBJECT";
     string nomTable = "subjects";
-    string nomColonnes = "name";
+    vector<string> nomColonnes;
 
-    return ajouterTupleBD(nomTable, nomColonnes, champs, typeRequete);
+    nomColonnes.push_back("name");
+
+    return AjouterTupleBD(nomTable, nomColonnes, champs, typeRequete);
 }
 
 
 
 string AjoutLivreS(vector<string> champs)
 {
-    string valeurs;
     string typeRequete = "ADD_BOOK";
     string nomTable = "books";
-    string nomColonnes = "author_id, subject_id, title, isbn, page_count, stock_quantity, price, publish_year INT";
+    vector<string> nomColonnes, tuple;
+    string condition;
+
+    // --- author_id ---
+    int endroitEspace = champs[1].find(" ");    // dans champs[1] c'est : "nom prénom" (avec un espace entre les 2)
+    string nom = champs[1].substr(0, endroitEspace);
+    string prenom = champs[1].substr(endroitEspace + 1);
+
+    condition = "last_name = '" + nom + "' AND first_name = '" + prenom + "'";
+    tuple = GetTuple("authors", condition.c_str());
+
+    if(tuple.size() < 1)
+        return CreateTrame(vector<string>{typeRequete, "ko", "Pas d'auteur avec ce nom !"});
+
+    nomColonnes.push_back(tuple[0]);        // le premier champ c'est l'id et le second est le nom de l'auteur
 
 
-    return ajouterTupleBD(nomTable, nomColonnes, champs, typeRequete);
+    // --- subject_id ---
+    condition = "name = '" + champs[2] + "'";
+    tuple = GetTuple("subjects", condition.c_str());
+
+    if(tuple.size() < 1)
+        return CreateTrame(vector<string>{typeRequete, "ko", "Pas de sujet avec ce nom !"});
+
+    nomColonnes.push_back(tuple[0]);        // le premier champ c'est l'id et le second est le nom du sujet
+
+
+    nomColonnes.push_back("title");
+    nomColonnes.push_back("isbn");
+    nomColonnes.push_back("page_count");
+    nomColonnes.push_back("stock_quantity");
+    nomColonnes.push_back("price");
+    nomColonnes.push_back("publish_year");
+
+    return AjouterTupleBD(nomTable, nomColonnes, champs, typeRequete);
 }
 
-string ajouterTupleBD(string nomTable, string nomColonnes, vector<string> champs, string typeRequete)
+string AjouterTupleBD(string nomTable, vector<string> nomColonnes, vector<string> champs, string typeRequete)
 {
-    string valeurs;
+    string condition, valeurs;
 
     if(ConnexionBD() == 1) {
         printf("Connexion etablie !\n");
+
+        if(nomColonnes.size() != champs.size()) {
+            DeconnexionBD();
+            return CreateTrame(vector<string>{typeRequete, "ko", "Pas le meme nombre de champs que de valeurs !"});
+        }
+
+        // vérifier s'il y a déjà ce tuple dans la BD
+        condition = CreerCondition(nomColonnes, champs);
+
+
+        vector<string> tuples = GetTuple(nomTable.c_str(), condition.c_str());
+
+        if(tuples.size() > 0) {
+            DeconnexionBD();
+            return CreateTrame(vector<string>{typeRequete, "ko", "Tuple deja dans la BD."});
+        }
+
+
+
 
 
         if(champs.size() <= 1) {
@@ -307,7 +364,18 @@ string ajouterTupleBD(string nomTable, string nomColonnes, vector<string> champs
         cout << "------valeurs = " << valeurs << endl;
 
 
-        if(InsererTuple(nomTable.c_str(), nomColonnes.c_str(), valeurs.c_str()) == 1) {
+        // convertir vector<string> en string avec des ',' entre les noms des colonnes
+        string nomColonnesString;
+
+        for (size_t i = 0; i < nomColonnes.size(); i++) {
+            nomColonnesString += nomColonnes[i];
+            if (i < nomColonnes.size() - 1) {
+                nomColonnesString += ", "; // Ajout d'un séparateur sauf pour le dernier élément
+            }
+        }
+
+
+        if(InsererTuple(nomTable.c_str(), nomColonnesString.c_str(), valeurs.c_str()) == 1) {
             DeconnexionBD();
             return CreateTrame(vector<string>{typeRequete, "ok", "Tuple bien insere."});
         } else {
@@ -319,5 +387,77 @@ string ajouterTupleBD(string nomTable, string nomColonnes, vector<string> champs
         return CreateTrame(vector<string>{typeRequete, "ko", "Erreur de connexion a la base de donnees."});
     }
 
-    return CreateTrame(vector<string>{typeRequete, "ok", "Ajout reussi."});
+    return CreateTrame(vector<string>{typeRequete, "ko", "Erreur non geree insertion tuple."}); //normalement ne doit pas arriver jusque ici
+}
+
+string CreerCondition(vector<string> nomColonnes, vector<string> champs)
+{
+    string condition;
+
+    for (size_t i = 0; i < nomColonnes.size(); i++) {
+        condition += nomColonnes[i] + " = '" + champs[i] + "'";
+
+        // Ajouter un " AND " sauf pour le dernier élément
+        if (i < nomColonnes.size() - 1) {
+            condition += " AND ";
+        }
+    }
+
+    return condition;
+}
+
+
+
+// --------------------------------------------------------------------------------------- //
+// ---------------------------------------- GET_x ---------------------------------------- //
+// --------------------------------------------------------------------------------------- //
+
+string GetAuteursS(vector<string> champs)
+{ 
+    string typeRequete = "GET_AUTHORS";
+    string nomTable = "books";
+
+    return GetTuplesBD(nomTable, typeRequete);
+}
+
+string GetSujetsS(vector<string> champs)
+{ 
+    string typeRequete = "GET_SUBJECTS";
+    string nomTable = "books";
+
+    return GetTuplesBD(nomTable, typeRequete);
+}
+
+// string GetLivresS(vector<string> champs)
+// { 
+//     string typeRequete = "GET_BOOKS";
+//     string nomTable = "books";
+
+//     return GetTuplesBD(nomTable, typeRequete);
+// }
+
+
+string GetTuplesBD(string nomTable, string typeRequete)
+{
+    vector<string> trameRetour, tuples;
+
+    if(ConnexionBD() == 1) {
+        //printf("Connexion etablie !\n");
+
+        tuples = GetAllFromTable(nomTable.c_str());
+        DeconnexionBD();
+
+        trameRetour.push_back(typeRequete);
+        trameRetour.push_back("ok");
+        trameRetour.push_back("Tous les tuples bien recuperes.");
+
+        trameRetour.insert(trameRetour.end(), tuples.begin(), tuples.end());
+
+        return CreateTrame(trameRetour);
+    }
+    else {
+        return CreateTrame(vector<string>{typeRequete, "ko", "Erreur de connexion a la base de donnees."});
+    }
+
+    return CreateTrame(vector<string>{typeRequete, "ko", "Erreur non geree GET_x."}); //normalement ne doit pas arriver jusque ici
 }

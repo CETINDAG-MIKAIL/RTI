@@ -56,8 +56,12 @@ int main() {
 			printf("ERREUR : Insertion echouee.\n");
 
 
-		printf("\nAffichage de tous les authors :\n");
-		printf("%s", getAuthors());
+		printf("\nAffichage de tous les authors :");
+		GetAllFromTable("authors");
+
+
+		printf("\n\n\nAffichage de tous les employees :");
+		GetAllFromTable("employees");
 
 
 		if(DeconnexionBD() == 1)

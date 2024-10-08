@@ -36,7 +36,8 @@ int DeconnexionBD() {
 }
 
 
-int InsererTuple(const char* table, const  char* colonnes, const  char* valeurs) {
+int InsererTuple(const char* table, const char* colonnes, const char* valeurs) 
+{
 	int longeur = strlen(table) + strlen(colonnes) + strlen(valeurs) + 30;
 	char* requete = (char*)malloc(longeur * sizeof(char));
 
@@ -93,15 +94,19 @@ int SupprimerTuple(char* table, char* condition)
 
 
 
-string getAllFromTable(char* table) {
+vector<string> GetAllFromTable(const char* table) 
+{
+	vector<string> tuples;
 	int longeur = strlen(table) + 30;
 	char* requete = (char*)malloc(longeur * sizeof(char));
 
 	sprintf(requete, "SELECT * FROM %s", table);
 
+	printf("\n\n------debut de getAllFromTable-----requete = %s\n", requete);
+
 	if (mysql_query(connexion,requete) != 0) {
 		free(requete);
-		return "-1";
+		return vector<string>{};
 	}
 
 	// Affichage du Result Set
@@ -109,26 +114,30 @@ string getAllFromTable(char* table) {
 	
 	if ((ResultSet = mysql_store_result(connexion)) == NULL)
 	{
-		return "-1";
+		return vector<string>{};
 	}
 	
 	MYSQL_ROW ligne;
 	int nbChamps = mysql_num_fields(ResultSet);
 	
-	printf("-------getAllFromTable--Affichage des lignes :\n");
+	printf("-------getAllFromTable--Affichage des (nbChamps = %d) lignes :\n", nbChamps);
 
 	while ((ligne = mysql_fetch_row(ResultSet)) != NULL)
 	{
-		for(int i=0; i<nbChamps ; i++)
+		for(int i=0; i<nbChamps ; i++) {
 			printf("%10s\t", ligne[i]);
+			tuples.push_back(ligne[i]);
+		}
 		
 		printf("\n");
 	}
 
-	return "OK";
+	printf("------fin de getAllFromTable-----\n\n");
+
+	return tuples;
 }
 
-vector<string> getTuple(const char* table, const char* condition)
+vector<string> GetTuple(const char* table, const char* condition)
 {
     int longueur = strlen(table) + strlen(condition) + 40;  // Espace supp pour "SELECT * FROM et WHERE"
     char* requete = (char*)malloc(longueur * sizeof(char));
