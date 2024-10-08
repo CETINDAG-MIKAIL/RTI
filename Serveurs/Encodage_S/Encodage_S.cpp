@@ -250,8 +250,41 @@ bool VerifierLogin(string user, string password)
 string AjoutAuteurS(vector<string> champs) // le premier champ du vector champs est le nom de la requête, donc ADD_AUTHOR
 {
     string valeurs;
+    string typeRequete = "ADD_AUTHOR";
     string nomTable = "authors"; // Ajout de la déclaration
     string nomColonnes = "last_name, first_name, birth_date"; // Ajout de la déclaration
+
+    return ajouterTupleBD(nomTable, nomColonnes, champs, typeRequete);
+}
+
+
+
+string AjoutSujetS(vector<string> champs)
+{
+    string valeurs;
+    string typeRequete = "ADD_SUBJECT";
+    string nomTable = "subjects";
+    string nomColonnes = "name";
+
+    return ajouterTupleBD(nomTable, nomColonnes, champs, typeRequete);
+}
+
+
+
+string AjoutLivreS(vector<string> champs)
+{
+    string valeurs;
+    string typeRequete = "ADD_BOOK";
+    string nomTable = "books";
+    string nomColonnes = "author_id, subject_id, title, isbn, page_count, stock_quantity, price, publish_year INT";
+
+
+    return ajouterTupleBD(nomTable, nomColonnes, champs, typeRequete);
+}
+
+string ajouterTupleBD(string nomTable, string nomColonnes, vector<string> champs, string typeRequete)
+{
+    string valeurs;
 
     if(ConnexionBD() == 1) {
         printf("Connexion etablie !\n");
@@ -259,7 +292,7 @@ string AjoutAuteurS(vector<string> champs) // le premier champ du vector champs 
 
         if(champs.size() <= 1) {
             DeconnexionBD();
-            return CreateTrame(vector<string>{"ADD_AUTHOR", "ko", "Champs insuffisants !"});
+            return CreateTrame(vector<string>{typeRequete, "ko", "Champs insuffisants !"});
         }
 
         valeurs += "\"" + champs[1];
@@ -274,17 +307,17 @@ string AjoutAuteurS(vector<string> champs) // le premier champ du vector champs 
         cout << "------valeurs = " << valeurs << endl;
 
 
-        if(InsererTuple("authors", "last_name, first_name, birth_date", valeurs.c_str()) == 1) {
+        if(InsererTuple(nomTable.c_str(), nomColonnes.c_str(), valeurs.c_str()) == 1) {
             DeconnexionBD();
-            return CreateTrame(vector<string>{"ADD_AUTHOR", "ok", "Tuple bien insere."});
+            return CreateTrame(vector<string>{typeRequete, "ok", "Tuple bien insere."});
         } else {
             DeconnexionBD();
-            return CreateTrame(vector<string>{"ADD_AUTHOR", "ko", "Erreur insertion tuple."});
+            return CreateTrame(vector<string>{typeRequete, "ko", "Erreur insertion tuple."});
         }
     }
     else {
-        return CreateTrame(vector<string>{"ADD_AUTHOR", "ko", "Erreur de connexion a la base de donnees."});
+        return CreateTrame(vector<string>{typeRequete, "ko", "Erreur de connexion a la base de donnees."});
     }
 
-    return CreateTrame(vector<string>{"ADD_AUTHOR", "ok", "Ajout reussi."});
+    return CreateTrame(vector<string>{typeRequete, "ok", "Ajout reussi."});
 }

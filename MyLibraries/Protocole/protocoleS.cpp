@@ -73,7 +73,7 @@ string PROTOCOLE(int socket, string requete)
     {
         printf("\t[THREAD %p] LOGOUT\n",pthread_self());
         retire(socket);
-        return CreateTrame(vector<string>{"LOGOUT", "ok"});
+        return CreateTrame(vector<string>{"LOGOUT", "ok", "Deconnexion reussie."});
     }
 
     // ***** GET Author **********************************
@@ -120,7 +120,32 @@ string PROTOCOLE(int socket, string requete)
             return AjoutAuteurS(ReadTrame(requete));
         }
     }
-    return "";
+
+    // ***** Ajout Subject **********************************
+    if (typeRequete == "ADD_SUBJECT")
+    {   
+        if (estPresent(socket) == -1) {
+            return CreateTrame(vector<string>{"ADD_SUBJECT", "ko", "Client non logge !"});
+        }
+        else
+        {
+            return AjoutSujetS(ReadTrame(requete));
+        }
+    }
+
+    // ***** Ajout Book **********************************
+    if (typeRequete == "ADD_BOOK")
+    {   
+        if (estPresent(socket) == -1) {
+            return CreateTrame(vector<string>{"ADD_BOOK", "ko", "Client non logge !"});
+        }
+        else
+        {
+            return AjoutLivreS(ReadTrame(requete));
+        }
+    }
+
+    return CreateTrame(vector<string>{"ko", "Aucun type de requete !"});
 }
 
 
