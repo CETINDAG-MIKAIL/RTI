@@ -135,33 +135,34 @@ vector<string> GetTuple(const char* table, const char* condition)
 
     if (connexion == NULL) {
  	   	printf("Erreur : connexion MySQL non initialisée.\n");
+printf("\n-----GetTuple #### 1 ####\n\n");/////////////////////////////////////////////////
     	return {};
 	}
 
 
 	if (requete == NULL) {
     	printf("Erreur : allocation mémoire échouée.\n");
+printf("\n-----GetTuple #### 2 ####\n\n");/////////////////////////////////////////////////
     	return {};
 	}
 
 
-printf("-----GetTuple #### 1 ####\n");/////////////////////////////////////////////////
     if (mysql_query(connexion, requete) != 0) {
-printf("-----GetTuple #### 2 ####\n");/////////////////////////////////////////////////
         free(requete);
-printf("-----GetTuple #### 3 ####\n");/////////////////////////////////////////////////
+printf("\n-----GetTuple #### 3 ####\n\n");/////////////////////////////////////////////////
+printf("Erreur MySQL : %s\n", mysql_error(connexion));
         return {};
     }
-    printf("-----GetTuple #### 4 ####\n");/////////////////////////////////////////////////
     free(requete);
 
     MYSQL_RES* ResultSet = mysql_store_result(connexion);
     if (ResultSet == NULL) {
+    printf("\n-----GetTuple #### 4 ####\n\n");/////////////////////////////////////////////////
         return {};
     }
-
+    printf("\n-----GetTuple #### 5 ####\n\n");/////////////////////////////////////////////////
     // Traitement des résultats
-    std::vector<std::string> tuples;
+    vector<string> tuples;
     MYSQL_ROW ligne;
     int nbChamps = mysql_num_fields(ResultSet);
 
@@ -176,6 +177,11 @@ printf("-----GetTuple #### 3 ####\n");//////////////////////////////////////////
     }
 
     mysql_free_result(ResultSet);
+
+
+     for (const string& tuple : tuples) {
+        cout << tuple << endl;
+    }
 
     return tuples;
 }
