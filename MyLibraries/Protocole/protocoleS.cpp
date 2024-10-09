@@ -28,10 +28,6 @@ string PROTOCOLE(int socket, string requete)
 
     requeteVec = ReadTrame(requete);
 
-    for (size_t i = 0; i < requeteVec.size(); i++) {
-        std::cout << "Element " << i << ": " << requeteVec[i] << std::endl;
-    }
-
     // ***** Récupération nom de la requete *****************
     if (requeteVec.size() == 0) 
     {

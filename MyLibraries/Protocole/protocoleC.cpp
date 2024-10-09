@@ -11,9 +11,10 @@ using namespace std;
 #include "protocoleC.h"
 #include "TCP.h"
 #include "protocole.h"
+#include <algorithm>
 
 
-string AjouterAuteur(string lastName, string firstName, string birthDate, int sClient)
+vector<string> AjouterAuteur(string lastName, string firstName, string birthDate, int sClient)
 {
 	vector<string> champs;
 	string RecuServeur;
@@ -22,32 +23,8 @@ string AjouterAuteur(string lastName, string firstName, string birthDate, int sC
 	champs.push_back(firstName);
 	champs.push_back(birthDate);
 
-	string trame = CreateTrame(champs);
-
-	cout << "ajouterAuteur------1 tramea envoyer au serveur = " << trame << endl;
-
-	// Le code suivant a été fait rapidement, à vérifier !
-	// ici on va recevoir la trame en string
-	// envoie au protocole Serveur (avec Send dans TCP.cpp)
-	if(Send(sClient, trame) == -1){
-		printf("Erreur send (ProtocoleC)\n");
-		return "ko";
-	}
-
-	printf("ajouterAuteur------2-----\n");
-
-	if(Receive(sClient).empty()) // on attend la reponse du serveur qui a fait un send 1donc on recoit 0#AjoutAuteur#2ok#12clientlogge
-	{
-		printf("Erreur receive (ProtocoleC)\n");
-		return RecuServeur;
-	}
-	else
-	{
-		RecuServeur = Receive(sClient);
-	}
-	printf("ajouterAuteur------3-----\n");
 	
-	return RecuServeur;
+	return ReponseAQT(sClient, champs);
 }
 
 vector<string> Login(string login, string password, int sClient)
@@ -79,7 +56,9 @@ vector<string> AjouterSujet(string name, int sClient)
 }
 vector<string> AjouterLivre(vector<string> VecLivre, int sClient)
 {
-	vector<string> champs;
+    	replace(VecLivre[6].begin(), VecLivre[6].end(), ',', '.');  // Remplace la virgule par un point 
+
+    	vector<string> champs;
 	champs.push_back("ADD_BOOK");
 	
 	for (int i = 0; i < VecLivre.size(); i++)
@@ -145,15 +124,14 @@ vector<string> GetAuteur(int sClient)
 	string nomPrenom;
 								// -> ici VecRecu[2] équivaut au champ position 3 donc : "Auteur deja existant !"
 	
-	for (size_t i = 3; i < VecRecu.size(); i=i+4) {
+	for (size_t i = 4; i < VecRecu.size(); i=i+4) {
 		
-		nomPrenom = VecRecu[i+1] + ", " + VecRecu[i+2];
-		EnvoyerQT.push_back(VecRecu[i]);
+		nomPrenom = VecRecu[i] + ", " + VecRecu[i+1];
 		EnvoyerQT.push_back(nomPrenom);
 
         cout << "VecRecu " << i << ": " << VecRecu[i] <<  endl;
 //		EnvoyerQT.push_back(VecRecu[i+1]);		// 10GET_SUB#11#18mikail#22mozdalzbda"	
-        cout << "VecRecu " << i+1 << ": " << VecRecu[i+1] <<  endl;
+        cout << "nomPrenom " << i << ": " << nomPrenom <<  endl;
 	}
 	
 	return EnvoyerQT;
@@ -188,10 +166,6 @@ vector<string> ReponseAQT(int sClient, vector<string> champs)
 
 		return EnvoyerQT;
 	}
-
-
-
-
 	EnvoyerQT.push_back("ok");
 	EnvoyerQT.push_back(VecRecu[2]);		// 10ADD_AUTHOR#2ko#18Auteur deja existant !"	
 								// -> ici VecRecu[2] équivaut au champ position 3 donc : "Auteur deja existant !"

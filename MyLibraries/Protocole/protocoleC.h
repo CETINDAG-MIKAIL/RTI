@@ -5,7 +5,7 @@
 
 using namespace std;
 
-string AjouterAuteur(string lastName, string firstName, string birthDate, int sClient);
+vector<string> AjouterAuteur(string lastName, string firstName, string birthDate, int sClient);
 vector<string> AjouterLivre(vector<string> VecLivre, int sClient);
 vector<string> AjouterSujet(string lastName, int sClient);
 

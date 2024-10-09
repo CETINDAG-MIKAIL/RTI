@@ -38,38 +38,20 @@ MainWindowClientBookEncoder::MainWindowClientBookEncoder(QWidget *parent)
 
     this->logoutOk();
 
-    // Exemples d'utilisation (à supprimer)
-    this->addTupleTableBooks(1,"Les Thanatonautes","Bernard Werber","Science-Fiction","978-2253139225",505,1999,9.7f,3);
-    this->addTupleTableBooks(6,"Dune","Frank Herbert","Science-Fiction","978-2266320481",929,2021,11.95f,13);
-    this->addTupleTableBooks(13,"Le silence des agneaux","Thomas Harris","Thriller","978-2266208949",377,2015,7.7f,17);
-
-    this->addComboBoxAuthors("Bernard Werber");
-    this->addComboBoxAuthors("Dan Brown");
-
-    this->addComboBoxSubjects("Roman");
-    this->addComboBoxSubjects("Science-fiction");
-
-
-    clearComboBoxAuthors();
-    clearComboBoxSubjects();
-   
-
 
     int portServeur = GetSettingInt("../config.txt", "PORT_ENCODING");
 
+    string ipServ = GetSettingString("../config.txt", "IP_ENCODING");
+    char ipServeur[30];
+    strcpy(ipServeur, ipServ.c_str());      // transformer de string en char*
 
-    printf("-----**************$ port serveur = %d\n\n", portServeur);
-
-    char ipServeur[30] = {"localhost"};
-
-    // Connexion sur le serveur  
-    if ((sClient = ClientSocket((char *)"localhost", portServeur)) == -1) 
+    // Connexion sur le serveur
+    if ((sClient = ClientSocket(ipServeur, portServeur)) == -1) 
     { 
         perror("Erreur de ClientSocket"); 
         exit(1); 
     } 
     printf("Connecte sur le serveur.\n");
-
 
 }
 
@@ -267,17 +249,22 @@ void MainWindowClientBookEncoder::on_pushButtonAddAuthor_clicked() {
     cout << "Prénom : " << firstName << endl;
     cout << "Date de naissance : " << birthDate << endl;
     
-    string reponse = AjouterAuteur(lastName, firstName, birthDate, sClient);
-    dialogMessage("Ajout auteur",reponse);//6le message
+    vector<string> reponse = AjouterAuteur(lastName, firstName, birthDate, sClient);
+
+    dialogMessage("Ajout auteur",reponse[1]);//6le message
+
     vector<string> VecAuteur;
-    addComboBoxSubjects(lastName);
+
+
+    clearComboBoxAuthors();
+
     VecAuteur = GetAuteur(sClient);
-    for (int i = 0; i < VecAuteur.size(); ++i)
+
+    for (int i = 0; i < VecAuteur.size(); i++)
     {
         cout << "VecAuteur[i]" <<VecAuteur[i] << endl;
-        addComboBoxSubjects(VecAuteur[i]);
+        addComboBoxAuthors(VecAuteur[i]);
     }
-    // GetAuteur(sClient); //1#15#lukas1#26#mikail 
 }
     
 
@@ -288,9 +275,10 @@ void MainWindowClientBookEncoder::on_pushButtonAddSubject_clicked() {
     vector<string> reponse =  AjouterSujet(name, sClient);
     dialogMessage("Ajout sujet",reponse[1]);
     vector<string> VecSujet;
-    addComboBoxSubjects(name);
+    clearComboBoxSubjects();
+
     VecSujet = GetSubjects(sClient);
-    for (int i = 0; i < VecSujet.size(); ++i)
+    for (int i = 0; i < VecSujet.size(); i++)
     {
         addComboBoxSubjects(VecSujet[i]);
     }
@@ -325,12 +313,12 @@ void MainWindowClientBookEncoder::on_pushButtonAddBook_clicked() {
         cout << "reponse" << reponse[i] << endl;
     }
 
-    if(reponse[1] == "ok"){
-        dialogMessage("Ajouter Livre",reponse[2]);
-        addTupleTableBooks(stoi(reponse[3]), getSelectionAuthor(), getSelectionSubject(), getTitle(), getIsbn(), getPageCount(),getStockQuantity(), getPrice(), getPublishYear());
+    if(reponse[0] == "ok"){
+        dialogMessage("Ajouter Livre",reponse[1]);
+        addTupleTableBooks(stoi(reponse[2]), getTitle(), getSelectionAuthor(), getSelectionSubject(), getIsbn(), getPageCount(), getPublishYear(), getPrice(), getStockQuantity());
     }
     else
-        dialogError("Ajouter Livre",reponse[2]);
+        dialogError("Ajouter Livre",reponse[1]);
  
 
 }
@@ -362,15 +350,17 @@ void MainWindowClientBookEncoder::on_actionLogin_triggered() {
         dialogMessage("Login",reponse[1]);
         vector<string> VecSujet;
         vector<string> VecAuteur;
-
+        clearComboBoxAuthors();
+        clearComboBoxSubjects();
+        
         VecSujet = GetSubjects(sClient);
         VecAuteur = GetAuteur(sClient);
 
-        for (int i = 0; i < VecSujet.size(); ++i)
+        for (int i = 0; i < VecSujet.size(); i++)
         {
             addComboBoxSubjects(VecSujet[i]);
         }
-        for (int i = 1; i < VecAuteur.size(); i = i+2)
+        for (int i = 0; i < VecAuteur.size(); i++)
         {
             addComboBoxAuthors(VecAuteur[i]); 
         }

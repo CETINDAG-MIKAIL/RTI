@@ -20,13 +20,10 @@ int GetSettingInt(string nomFichier, string nomParam)
 	ifstream configFile(nomFichier);
 	if (configFile.is_open()) {
 
-         while (getline(configFile, line)) {
+         while (getline(configFile, line)) 
+         {
             if (line.find(nomParam + "=") == 0) {
-                printf("-----**************$ nomParam.length() = %d\n\n", nomParam.length());
-                cout << "))))))))" <<  line.substr(nomParam.length()+1).c_str() << endl;
-
                 setting = atoi(line.substr(nomParam.length()+1).c_str());      // Extraire la valeur du paramètre
-                printf("-----**************$ setting = %d\n\n", setting);
             } 
         }
 
@@ -49,10 +46,10 @@ string GetSettingString(string nomFichier, string nomParam)
 
 	if (configFile.is_open()) {
 
-        while (getline(configFile, line)) {
-
+        while (getline(configFile, line)) 
+        {
             if (line.find(nomParam + "=") == 0) {
-                setting = line.substr(nomParam.length());      // Extraire la valeur du paramètre
+                setting = line.substr(nomParam.length() + 1);      // Extraire la valeur du paramètre
             }
         }
 

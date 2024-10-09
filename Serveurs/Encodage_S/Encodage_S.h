@@ -12,6 +12,7 @@ string AjoutAuteurS(vector<string> champs);
 string AjoutSujetS(vector<string> champs);
 string AjoutLivreS(vector<string> champs);
 string AjouterTupleBD(string nomTable, vector<string> nomColonnes, vector<string> champs, string typeRequete);
+string AjouterTupleRetourneIdBD(string nomTable, vector<string> nomColonnes, vector<string> champs, string typeRequete);
 string CreerCondition(vector<string> nomColonnes, vector<string> champs);
 
 string GetAuteursS(vector<string> champs);

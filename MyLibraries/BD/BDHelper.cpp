@@ -23,6 +23,8 @@ int ConnexionBD()
 	{
 		return -1;
 	}
+
+	printf("Connexion etablie !\n");
 	return 1;
 }
 
@@ -43,12 +45,34 @@ int InsererTuple(const char* table, const char* colonnes, const char* valeurs)
 
 	sprintf(requete, "INSERT INTO %s (%s) VALUES (%s)", table, colonnes, valeurs);
 
+	//printf("\n-------INSERER-TUPLE = %s\n\n", requete);
+
 	if (mysql_query(connexion,requete) != 0) {
 		free(requete);
 		return -1;
 	}
 	free(requete);
 	return 1;		// requête exécutée avec succès
+}
+
+
+int InsererTupleRetourneId(const char* table, const char* colonnes, const char* valeurs) 
+{
+	int longeur = strlen(table) + strlen(colonnes) + strlen(valeurs) + 30;
+	char* requete = (char*)malloc(longeur * sizeof(char));
+	int id = -1;
+
+	sprintf(requete, "INSERT INTO %s (%s) VALUES (%s)", table, colonnes, valeurs);
+
+	//printf("\n-------INSERER-TUPLE = %s\n\n", requete);///////////////////////////
+
+    if (mysql_query(connexion, requete) != 0) {
+        free(requete);
+        return -1;
+    }
+
+    // retourner l'ID de l'insertion
+    return mysql_insert_id(connexion);
 }
 
 
@@ -130,37 +154,20 @@ vector<string> GetTuple(const char* table, const char* condition)
 
     sprintf(requete, "SELECT * FROM %s WHERE %s", table, condition);
 
-    printf("-----GetTuple, requete = %s\n", requete);////////////////////////////////
-
-
-    if (connexion == NULL) {
- 	   	printf("Erreur : connexion MySQL non initialisée.\n");
-printf("\n-----GetTuple #### 1 ####\n\n");/////////////////////////////////////////////////
-    	return {};
-	}
-
-
-	if (requete == NULL) {
-    	printf("Erreur : allocation mémoire échouée.\n");
-printf("\n-----GetTuple #### 2 ####\n\n");/////////////////////////////////////////////////
-    	return {};
-	}
+    //printf("-----GetTuple, requete = %s\n", requete);////////////////////////////////
 
 
     if (mysql_query(connexion, requete) != 0) {
         free(requete);
-printf("\n-----GetTuple #### 3 ####\n\n");/////////////////////////////////////////////////
-printf("Erreur MySQL : %s\n", mysql_error(connexion));
         return {};
     }
     free(requete);
 
     MYSQL_RES* ResultSet = mysql_store_result(connexion);
     if (ResultSet == NULL) {
-    printf("\n-----GetTuple #### 4 ####\n\n");/////////////////////////////////////////////////
         return {};
     }
-    printf("\n-----GetTuple #### 5 ####\n\n");/////////////////////////////////////////////////
+
     // Traitement des résultats
     vector<string> tuples;
     MYSQL_ROW ligne;
@@ -177,11 +184,6 @@ printf("Erreur MySQL : %s\n", mysql_error(connexion));
     }
 
     mysql_free_result(ResultSet);
-
-
-     for (const string& tuple : tuples) {
-        cout << tuple << endl;
-    }
 
     return tuples;
 }
