@@ -398,7 +398,7 @@ string CreerCondition(vector<string> nomColonnes, vector<string> champs)
 string GetAuteursS(vector<string> champs)
 { 
     string typeRequete = "GET_AUTHORS";
-    string nomTable = "books";
+    string nomTable = "authors";
 
     return GetTuplesBD(nomTable, typeRequete);
 }

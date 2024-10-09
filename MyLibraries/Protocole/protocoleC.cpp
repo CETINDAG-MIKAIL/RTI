@@ -150,13 +150,18 @@ vector<string> GetAuteur(int sClient)
 
 	trame = Receive(sClient);
 	VecRecu = ReadTrame(trame);
-
+	string nomPrenom;
 								// -> ici VecRecu[2] équivaut au champ position 3 donc : "Auteur deja existant !"
 	
-	for (size_t i = 4; i < VecRecu.size(); i=i+2) {
-	        cout << "VecRecu " << i << ": " << VecRecu[i] <<  endl;
-			EnvoyerQT.push_back(VecRecu[i]);		// 10GET_SUB#11#18mikail#22mozdalzbda"	
+	for (size_t i = 3; i < VecRecu.size(); i=i+4) {
+		
+		nomPrenom = VecRecu[i+1] + " " + VecRecu[i+2];
+		EnvoyerQT.push_back(VecRecu[i]);
+		EnvoyerQT.push_back(nomPrenom);
 
+        cout << "VecRecu " << i << ": " << VecRecu[i] <<  endl;
+//		EnvoyerQT.push_back(VecRecu[i+1]);		// 10GET_SUB#11#18mikail#22mozdalzbda"	
+        cout << "VecRecu " << i+1 << ": " << VecRecu[i+1] <<  endl;
 	}
 	
 	return EnvoyerQT;

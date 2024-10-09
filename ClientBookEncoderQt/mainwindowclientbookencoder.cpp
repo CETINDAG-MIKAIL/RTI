@@ -269,12 +269,13 @@ void MainWindowClientBookEncoder::on_pushButtonAddAuthor_clicked() {
     
     string reponse = AjouterAuteur(lastName, firstName, birthDate, sClient);
     dialogMessage("Ajout auteur",reponse);//6le message
-    vector<string> VecSujet;
+    vector<string> VecAuteur;
     addComboBoxSubjects(lastName);
-    VecSujet = GetAuteur(sClient);
-    for (int i = 0; i < VecSujet.size(); ++i)
+    VecAuteur = GetAuteur(sClient);
+    for (int i = 0; i < VecAuteur.size(); ++i)
     {
-        addComboBoxSubjects(VecSujet[i]);
+        cout << "VecAuteur[i]" <<VecAuteur[i] << endl;
+        addComboBoxSubjects(VecAuteur[i]);
     }
     // GetAuteur(sClient); //1#15#lukas1#26#mikail 
 }
@@ -372,9 +373,9 @@ void MainWindowClientBookEncoder::on_actionLogin_triggered() {
         {
             addComboBoxSubjects(VecSujet[i]);
         }
-        for (int i = 0; i < VecAuteur.size(); ++i)
+        for (int i = 1; i < VecAuteur.size(); i = i+2)
         {
-            addComboBoxSubjects(VecAuteur[i]);
+            addComboBoxAuthors(VecAuteur[i]); 
         }
 
         this->loginOk();

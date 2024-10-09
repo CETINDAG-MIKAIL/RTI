@@ -97,6 +97,15 @@ BOOK books[] = {
 };
 int nbBooks = 13;
 
+// Ajouté : ------------------------------------------
+EMPLOYEES employees[] = {
+  {-1,"luca", "azerty"},                  // id = 1
+  {-1,"aa", "bb"},                        // id = 2
+  {-1,"bb", "cc"}                         // id = 3
+};
+int nbEmployees = 3;
+// ---------------------------------------------------
+
 void finish_with_error(MYSQL *con);
 
 int main(int argc,char *argv[])
@@ -105,6 +114,18 @@ int main(int argc,char *argv[])
   printf("Connection a la BD...\n");
   MYSQL* connexion = mysql_init(NULL);
   mysql_real_connect(connexion,"localhost","Student","PassStudent1_","PourStudent",0,0,0);
+
+  // Ajouté : ------------------------------------------
+  // Supprimer la table caddy_items si elle existe déjà
+  if (mysql_query(connexion, "DROP TABLE IF EXISTS caddy_items;")) {
+    finish_with_error(connexion);
+  }
+
+  // Supprimer la table caddies si elle existe déjà
+  if (mysql_query(connexion, "DROP TABLE IF EXISTS caddies;")) {
+    finish_with_error(connexion);
+  }
+  // ---------------------------------------------------
 
   // Supprimer la table books si elle existe déjà
   if (mysql_query(connexion, "DROP TABLE IF EXISTS books;")) {
@@ -130,16 +151,6 @@ int main(int argc,char *argv[])
 
   // Supprimer la table clients si elle existe déjà
   if (mysql_query(connexion, "DROP TABLE IF EXISTS clients;")) {
-    finish_with_error(connexion);
-  }
-
-  // Supprimer la table caddies si elle existe déjà
-  if (mysql_query(connexion, "DROP TABLE IF EXISTS caddies;")) {
-    finish_with_error(connexion);
-  }
-
-  // Supprimer la table caddy_items si elle existe déjà
-  if (mysql_query(connexion, "DROP TABLE IF EXISTS caddy_items;")) {
     finish_with_error(connexion);
   }
   // ---------------------------------------------------
@@ -259,6 +270,17 @@ int main(int argc,char *argv[])
       finish_with_error(connexion);   
     }
   }
+
+// Ajouté : ------------------------------------------
+  // Ajout de tuples dans la table employees
+  printf("Ajout de %d employes la table employees...\n", nbEmployees);
+  for (int i=0 ; i < nbEmployees ; i++) {
+    sprintf(request,"insert into employees values (NULL,'%s', '%s');",employees[i].login, employees[i].password);
+    if (mysql_query(connexion,request)) {
+      finish_with_error(connexion);   
+    }
+  }
+// ---------------------------------------------------
 
   // Deconnection de la BD
   mysql_close(connexion);
