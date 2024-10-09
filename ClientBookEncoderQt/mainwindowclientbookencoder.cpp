@@ -326,14 +326,11 @@ void MainWindowClientBookEncoder::on_pushButtonAddBook_clicked() {
     }
 
     if(reponse[1] == "ok"){
-        dialogMessage("Ajouter Livre",reponse[1]);
-        // addTupleTableBooks
-        clearTableBooks();
-
+        dialogMessage("Ajouter Livre",reponse[2]);
+        addTupleTableBooks(stoi(reponse[3]), getSelectionAuthor(), getSelectionSubject(), getTitle(), getIsbn(), getPageCount(),getStockQuantity(), getPrice(), getPublishYear());
     }
-
     else
-        dialogError("Ajouter Livre",reponse[1]);
+        dialogError("Ajouter Livre",reponse[2]);
  
 
 }
@@ -395,8 +392,8 @@ void MainWindowClientBookEncoder::on_actionLogout_triggered() {
     }
     else
         dialogError("Logout",reponse[1]);
-
     this->logoutOk();
+    clearTableBooks();
 }
 
 void MainWindowClientBookEncoder::on_actionQuitter_triggered(){

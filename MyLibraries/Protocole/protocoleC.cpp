@@ -119,14 +119,6 @@ vector<string> GetSubjects(int sClient)
 	for (size_t i = 4; i < VecRecu.size(); i=i+2) {
 	        cout << "VecRecu " << i << ": " << VecRecu[i] <<  endl;
 			EnvoyerQT.push_back(VecRecu[i]);		// 10GET_SUB#11#18mikail#22mozdalzbda"	
-/*
-VecRecu 2: Tous les tuples bien recuperes.
-VecRecu 3: 1
-VecRecu 4: Science-Fiction
-VecRecu 5: 2
-VecRecu 6: Thriller
-VecRecu 7: 3
-VecRecu 8: Informatiqu*/
 	}
 	
 	return EnvoyerQT;
@@ -155,7 +147,7 @@ vector<string> GetAuteur(int sClient)
 	
 	for (size_t i = 3; i < VecRecu.size(); i=i+4) {
 		
-		nomPrenom = VecRecu[i+1] + " " + VecRecu[i+2];
+		nomPrenom = VecRecu[i+1] + ", " + VecRecu[i+2];
 		EnvoyerQT.push_back(VecRecu[i]);
 		EnvoyerQT.push_back(nomPrenom);
 
@@ -204,6 +196,10 @@ vector<string> ReponseAQT(int sClient, vector<string> champs)
 	EnvoyerQT.push_back(VecRecu[2]);		// 10ADD_AUTHOR#2ko#18Auteur deja existant !"	
 								// -> ici VecRecu[2] équivaut au champ position 3 donc : "Auteur deja existant !"
 	
+	// CAS ajouter livre on met l'id du livre apres le message de reponse du serveur 
+	if(VecRecu[0] == "ADD_BOOK")
+		EnvoyerQT.push_back(VecRecu[3]);
+
 	for (size_t i = 0; i < VecRecu.size(); i++) {
 	        cout << "VecRecu " << i << ": " << VecRecu[i] <<  endl;
 	}

@@ -22,13 +22,13 @@ string
 string.h
 -
 
-/home/student/Documents/RTI/RTI/ClientBookEncoderQt/mainwindowclientbookencoder.cpp
+/home/student/Documents/Bac3/RTI/ClientBookEncoderQt/mainwindowclientbookencoder.cpp
 mainwindowclientbookencoder.h
-/home/student/Documents/RTI/RTI/ClientBookEncoderQt/mainwindowclientbookencoder.h
+/home/student/Documents/Bac3/RTI/ClientBookEncoderQt/mainwindowclientbookencoder.h
 ui_mainwindowclientbookencoder.h
-/home/student/Documents/RTI/RTI/ClientBookEncoderQt/ui_mainwindowclientbookencoder.h
+/home/student/Documents/Bac3/RTI/ClientBookEncoderQt/ui_mainwindowclientbookencoder.h
 unistd.h
-/home/student/Documents/RTI/RTI/ClientBookEncoderQt/unistd.h
+/home/student/Documents/Bac3/RTI/ClientBookEncoderQt/unistd.h
 QInputDialog
 -
 QMessageBox
@@ -36,21 +36,21 @@ QMessageBox
 iostream
 -
 protocoleC.h
-/home/student/Documents/RTI/RTI/ClientBookEncoderQt/protocoleC.h
+/home/student/Documents/Bac3/RTI/ClientBookEncoderQt/protocoleC.h
 protocole.h
-/home/student/Documents/RTI/RTI/ClientBookEncoderQt/protocole.h
+/home/student/Documents/Bac3/RTI/ClientBookEncoderQt/protocole.h
 TCP.h
-/home/student/Documents/RTI/RTI/ClientBookEncoderQt/TCP.h
+/home/student/Documents/Bac3/RTI/ClientBookEncoderQt/TCP.h
 FileHelper.h
-/home/student/Documents/RTI/RTI/ClientBookEncoderQt/FileHelper.h
+/home/student/Documents/Bac3/RTI/ClientBookEncoderQt/FileHelper.h
 
-/home/student/Documents/RTI/RTI/ClientBookEncoderQt/mainwindowclientbookencoder.h
+/home/student/Documents/Bac3/RTI/ClientBookEncoderQt/mainwindowclientbookencoder.h
 QMainWindow
 -
 string
 -
 
-/home/student/Documents/RTI/RTI/ClientBookEncoderQt/ui_mainwindowclientbookencoder.h
+/home/student/Documents/Bac3/RTI/ClientBookEncoderQt/ui_mainwindowclientbookencoder.h
 QtCore/QVariant
 -
 QtWidgets/QAction
@@ -84,9 +84,9 @@ QtWidgets/QTableWidget
 QtWidgets/QWidget
 -
 
-/home/student/Documents/RTI/RTI/MyLibraries/Protocole/protocole.h
+/home/student/Documents/Bac3/RTI/MyLibraries/Protocole/protocole.h
 
-/home/student/Documents/RTI/RTI/MyLibraries/Protocole/protocoleC.cpp
+/home/student/Documents/Bac3/RTI/MyLibraries/Protocole/protocoleC.cpp
 stdio.h
 -
 stdlib.h
@@ -102,13 +102,13 @@ string
 vector
 -
 protocoleC.h
-/home/student/Documents/RTI/RTI/MyLibraries/Protocole/protocoleC.h
+/home/student/Documents/Bac3/RTI/MyLibraries/Protocole/protocoleC.h
 TCP.h
-/home/student/Documents/RTI/RTI/MyLibraries/Protocole/TCP.h
+/home/student/Documents/Bac3/RTI/MyLibraries/Protocole/TCP.h
 protocole.h
-/home/student/Documents/RTI/RTI/MyLibraries/Protocole/protocole.h
+/home/student/Documents/Bac3/RTI/MyLibraries/Protocole/protocole.h
 
-/home/student/Documents/RTI/RTI/MyLibraries/Protocole/protocoleC.h
+/home/student/Documents/Bac3/RTI/MyLibraries/Protocole/protocoleC.h
 string
 -
 
