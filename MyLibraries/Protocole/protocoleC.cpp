@@ -65,12 +65,6 @@ vector<string> AjouterLivre(vector<string> VecLivre, int sClient)
 	{
 		champs.push_back(VecLivre[i]);
 	}
-	
-	for (int i = 0; i < VecLivre.size(); i++)
-	{
-		cout << "Element : " <<  champs[i] << endl;
-	}
-
 	return ReponseAQT(sClient, champs);
 }
 vector<string> GetSubjects(int sClient)
@@ -96,7 +90,6 @@ vector<string> GetSubjects(int sClient)
 								// -> ici VecRecu[2] équivaut au champ position 3 donc : "Auteur deja existant !"
 	
 	for (size_t i = 4; i < VecRecu.size(); i=i+2) {
-	        cout << "VecRecu " << i << ": " << VecRecu[i] <<  endl;
 			EnvoyerQT.push_back(VecRecu[i]);		// 10GET_SUB#11#18mikail#22mozdalzbda"	
 	}
 	
@@ -128,10 +121,6 @@ vector<string> GetAuteur(int sClient)
 		
 		nomPrenom = VecRecu[i] + ", " + VecRecu[i+1];
 		EnvoyerQT.push_back(nomPrenom);
-
-        cout << "VecRecu " << i << ": " << VecRecu[i] <<  endl;
-//		EnvoyerQT.push_back(VecRecu[i+1]);		// 10GET_SUB#11#18mikail#22mozdalzbda"	
-        cout << "nomPrenom " << i << ": " << nomPrenom <<  endl;
 	}
 	
 	return EnvoyerQT;
@@ -173,10 +162,5 @@ vector<string> ReponseAQT(int sClient, vector<string> champs)
 	// CAS ajouter livre on met l'id du livre apres le message de reponse du serveur 
 	if(VecRecu[0] == "ADD_BOOK")
 		EnvoyerQT.push_back(VecRecu[3]);
-
-	for (size_t i = 0; i < VecRecu.size(); i++) {
-	        cout << "VecRecu " << i << ": " << VecRecu[i] <<  endl;
-	}
-	
 	return EnvoyerQT;
 }

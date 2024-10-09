@@ -262,7 +262,6 @@ void MainWindowClientBookEncoder::on_pushButtonAddAuthor_clicked() {
 
     for (int i = 0; i < VecAuteur.size(); i++)
     {
-        cout << "VecAuteur[i]" <<VecAuteur[i] << endl;
         addComboBoxAuthors(VecAuteur[i]);
     }
 }
@@ -308,10 +307,6 @@ void MainWindowClientBookEncoder::on_pushButtonAddBook_clicked() {
 
     vector<string> reponse = AjouterLivre(VecLivre, sClient);
     cout << "AjouterLivre" << endl;
-    for (int i = 0; i < reponse.size(); i++)
-    {
-        cout << "reponse" << reponse[i] << endl;
-    }
 
     if(reponse[0] == "ok"){
         dialogMessage("Ajouter Livre",reponse[1]);
@@ -340,11 +335,6 @@ void MainWindowClientBookEncoder::on_actionLogin_triggered() {
     cout << "------ password = " << password << endl;
     
     vector<string> reponse = Login(varLogin, password, sClient);
-    cout << "reponse.size() : " << reponse.size() << endl;
-    for (int i = 0; i < reponse.size(); i++)
-    {
-        cout << "reponse : " <<  reponse[i] << endl;
-    }
     
     if(reponse[0] == "ok"){
         dialogMessage("Login",reponse[1]);

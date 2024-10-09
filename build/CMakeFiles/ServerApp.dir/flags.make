@@ -4,7 +4,7 @@
 # compile CXX with /usr/bin/c++
 CXX_DEFINES = 
 
-CXX_INCLUDES = -I/home/student/Documents/RTI/RTI/MyLibraries/BD -I/home/student/Documents/RTI/RTI/MyLibraries/Protocole -I/home/student/Documents/RTI/RTI/MyLibraries/Socket -I/home/student/Documents/RTI/RTI/MyLibraries/File -I/home/student/Documents/RTI/RTI/Serveurs/Encodage_S -I/usr/include/mysql
+CXX_INCLUDES = -I/home/student/Documents/Bac3/RTI/MyLibraries/BD -I/home/student/Documents/Bac3/RTI/MyLibraries/Protocole -I/home/student/Documents/Bac3/RTI/MyLibraries/Socket -I/home/student/Documents/Bac3/RTI/MyLibraries/File -I/home/student/Documents/Bac3/RTI/Serveurs/Encodage_S -I/usr/include/mysql
 
 CXX_FLAGS = -std=gnu++11
 
