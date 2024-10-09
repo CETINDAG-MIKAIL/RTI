@@ -268,26 +268,34 @@ string AjoutLivreS(vector<string> champs)
     string condition;
 
     // --- author_id ---
-    int endroitEspace = champs[1].find(" ");        // dans champs[1] c'est : "nom prénom" (avec un espace entre les 2)
+    int endroitEspace = champs[1].find(",");        // dans champs[1] c'est : "nom, prénom" (avec une virgule entre les 2)
     string nom = champs[1].substr(0, endroitEspace);
 
-    string prenom = champs[1].substr(endroitEspace + 1);
+    string prenom = champs[1].substr(endroitEspace + 2);    // +2 car pour aller après la virgule et après l'espace
 
-    condition = "last_name = '" + nom + "' AND first_name = '" + prenom + "';";
+    condition = "last_name = '" + nom + "' AND first_name = '" + prenom + "'";
 
-    tuple = GetTuple("authors", condition.c_str());
+    printf("\n----------CONDITION = %s------------\n\n", condition.c_str());
 
-    if(tuple.size() < 1)
-        return CreateTrame(vector<string>{typeRequete, "ko", "Pas d'auteur avec ce nom !"});
-
-    nomColonnes.push_back(tuple[0]);        // le premier champ c'est l'id et le second est le nom de l'auteur
+    if(ConnexionBD() == 1) {
+        tuple = GetTuple("authors", condition.c_str());
 
 
+        if(tuple.size() < 1)
+            return CreateTrame(vector<string>{typeRequete, "ko", "Pas d'auteur avec ce nom !"});
 
-    // --- subject_id ---
-    condition = "name = '" + champs[2] + "'";
+        nomColonnes.push_back(tuple[0]);        // le premier champ c'est l'id et le second est le nom de l'auteur
 
-    tuple = GetTuple("subjects", condition.c_str());
+
+
+        // --- subject_id ---
+        condition = "name = '" + champs[2] + "'";
+
+        tuple = GetTuple("subjects", condition.c_str());
+        DeconnexionBD();
+    } else {
+        return CreateTrame(vector<string>{typeRequete, "ko", "Erreur de connexion a la base de donnees."});
+    }
 
     if(tuple.size() < 1)
         return CreateTrame(vector<string>{typeRequete, "ko", "Pas de sujet avec ce nom !"});
