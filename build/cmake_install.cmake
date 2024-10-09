@@ -1,4 +1,4 @@
-# Install script for directory: /home/student/Documents/RTI/RTI
+# Install script for directory: /home/student/Documents/Bac3/RTI
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -50,5 +50,5 @@ endif()
 
 string(REPLACE ";" "\n" CMAKE_INSTALL_MANIFEST_CONTENT
        "${CMAKE_INSTALL_MANIFEST_FILES}")
-file(WRITE "/home/student/Documents/RTI/RTI/build/${CMAKE_INSTALL_MANIFEST}"
+file(WRITE "/home/student/Documents/Bac3/RTI/build/${CMAKE_INSTALL_MANIFEST}"
      "${CMAKE_INSTALL_MANIFEST_CONTENT}")

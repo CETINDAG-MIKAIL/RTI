@@ -269,6 +269,13 @@ void MainWindowClientBookEncoder::on_pushButtonAddAuthor_clicked() {
     
     string reponse = AjouterAuteur(lastName, firstName, birthDate, sClient);
     dialogMessage("Ajout auteur",reponse);//6le message
+    vector<string> VecSujet;
+    addComboBoxSubjects(lastName);
+    VecSujet = GetAuteur(sClient);
+    for (int i = 0; i < VecSujet.size(); ++i)
+    {
+        addComboBoxSubjects(VecSujet[i]);
+    }
     // GetAuteur(sClient); //1#15#lukas1#26#mikail 
 }
     
@@ -309,18 +316,21 @@ void MainWindowClientBookEncoder::on_pushButtonAddBook_clicked() {
     VecLivre.push_back(to_string(getPrice()));
     VecLivre.push_back(to_string(getPublishYear()));
 
-    /*
-
-        int MainWindowClientBookEncoder::getStockQuantity() 
-        int MainWindowClientBookEncoder::getPublishYear()
-        float MainWindowClientBookEncoder::getPrice() const {
-        int MainWindowClientBookEncoder::getPageCount() const {
-
-    */
 
     vector<string> reponse = AjouterLivre(VecLivre, sClient);
-    if(reponse[1] == "ok")
+    cout << "AjouterLivre" << endl;
+    for (int i = 0; i < reponse.size(); i++)
+    {
+        cout << "reponse" << reponse[i] << endl;
+    }
+
+    if(reponse[1] == "ok"){
         dialogMessage("Ajouter Livre",reponse[1]);
+        // addTupleTableBooks
+        clearTableBooks();
+
+    }
+
     else
         dialogError("Ajouter Livre",reponse[1]);
  
@@ -343,7 +353,6 @@ void MainWindowClientBookEncoder::on_actionLogin_triggered() {
     string password = this->dialogInputText("Entrée en session","Password ?");
     cout << "------ password = " << password << endl;
     
-        cout << "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAaa" << endl;
     vector<string> reponse = Login(varLogin, password, sClient);
     cout << "reponse.size() : " << reponse.size() << endl;
     for (int i = 0; i < reponse.size(); i++)
@@ -354,20 +363,25 @@ void MainWindowClientBookEncoder::on_actionLogin_triggered() {
     if(reponse[0] == "ok"){
         dialogMessage("Login",reponse[1]);
         vector<string> VecSujet;
+        vector<string> VecAuteur;
 
         VecSujet = GetSubjects(sClient);
+        VecAuteur = GetAuteur(sClient);
+
         for (int i = 0; i < VecSujet.size(); ++i)
         {
             addComboBoxSubjects(VecSujet[i]);
         }
+        for (int i = 0; i < VecAuteur.size(); ++i)
+        {
+            addComboBoxSubjects(VecAuteur[i]);
+        }
+
         this->loginOk();
     }
     else
         if(reponse[0] == "ko")
-        dialogError("Login",reponse[1]);
-
-
-    
+            dialogError("Login",reponse[1]);   
 }
 
 void MainWindowClientBookEncoder::on_actionLogout_triggered() {

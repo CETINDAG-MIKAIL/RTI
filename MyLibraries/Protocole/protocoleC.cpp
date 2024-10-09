@@ -131,7 +131,36 @@ VecRecu 8: Informatiqu*/
 	
 	return EnvoyerQT;
 }
+vector<string> GetAuteur(int sClient)
+{
+	vector<string> EnvoyerQT;
+	vector<string> champs;
+	champs.push_back("GET_AUTHORS");
+	vector<string> VecRecu;
+	
 
+
+	string trame = CreateTrame(champs);
+
+
+	if(Send(sClient, trame) == -1){
+		printf("Erreur send (ProtocoleC) - logout\n");
+		return vector<string>{"Send erreur (ProtocoleC) - logout"};
+	}
+
+	trame = Receive(sClient);
+	VecRecu = ReadTrame(trame);
+
+								// -> ici VecRecu[2] équivaut au champ position 3 donc : "Auteur deja existant !"
+	
+	for (size_t i = 4; i < VecRecu.size(); i=i+2) {
+	        cout << "VecRecu " << i << ": " << VecRecu[i] <<  endl;
+			EnvoyerQT.push_back(VecRecu[i]);		// 10GET_SUB#11#18mikail#22mozdalzbda"	
+
+	}
+	
+	return EnvoyerQT;
+}
 
 
 vector<string> ReponseAQT(int sClient, vector<string> champs)
