@@ -80,7 +80,7 @@ string PROTOCOLE(int socket, string requete)
         }
         else
         {
-            return AjoutAuteurS(ReadTrame(requete));
+            return AjoutAuteurS(requeteVec);
         }
     }
 
@@ -92,7 +92,7 @@ string PROTOCOLE(int socket, string requete)
         }
         else
         {
-            return AjoutSujetS(ReadTrame(requete));
+            return AjoutSujetS(requeteVec);
         }
     }
 
@@ -104,7 +104,7 @@ string PROTOCOLE(int socket, string requete)
         }
         else
         {
-            return AjoutLivreS(ReadTrame(requete));
+            return AjoutLivreS(requeteVec);
         }
     }
 
@@ -117,7 +117,7 @@ string PROTOCOLE(int socket, string requete)
         }
         else
         {
-            return GetAuteursS(ReadTrame(requete));
+            return GetAuteursS(requeteVec);
         }
     }
 
@@ -130,7 +130,7 @@ string PROTOCOLE(int socket, string requete)
         }
         else
         {
-            return GetSujetsS(ReadTrame(requete));
+            return GetSujetsS(requeteVec);
         }
     }
 

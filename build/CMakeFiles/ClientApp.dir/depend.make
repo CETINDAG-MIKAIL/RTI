@@ -403,9 +403,6 @@ CMakeFiles/ClientApp.dir/ClientBookEncoderQt/moc_mainwindowclientbookencoder.cpp
 CMakeFiles/ClientApp.dir/ClientBookEncoderQt/moc_mainwindowclientbookencoder.cpp.o: /usr/include/qt5/QtWidgets/qtwidgetsglobal.h
 CMakeFiles/ClientApp.dir/ClientBookEncoderQt/moc_mainwindowclientbookencoder.cpp.o: /usr/include/qt5/QtWidgets/qwidget.h
 
-CMakeFiles/ClientApp.dir/Clients/Encodage_C/Encodage_C.cpp.o: ../Clients/Encodage_C/Encodage_C.cpp
-CMakeFiles/ClientApp.dir/Clients/Encodage_C/Encodage_C.cpp.o: ../MyLibraries/Socket/TCP.h
-
 CMakeFiles/ClientApp.dir/MyLibraries/BD/BDHelper.cpp.o: ../MyLibraries/BD/BDHelper.cpp
 CMakeFiles/ClientApp.dir/MyLibraries/BD/BDHelper.cpp.o: ../MyLibraries/BD/BDHelper.h
 CMakeFiles/ClientApp.dir/MyLibraries/BD/BDHelper.cpp.o: /usr/include/mysql/errmsg.h

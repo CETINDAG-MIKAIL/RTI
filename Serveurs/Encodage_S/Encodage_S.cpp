@@ -240,7 +240,7 @@ string AjoutAuteurS(vector<string> champs) // le premier champ du vector champs 
     nomColonnes.push_back("first_name");
     nomColonnes.push_back("birth_date");
 
-    return AjouterTupleBD(nomTable, nomColonnes, champs, typeRequete);
+    return AjouterTupleBD(nomTable, nomColonnes, champs);
 }
 
 
@@ -331,16 +331,13 @@ string AjouterTupleBD(string nomTable, vector<string> nomColonnes, vector<string
         // vérifier s'il y a déjà ce tuple dans la BD
         condition = CreerCondition(nomColonnes, champs);
 
-        if(nomTable != "books") {
-            vector<string> tuples = GetTuple(nomTable.c_str(), condition.c_str());
-    
-            if(tuples.size() > 0) {
-                DeconnexionBD();
-                return CreateTrame(vector<string>{typeRequete, "ko", "Tuple deja dans la BD."});
-            }
+
+        vector<string> tuples = GetTuple(nomTable.c_str(), condition.c_str());
+
+        if(tuples.size() > 0) {
+            DeconnexionBD();
+            return CreateTrame(vector<string>{typeRequete, "ko", "Tuple deja dans la BD."});
         }
-
-
 
 
         if(champs.size() <= 1) {
@@ -483,15 +480,6 @@ string GetSujetsS(vector<string> champs)
     return GetTuplesBD(nomTable, typeRequete);
 }
 
-// string GetLivresS(vector<string> champs)
-// { 
-//     string typeRequete = "GET_BOOKS";
-//     string nomTable = "books";
-
-//     return GetTuplesBD(nomTable, typeRequete);
-// }
-
-
 string GetTuplesBD(string nomTable, string typeRequete)
 {
     vector<string> trameRetour, tuples;
@@ -506,7 +494,7 @@ string GetTuplesBD(string nomTable, string typeRequete)
         trameRetour.push_back("ok");
         trameRetour.push_back("Tous les tuples bien recuperes.");
 
-        trameRetour.insert(trameRetour.end(), tuples.begin(), tuples.end());
+        trameRetour.insert(trameRetour.end(), tuples.begin(), tuples.end());    // trameRetour = trameRetour + tuples
 
         return CreateTrame(trameRetour);
     }

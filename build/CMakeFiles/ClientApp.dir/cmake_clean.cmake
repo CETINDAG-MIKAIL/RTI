@@ -2,7 +2,6 @@ file(REMOVE_RECURSE
   "CMakeFiles/ClientApp.dir/ClientBookEncoderQt/main.cpp.o"
   "CMakeFiles/ClientApp.dir/ClientBookEncoderQt/mainwindowclientbookencoder.cpp.o"
   "CMakeFiles/ClientApp.dir/ClientBookEncoderQt/moc_mainwindowclientbookencoder.cpp.o"
-  "CMakeFiles/ClientApp.dir/Clients/Encodage_C/Encodage_C.cpp.o"
   "CMakeFiles/ClientApp.dir/MyLibraries/BD/BDHelper.cpp.o"
   "CMakeFiles/ClientApp.dir/MyLibraries/File/FileHelper.cpp.o"
   "CMakeFiles/ClientApp.dir/MyLibraries/Protocole/protocole.cpp.o"

@@ -7,7 +7,6 @@ set(CMAKE_DEPENDS_CHECK_CXX
   "/home/student/Documents/RTI/RTI/ClientBookEncoderQt/main.cpp" "/home/student/Documents/RTI/RTI/build/CMakeFiles/ClientApp.dir/ClientBookEncoderQt/main.cpp.o"
   "/home/student/Documents/RTI/RTI/ClientBookEncoderQt/mainwindowclientbookencoder.cpp" "/home/student/Documents/RTI/RTI/build/CMakeFiles/ClientApp.dir/ClientBookEncoderQt/mainwindowclientbookencoder.cpp.o"
   "/home/student/Documents/RTI/RTI/build/ClientBookEncoderQt/moc_mainwindowclientbookencoder.cpp" "/home/student/Documents/RTI/RTI/build/CMakeFiles/ClientApp.dir/ClientBookEncoderQt/moc_mainwindowclientbookencoder.cpp.o"
-  "/home/student/Documents/RTI/RTI/Clients/Encodage_C/Encodage_C.cpp" "/home/student/Documents/RTI/RTI/build/CMakeFiles/ClientApp.dir/Clients/Encodage_C/Encodage_C.cpp.o"
   "/home/student/Documents/RTI/RTI/MyLibraries/BD/BDHelper.cpp" "/home/student/Documents/RTI/RTI/build/CMakeFiles/ClientApp.dir/MyLibraries/BD/BDHelper.cpp.o"
   "/home/student/Documents/RTI/RTI/MyLibraries/File/FileHelper.cpp" "/home/student/Documents/RTI/RTI/build/CMakeFiles/ClientApp.dir/MyLibraries/File/FileHelper.cpp.o"
   "/home/student/Documents/RTI/RTI/MyLibraries/Protocole/protocole.cpp" "/home/student/Documents/RTI/RTI/build/CMakeFiles/ClientApp.dir/MyLibraries/Protocole/protocole.cpp.o"

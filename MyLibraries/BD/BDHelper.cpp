@@ -133,8 +133,6 @@ vector<string> GetAllFromTable(const char* table)
 	
 	MYSQL_ROW ligne;
 	int nbChamps = mysql_num_fields(ResultSet);
-	
-
 
 	while ((ligne = mysql_fetch_row(ResultSet)) != NULL)
 	{

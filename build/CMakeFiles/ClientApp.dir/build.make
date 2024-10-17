@@ -119,22 +119,9 @@ CMakeFiles/ClientApp.dir/MyLibraries/BD/BDHelper.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/ClientApp.dir/MyLibraries/BD/BDHelper.cpp.s"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/student/Documents/RTI/RTI/MyLibraries/BD/BDHelper.cpp -o CMakeFiles/ClientApp.dir/MyLibraries/BD/BDHelper.cpp.s
 
-CMakeFiles/ClientApp.dir/Clients/Encodage_C/Encodage_C.cpp.o: CMakeFiles/ClientApp.dir/flags.make
-CMakeFiles/ClientApp.dir/Clients/Encodage_C/Encodage_C.cpp.o: ../Clients/Encodage_C/Encodage_C.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/student/Documents/RTI/RTI/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Building CXX object CMakeFiles/ClientApp.dir/Clients/Encodage_C/Encodage_C.cpp.o"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/ClientApp.dir/Clients/Encodage_C/Encodage_C.cpp.o -c /home/student/Documents/RTI/RTI/Clients/Encodage_C/Encodage_C.cpp
-
-CMakeFiles/ClientApp.dir/Clients/Encodage_C/Encodage_C.cpp.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/ClientApp.dir/Clients/Encodage_C/Encodage_C.cpp.i"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/student/Documents/RTI/RTI/Clients/Encodage_C/Encodage_C.cpp > CMakeFiles/ClientApp.dir/Clients/Encodage_C/Encodage_C.cpp.i
-
-CMakeFiles/ClientApp.dir/Clients/Encodage_C/Encodage_C.cpp.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/ClientApp.dir/Clients/Encodage_C/Encodage_C.cpp.s"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/student/Documents/RTI/RTI/Clients/Encodage_C/Encodage_C.cpp -o CMakeFiles/ClientApp.dir/Clients/Encodage_C/Encodage_C.cpp.s
-
 CMakeFiles/ClientApp.dir/ClientBookEncoderQt/main.cpp.o: CMakeFiles/ClientApp.dir/flags.make
 CMakeFiles/ClientApp.dir/ClientBookEncoderQt/main.cpp.o: ../ClientBookEncoderQt/main.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/student/Documents/RTI/RTI/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Building CXX object CMakeFiles/ClientApp.dir/ClientBookEncoderQt/main.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/student/Documents/RTI/RTI/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Building CXX object CMakeFiles/ClientApp.dir/ClientBookEncoderQt/main.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/ClientApp.dir/ClientBookEncoderQt/main.cpp.o -c /home/student/Documents/RTI/RTI/ClientBookEncoderQt/main.cpp
 
 CMakeFiles/ClientApp.dir/ClientBookEncoderQt/main.cpp.i: cmake_force
@@ -147,7 +134,7 @@ CMakeFiles/ClientApp.dir/ClientBookEncoderQt/main.cpp.s: cmake_force
 
 CMakeFiles/ClientApp.dir/ClientBookEncoderQt/mainwindowclientbookencoder.cpp.o: CMakeFiles/ClientApp.dir/flags.make
 CMakeFiles/ClientApp.dir/ClientBookEncoderQt/mainwindowclientbookencoder.cpp.o: ../ClientBookEncoderQt/mainwindowclientbookencoder.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/student/Documents/RTI/RTI/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_7) "Building CXX object CMakeFiles/ClientApp.dir/ClientBookEncoderQt/mainwindowclientbookencoder.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/student/Documents/RTI/RTI/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Building CXX object CMakeFiles/ClientApp.dir/ClientBookEncoderQt/mainwindowclientbookencoder.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/ClientApp.dir/ClientBookEncoderQt/mainwindowclientbookencoder.cpp.o -c /home/student/Documents/RTI/RTI/ClientBookEncoderQt/mainwindowclientbookencoder.cpp
 
 CMakeFiles/ClientApp.dir/ClientBookEncoderQt/mainwindowclientbookencoder.cpp.i: cmake_force
@@ -160,7 +147,7 @@ CMakeFiles/ClientApp.dir/ClientBookEncoderQt/mainwindowclientbookencoder.cpp.s: 
 
 CMakeFiles/ClientApp.dir/MyLibraries/Protocole/protocoleC.cpp.o: CMakeFiles/ClientApp.dir/flags.make
 CMakeFiles/ClientApp.dir/MyLibraries/Protocole/protocoleC.cpp.o: ../MyLibraries/Protocole/protocoleC.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/student/Documents/RTI/RTI/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_8) "Building CXX object CMakeFiles/ClientApp.dir/MyLibraries/Protocole/protocoleC.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/student/Documents/RTI/RTI/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_7) "Building CXX object CMakeFiles/ClientApp.dir/MyLibraries/Protocole/protocoleC.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/ClientApp.dir/MyLibraries/Protocole/protocoleC.cpp.o -c /home/student/Documents/RTI/RTI/MyLibraries/Protocole/protocoleC.cpp
 
 CMakeFiles/ClientApp.dir/MyLibraries/Protocole/protocoleC.cpp.i: cmake_force
@@ -173,7 +160,7 @@ CMakeFiles/ClientApp.dir/MyLibraries/Protocole/protocoleC.cpp.s: cmake_force
 
 CMakeFiles/ClientApp.dir/MyLibraries/File/FileHelper.cpp.o: CMakeFiles/ClientApp.dir/flags.make
 CMakeFiles/ClientApp.dir/MyLibraries/File/FileHelper.cpp.o: ../MyLibraries/File/FileHelper.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/student/Documents/RTI/RTI/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_9) "Building CXX object CMakeFiles/ClientApp.dir/MyLibraries/File/FileHelper.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/student/Documents/RTI/RTI/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_8) "Building CXX object CMakeFiles/ClientApp.dir/MyLibraries/File/FileHelper.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/ClientApp.dir/MyLibraries/File/FileHelper.cpp.o -c /home/student/Documents/RTI/RTI/MyLibraries/File/FileHelper.cpp
 
 CMakeFiles/ClientApp.dir/MyLibraries/File/FileHelper.cpp.i: cmake_force
@@ -186,7 +173,7 @@ CMakeFiles/ClientApp.dir/MyLibraries/File/FileHelper.cpp.s: cmake_force
 
 CMakeFiles/ClientApp.dir/ClientBookEncoderQt/moc_mainwindowclientbookencoder.cpp.o: CMakeFiles/ClientApp.dir/flags.make
 CMakeFiles/ClientApp.dir/ClientBookEncoderQt/moc_mainwindowclientbookencoder.cpp.o: ClientBookEncoderQt/moc_mainwindowclientbookencoder.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/student/Documents/RTI/RTI/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_10) "Building CXX object CMakeFiles/ClientApp.dir/ClientBookEncoderQt/moc_mainwindowclientbookencoder.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/student/Documents/RTI/RTI/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_9) "Building CXX object CMakeFiles/ClientApp.dir/ClientBookEncoderQt/moc_mainwindowclientbookencoder.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/ClientApp.dir/ClientBookEncoderQt/moc_mainwindowclientbookencoder.cpp.o -c /home/student/Documents/RTI/RTI/build/ClientBookEncoderQt/moc_mainwindowclientbookencoder.cpp
 
 CMakeFiles/ClientApp.dir/ClientBookEncoderQt/moc_mainwindowclientbookencoder.cpp.i: cmake_force
@@ -202,7 +189,6 @@ ClientApp_OBJECTS = \
 "CMakeFiles/ClientApp.dir/MyLibraries/Socket/TCP.cpp.o" \
 "CMakeFiles/ClientApp.dir/MyLibraries/Protocole/protocole.cpp.o" \
 "CMakeFiles/ClientApp.dir/MyLibraries/BD/BDHelper.cpp.o" \
-"CMakeFiles/ClientApp.dir/Clients/Encodage_C/Encodage_C.cpp.o" \
 "CMakeFiles/ClientApp.dir/ClientBookEncoderQt/main.cpp.o" \
 "CMakeFiles/ClientApp.dir/ClientBookEncoderQt/mainwindowclientbookencoder.cpp.o" \
 "CMakeFiles/ClientApp.dir/MyLibraries/Protocole/protocoleC.cpp.o" \
@@ -215,7 +201,6 @@ ClientApp_EXTERNAL_OBJECTS =
 ClientApp: CMakeFiles/ClientApp.dir/MyLibraries/Socket/TCP.cpp.o
 ClientApp: CMakeFiles/ClientApp.dir/MyLibraries/Protocole/protocole.cpp.o
 ClientApp: CMakeFiles/ClientApp.dir/MyLibraries/BD/BDHelper.cpp.o
-ClientApp: CMakeFiles/ClientApp.dir/Clients/Encodage_C/Encodage_C.cpp.o
 ClientApp: CMakeFiles/ClientApp.dir/ClientBookEncoderQt/main.cpp.o
 ClientApp: CMakeFiles/ClientApp.dir/ClientBookEncoderQt/mainwindowclientbookencoder.cpp.o
 ClientApp: CMakeFiles/ClientApp.dir/MyLibraries/Protocole/protocoleC.cpp.o
@@ -226,7 +211,7 @@ ClientApp: /usr/lib64/libQt5Widgets.so.5.12.5
 ClientApp: /usr/lib64/libQt5Gui.so.5.12.5
 ClientApp: /usr/lib64/libQt5Core.so.5.12.5
 ClientApp: CMakeFiles/ClientApp.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/student/Documents/RTI/RTI/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_11) "Linking CXX executable ClientApp"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/student/Documents/RTI/RTI/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_10) "Linking CXX executable ClientApp"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/ClientApp.dir/link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.

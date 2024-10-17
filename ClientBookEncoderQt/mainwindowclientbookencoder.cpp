@@ -41,13 +41,10 @@ MainWindowClientBookEncoder::MainWindowClientBookEncoder(QWidget *parent)
 
     int portServeur = GetSettingInt("../config.txt", "PORT_ENCODING");
 
-    printf("-------port serveur = --%d--\n", portServeur);
-
     string ipServ = GetSettingString("../config.txt", "IP_ENCODING");
     char ipServeur[30];
+    
     strcpy(ipServeur, ipServ.c_str());      // transformer de string en char*
-
-    printf("-------ip Serveur = --%s--\n", ipServeur);
 
     // Connexion sur le serveur
     if ((sClient = ClientSocket(ipServeur, portServeur)) == -1) 
@@ -255,19 +252,26 @@ void MainWindowClientBookEncoder::on_pushButtonAddAuthor_clicked() {
     
     vector<string> reponse = AjouterAuteur(lastName, firstName, birthDate, sClient);
 
-    dialogMessage("Ajout auteur",reponse[1]);//6le message
 
-    vector<string> VecAuteur;
+    if(reponse[0] == "ok"){
+        dialogMessage("Ajout auteur", reponse[1]);//6le message
 
+        vector<string> VecAuteur;
 
-    clearComboBoxAuthors();
+        clearComboBoxAuthors();
+        VecAuteur = GetAuteur(sClient);
 
-    VecAuteur = GetAuteur(sClient);
-
-    for (int i = 0; i < VecAuteur.size(); i++)
-    {
-        addComboBoxAuthors(VecAuteur[i]);
+        for (int i = 0; i < VecAuteur.size(); i++)
+        {
+            addComboBoxAuthors(VecAuteur[i]);
+        }
+    } 
+    else {
+        dialogError("Ajouter auteur", reponse[1]);
     }
+
+
+
 }
     
 
@@ -276,15 +280,26 @@ void MainWindowClientBookEncoder::on_pushButtonAddSubject_clicked() {
     cout << "Nom : " << name << endl;
 
     vector<string> reponse =  AjouterSujet(name, sClient);
-    dialogMessage("Ajout sujet",reponse[1]);
-    vector<string> VecSujet;
-    clearComboBoxSubjects();
 
-    VecSujet = GetSubjects(sClient);
-    for (int i = 0; i < VecSujet.size(); i++)
-    {
-        addComboBoxSubjects(VecSujet[i]);
+    
+    if(reponse[0] == "ok"){
+        dialogMessage("Ajout sujet",reponse[1]);
+
+        vector<string> VecSujet;
+
+        clearComboBoxSubjects();
+        VecSujet = GetSubjects(sClient);
+
+        for (int i = 0; i < VecSujet.size(); i++)
+        {
+            addComboBoxSubjects(VecSujet[i]);
+        }
+    } 
+    else {
+        dialogError("Ajouter sujet", reponse[1]);
     }
+
+
 }
 
 void MainWindowClientBookEncoder::on_pushButtonAddBook_clicked() {
@@ -315,6 +330,7 @@ void MainWindowClientBookEncoder::on_pushButtonAddBook_clicked() {
     if(reponse[0] == "ok"){
         dialogMessage("Ajouter Livre",reponse[1]);
         addTupleTableBooks(stoi(reponse[2]), getTitle(), getSelectionAuthor(), getSelectionSubject(), getIsbn(), getPageCount(), getPublishYear(), getPrice(), getStockQuantity());
+        on_pushButtonClear_clicked();
     }
     else
         dialogError("Ajouter Livre",reponse[1]);
@@ -362,8 +378,7 @@ void MainWindowClientBookEncoder::on_actionLogin_triggered() {
         this->loginOk();
     }
     else
-        if(reponse[0] == "ko")
-            dialogError("Login",reponse[1]);   
+        dialogError("Login", reponse[1]);   
 }
 
 void MainWindowClientBookEncoder::on_actionLogout_triggered() {
@@ -371,11 +386,12 @@ void MainWindowClientBookEncoder::on_actionLogout_triggered() {
     vector<string> reponse = Logout(sClient);
 
     if(reponse[0] == "ok"){
-        dialogMessage("Logout",reponse[1]);
+        dialogMessage("Logout", reponse[1]);
         this->loginOk();
     }
     else
-        dialogError("Logout",reponse[1]);
+        dialogError("Logout", reponse[1]);
+
     this->logoutOk();
     clearTableBooks();
 }

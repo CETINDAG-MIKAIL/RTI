@@ -41,7 +41,6 @@ set(CLIENT_SOURCES
     MyLibraries/Socket/TCP.cpp
     MyLibraries/Protocole/protocole.cpp   # Déjà inclus pour le client
     MyLibraries/BD/BDHelper.cpp           # Déjà inclus pour le client
-    Clients/Encodage_C/Encodage_C.cpp
     ClientBookEncoderQt/main.cpp
     ClientBookEncoderQt/mainwindowclientbookencoder.cpp
     MyLibraries/Protocole/protocoleC.cpp

@@ -236,33 +236,6 @@ ClientBookEncoderQt/moc_mainwindowclientbookencoder.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/ClientApp.dir/build.make CMakeFiles/ClientApp.dir/ClientBookEncoderQt/moc_mainwindowclientbookencoder.cpp.s
 .PHONY : ClientBookEncoderQt/moc_mainwindowclientbookencoder.cpp.s
 
-Clients/Encodage_C/Encodage_C.o: Clients/Encodage_C/Encodage_C.cpp.o
-
-.PHONY : Clients/Encodage_C/Encodage_C.o
-
-# target to build an object file
-Clients/Encodage_C/Encodage_C.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/ClientApp.dir/build.make CMakeFiles/ClientApp.dir/Clients/Encodage_C/Encodage_C.cpp.o
-.PHONY : Clients/Encodage_C/Encodage_C.cpp.o
-
-Clients/Encodage_C/Encodage_C.i: Clients/Encodage_C/Encodage_C.cpp.i
-
-.PHONY : Clients/Encodage_C/Encodage_C.i
-
-# target to preprocess a source file
-Clients/Encodage_C/Encodage_C.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/ClientApp.dir/build.make CMakeFiles/ClientApp.dir/Clients/Encodage_C/Encodage_C.cpp.i
-.PHONY : Clients/Encodage_C/Encodage_C.cpp.i
-
-Clients/Encodage_C/Encodage_C.s: Clients/Encodage_C/Encodage_C.cpp.s
-
-.PHONY : Clients/Encodage_C/Encodage_C.s
-
-# target to generate assembly for a file
-Clients/Encodage_C/Encodage_C.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/ClientApp.dir/build.make CMakeFiles/ClientApp.dir/Clients/Encodage_C/Encodage_C.cpp.s
-.PHONY : Clients/Encodage_C/Encodage_C.cpp.s
-
 MyLibraries/BD/BDHelper.o: MyLibraries/BD/BDHelper.cpp.o
 
 .PHONY : MyLibraries/BD/BDHelper.o
@@ -483,9 +456,6 @@ help:
 	@echo "... ClientBookEncoderQt/moc_mainwindowclientbookencoder.o"
 	@echo "... ClientBookEncoderQt/moc_mainwindowclientbookencoder.i"
 	@echo "... ClientBookEncoderQt/moc_mainwindowclientbookencoder.s"
-	@echo "... Clients/Encodage_C/Encodage_C.o"
-	@echo "... Clients/Encodage_C/Encodage_C.i"
-	@echo "... Clients/Encodage_C/Encodage_C.s"
 	@echo "... MyLibraries/BD/BDHelper.o"
 	@echo "... MyLibraries/BD/BDHelper.i"
 	@echo "... MyLibraries/BD/BDHelper.s"

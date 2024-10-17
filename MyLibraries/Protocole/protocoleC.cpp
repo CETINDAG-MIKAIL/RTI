@@ -140,7 +140,7 @@ vector<string> ReponseAQT(int sClient, vector<string> champs)
 		printf("Erreur send (ProtocoleC) - logout\n");
 		
 		EnvoyerQT.push_back("ko");
-		EnvoyerQT.push_back("Send erreur (ProtocoleC) - logout");
+		EnvoyerQT.push_back("Demande non recue du serveur, veillez reessayer");
 
 		return EnvoyerQT;
 	}
@@ -151,7 +151,7 @@ vector<string> ReponseAQT(int sClient, vector<string> champs)
 		printf("Erreur send (ProtocoleC) - logout\n");
 		
 		EnvoyerQT.push_back("ko");
-		EnvoyerQT.push_back("Send erreur (ProtocoleC) - logout");
+		EnvoyerQT.push_back(VecRecu[2]);
 
 		return EnvoyerQT;
 	}
