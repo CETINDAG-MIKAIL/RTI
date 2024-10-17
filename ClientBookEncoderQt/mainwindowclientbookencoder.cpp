@@ -41,9 +41,13 @@ MainWindowClientBookEncoder::MainWindowClientBookEncoder(QWidget *parent)
 
     int portServeur = GetSettingInt("../config.txt", "PORT_ENCODING");
 
+    printf("-------port serveur = --%d--\n", portServeur);
+
     string ipServ = GetSettingString("../config.txt", "IP_ENCODING");
     char ipServeur[30];
     strcpy(ipServeur, ipServ.c_str());      // transformer de string en char*
+
+    printf("-------ip Serveur = --%s--\n", ipServeur);
 
     // Connexion sur le serveur
     if ((sClient = ClientSocket(ipServeur, portServeur)) == -1) 

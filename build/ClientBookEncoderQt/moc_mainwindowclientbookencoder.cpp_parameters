@@ -1,9 +1,9 @@
--I/home/student/Documents/Bac3/RTI/MyLibraries/BD
--I/home/student/Documents/Bac3/RTI/MyLibraries/Protocole
--I/home/student/Documents/Bac3/RTI/MyLibraries/Socket
--I/home/student/Documents/Bac3/RTI/MyLibraries/File
--I/home/student/Documents/Bac3/RTI/Serveurs/Encodage_S
+-I/home/student/Documents/RTI/RTI/MyLibraries/BD
+-I/home/student/Documents/RTI/RTI/MyLibraries/Protocole
+-I/home/student/Documents/RTI/RTI/MyLibraries/Socket
+-I/home/student/Documents/RTI/RTI/MyLibraries/File
+-I/home/student/Documents/RTI/RTI/Serveurs/Encodage_S
 -I/usr/include/mysql
 -o
-/home/student/Documents/Bac3/RTI/build/ClientBookEncoderQt/moc_mainwindowclientbookencoder.cpp
-/home/student/Documents/Bac3/RTI/ClientBookEncoderQt/mainwindowclientbookencoder.h
+/home/student/Documents/RTI/RTI/build/ClientBookEncoderQt/moc_mainwindowclientbookencoder.cpp
+/home/student/Documents/RTI/RTI/ClientBookEncoderQt/mainwindowclientbookencoder.h

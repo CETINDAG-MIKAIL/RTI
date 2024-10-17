@@ -30,7 +30,7 @@ string.h
 vector
 -
 
-/home/student/Documents/Bac3/RTI/MyLibraries/BD/BDHelper.cpp
+/home/student/Documents/RTI/RTI/MyLibraries/BD/BDHelper.cpp
 iostream
 -
 stdio.h
@@ -52,15 +52,15 @@ sstream
 mysql/mysql.h
 -
 BDHelper.h
-/home/student/Documents/Bac3/RTI/MyLibraries/BD/BDHelper.h
+/home/student/Documents/RTI/RTI/MyLibraries/BD/BDHelper.h
 
-/home/student/Documents/Bac3/RTI/MyLibraries/BD/BDHelper.h
+/home/student/Documents/RTI/RTI/MyLibraries/BD/BDHelper.h
 string
 -
 vector
 -
 
-/home/student/Documents/Bac3/RTI/MyLibraries/File/FileHelper.cpp
+/home/student/Documents/RTI/RTI/MyLibraries/File/FileHelper.cpp
 stdio.h
 -
 stdlib.h
@@ -82,13 +82,13 @@ vector
 fstream
 -
 FileHelper.h
-/home/student/Documents/Bac3/RTI/MyLibraries/File/FileHelper.h
+/home/student/Documents/RTI/RTI/MyLibraries/File/FileHelper.h
 
-/home/student/Documents/Bac3/RTI/MyLibraries/File/FileHelper.h
+/home/student/Documents/RTI/RTI/MyLibraries/File/FileHelper.h
 string
 -
 
-/home/student/Documents/Bac3/RTI/MyLibraries/Protocole/protocole.cpp
+/home/student/Documents/RTI/RTI/MyLibraries/Protocole/protocole.cpp
 string.h
 -
 stdio.h
@@ -108,11 +108,11 @@ vector
 sstream
 -
 protocole.h
-/home/student/Documents/Bac3/RTI/MyLibraries/Protocole/protocole.h
+/home/student/Documents/RTI/RTI/MyLibraries/Protocole/protocole.h
 
-/home/student/Documents/Bac3/RTI/MyLibraries/Protocole/protocole.h
+/home/student/Documents/RTI/RTI/MyLibraries/Protocole/protocole.h
 
-/home/student/Documents/Bac3/RTI/MyLibraries/Protocole/protocoleS.cpp
+/home/student/Documents/RTI/RTI/MyLibraries/Protocole/protocoleS.cpp
 string.h
 -
 stdio.h
@@ -130,17 +130,17 @@ string
 vector
 -
 protocoleS.h
-/home/student/Documents/Bac3/RTI/MyLibraries/Protocole/protocoleS.h
+/home/student/Documents/RTI/RTI/MyLibraries/Protocole/protocoleS.h
 protocole.h
-/home/student/Documents/Bac3/RTI/MyLibraries/Protocole/protocole.h
+/home/student/Documents/RTI/RTI/MyLibraries/Protocole/protocole.h
 Encodage_S.h
-/home/student/Documents/Bac3/RTI/MyLibraries/Protocole/Encodage_S.h
+/home/student/Documents/RTI/RTI/MyLibraries/Protocole/Encodage_S.h
 
-/home/student/Documents/Bac3/RTI/MyLibraries/Protocole/protocoleS.h
+/home/student/Documents/RTI/RTI/MyLibraries/Protocole/protocoleS.h
 
-/home/student/Documents/Bac3/RTI/MyLibraries/Socket/TCP.cpp
+/home/student/Documents/RTI/RTI/MyLibraries/Socket/TCP.cpp
 TCP.h
-/home/student/Documents/Bac3/RTI/MyLibraries/Socket/TCP.h
+/home/student/Documents/RTI/RTI/MyLibraries/Socket/TCP.h
 stdio.h
 -
 stdlib.h
@@ -160,13 +160,13 @@ iostream
 string
 -
 
-/home/student/Documents/Bac3/RTI/MyLibraries/Socket/TCP.h
+/home/student/Documents/RTI/RTI/MyLibraries/Socket/TCP.h
 string
 -
 string.h
 -
 
-/home/student/Documents/Bac3/RTI/Serveurs/Encodage_S/Encodage_S.cpp
+/home/student/Documents/RTI/RTI/Serveurs/Encodage_S/Encodage_S.cpp
 stdio.h
 -
 stdlib.h
@@ -188,19 +188,19 @@ vector
 fstream
 -
 Encodage_S.h
-/home/student/Documents/Bac3/RTI/Serveurs/Encodage_S/Encodage_S.h
+/home/student/Documents/RTI/RTI/Serveurs/Encodage_S/Encodage_S.h
 FileHelper.h
-/home/student/Documents/Bac3/RTI/Serveurs/Encodage_S/FileHelper.h
+/home/student/Documents/RTI/RTI/Serveurs/Encodage_S/FileHelper.h
 TCP.h
-/home/student/Documents/Bac3/RTI/Serveurs/Encodage_S/TCP.h
+/home/student/Documents/RTI/RTI/Serveurs/Encodage_S/TCP.h
 BDHelper.h
-/home/student/Documents/Bac3/RTI/Serveurs/Encodage_S/BDHelper.h
+/home/student/Documents/RTI/RTI/Serveurs/Encodage_S/BDHelper.h
 protocoleS.h
-/home/student/Documents/Bac3/RTI/Serveurs/Encodage_S/protocoleS.h
+/home/student/Documents/RTI/RTI/Serveurs/Encodage_S/protocoleS.h
 protocole.h
-/home/student/Documents/Bac3/RTI/Serveurs/Encodage_S/protocole.h
+/home/student/Documents/RTI/RTI/Serveurs/Encodage_S/protocole.h
 
-/home/student/Documents/Bac3/RTI/Serveurs/Encodage_S/Encodage_S.h
+/home/student/Documents/RTI/RTI/Serveurs/Encodage_S/Encodage_S.h
 vector
 -
 
