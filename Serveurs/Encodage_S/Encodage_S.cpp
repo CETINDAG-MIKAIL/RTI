@@ -240,7 +240,7 @@ string AjoutAuteurS(vector<string> champs) // le premier champ du vector champs 
     nomColonnes.push_back("first_name");
     nomColonnes.push_back("birth_date");
 
-    return AjouterTupleBD(nomTable, nomColonnes, champs);
+    return AjouterTupleBD(nomTable, nomColonnes, champs, typeRequete);
 }
 
 
