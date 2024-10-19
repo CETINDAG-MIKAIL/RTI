@@ -1,10 +1,8 @@
-package be.hepl.MyLibraries.protocole;
+package be.hepl.myLibraries.protocole;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.Scanner;
 
 public class Protocole {
     public static String createTrame(ArrayList<String> champs) {

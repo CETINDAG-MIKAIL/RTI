@@ -1,4 +1,4 @@
-package be.hepl.MyLibraries.socket;
+package be.hepl.myLibraries.socket;
 
 import java.io.*;
 import java.net.InetAddress;

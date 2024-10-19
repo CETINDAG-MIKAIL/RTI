@@ -1,4 +1,4 @@
-package be.hepl.MyLibraries.file;
+package be.hepl.myLibraries.file;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -12,7 +12,7 @@ public class FileHelper {
         try (BufferedReader configFile = new BufferedReader(new FileReader(nomFichier))) {
             while ((line = configFile.readLine()) != null) {
                 if (line.startsWith(nomParam + "=")) {
-                    String value = line.substring(nomParam.length() + 1);
+                    String value = line.substring(nomParam.length() + 1);       // '+1' pour ne pas prendre le '='
                     setting = Integer.parseInt(value);
                     break;
                 }
@@ -33,7 +33,7 @@ public class FileHelper {
             while ((line = configFile.readLine()) != null) {
                 if (line.startsWith(nomParam + "=")) {
 
-                    setting = line.substring(nomParam.length() + 1);
+                    setting = line.substring(nomParam.length() + 1);        // '+1' pour ne pas prendre le '='
                     break;
                 }
             }

@@ -1,11 +1,11 @@
-package be.hepl.MyLibraries.protocole;
+package be.hepl.myLibraries.protocole;
 
 import java.io.IOException;
 import java.net.Socket;
 import java.util.ArrayList;
 
-import static be.hepl.MyLibraries.protocole.Protocole.*;
-import static be.hepl.MyLibraries.socket.TCP.*;
+import static be.hepl.myLibraries.protocole.Protocole.*;
+import static be.hepl.myLibraries.socket.TCP.*;
 
 public class ProtocoleC {
     public static ArrayList<String> login(String login, String password, Socket sClient) throws IOException {
