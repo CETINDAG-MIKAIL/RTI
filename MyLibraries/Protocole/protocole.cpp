@@ -24,8 +24,10 @@ string CreateTrame(vector<string> champs)
         requete += '#';
         requete += champs[i];
     }
+
+
     
-    return requete;
+    return to_string(requete.size()) + '#' + requete;
 }
 
 vector<string> ReadTrame(string requete) 
@@ -35,19 +37,43 @@ vector<string> ReadTrame(string requete)
     string longueurStr, champ;
     char *buffer;
 
-    // Lire la requête tant qu'il y a des données
-    while (getline(ss, longueurStr, '#')) {
+    getline(ss, longueurStr, '#');
+    int longueurTotale = stoi(longueurStr);
+    cout << "Longueur totale de la trame : " << longueurTotale << endl;
 
-        buffer = new char[stoi(longueurStr)];
+    
+    int totalLus = longueurStr.size() + 1;
 
-        ss.read(buffer, stoi(longueurStr));
+    printf("1111---- totalLus = %d\n", totalLus);
 
-        champ = string(buffer, stoi(longueurStr));
 
-        champs.push_back(string(buffer, stoi(longueurStr)));
+     while (getline(ss, longueurStr, '#') && totalLus < longueurTotale) {
+        printf("2222---- totalLus = %d\n", totalLus);
+
+        int longueurChamp = stoi(longueurStr);  
+        printf("----------- longueurChamp = %d\n", longueurChamp);
+        
+        if (totalLus + longueurChamp > longueurTotale) {
+            break;  
+        }
+
+
+        char *buffer = new char[longueurChamp];
+        ss.read(buffer, longueurChamp);         
+        champ = string(buffer, longueurChamp);  
+        
+        champs.push_back(champ);
+        delete[] buffer;  
+
+        totalLus += longueurChamp + longueurStr.size();
+
+        printf("33333---- totalLus = %d\n", totalLus);
     }
 
-    delete[] buffer;
+
+    //for(int i=0 ; i<champs.size() ; i++) {
+    //    cout << champs[i] << endl;
+    //}
 
     return champs;
 }

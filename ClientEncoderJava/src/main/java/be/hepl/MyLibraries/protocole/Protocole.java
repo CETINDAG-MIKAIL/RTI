@@ -17,52 +17,57 @@ public class Protocole {
             requete.append(champ);
         }
 
-        System.out.println("requete à envoyer = " + requete.toString());
+        System.out.println("requete à envoyer = " + requete);
 
-        return requete.toString();
+        return String.valueOf(requete.length()) + '#' + requete.toString();
     }
 
-    public static ArrayList<String> readTrame(String requete) throws IOException {
-        ArrayList<String> champs = new ArrayList<>();
-
-        // Convertir la requête en un tableau de bytes
-        ByteArrayInputStream inputStream = new ByteArrayInputStream(requete.getBytes());
+    public static ArrayList<String> readTrame(String request) {
+        ArrayList<String> fields = new ArrayList<>();
+        ByteArrayInputStream inputStream = new ByteArrayInputStream(request.getBytes());
+        StringBuilder lengthStr = new StringBuilder();
+        int totalRead = 0;
 
         try {
-            while (inputStream.available() > 0) {
-                // ----- Lecture du nombre avant le '#' -----
-                StringBuilder longueurStr = new StringBuilder();
-                int byteRead;
+            int byteRead;
+            while ((byteRead = inputStream.read()) != -1 && (char) byteRead != '#') {
+                lengthStr.append((char) byteRead);
+            }
 
-                while ((byteRead = inputStream.read()) != -1 && (char)byteRead != '#') {
-                    longueurStr.append((char) byteRead);
+            int totalLength = Integer.parseInt(lengthStr.toString());
+            System.out.println("Total length of the frame: " + totalLength);
+
+            while (inputStream.available() > 0 && totalRead < totalLength) {
+                lengthStr.setLength(0);
+                while ((byteRead = inputStream.read()) != -1 && (char) byteRead != '#') {
+                    lengthStr.append((char) byteRead);
                 }
 
-                if (longueurStr.isEmpty()) {
-                    System.err.println("Erreur : Pas de longueur spécifiée.");
-                    return null;
+                int fieldLength = Integer.parseInt(lengthStr.toString());
+                if (totalRead + fieldLength > totalLength) {
+                    break;
                 }
 
-                // ----- Lecture du contenu après le '#' -----
-                int longueur = Integer.parseInt(longueurStr.toString());
-
-                byte[] buffer = new byte[longueur];
+                byte[] buffer = new byte[fieldLength];
                 int bytesRead = inputStream.read(buffer);
-
-                if (bytesRead != longueur) {
-                    System.err.println("Erreur : " + bytesRead + " bytes lus au lieu de " + longueur);
-                    return null;
+                if (bytesRead != fieldLength) {
+                    System.err.println("Error: " + bytesRead + " bytes read instead of " + fieldLength);
+                    break;
                 }
 
-                String champ = new String(buffer);
-                champs.add(champ);
+                String field = new String(buffer);
+                fields.add(field);
+                totalRead += fieldLength + lengthStr.length();
             }
         } catch (IOException e) {
-            System.err.println("Erreur d'entrée/sortie : " + e.getMessage());
+            System.err.println("Input/output error: " + e.getMessage());
+            return null;
+        } catch (NumberFormatException e) {
+            System.err.println("Format error: " + e.getMessage());
             return null;
         }
 
-        return champs;
+        return fields;
     }
 
     public static void main(String[] args) throws IOException {
