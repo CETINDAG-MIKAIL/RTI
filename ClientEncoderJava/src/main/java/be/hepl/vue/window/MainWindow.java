@@ -50,7 +50,7 @@ public class MainWindow extends JFrame {
         this.myJMenu = new MyJMenu();
         setJMenuBar(myJMenu.getMenuBar());
 
-        setVisible(true);
+
 
         ButtonListener buttonListener = new ButtonListener(this);
         this.myJMenu.getLoginItem().addActionListener(buttonListener.getLogin());
@@ -60,11 +60,7 @@ public class MainWindow extends JFrame {
         ajouterButtonSujet.addActionListener(buttonListener.getAddSubject());
         ajouterButtonNouveauLivre.addActionListener(buttonListener.getAddBook());
 
-        ArrayList<Book> books = new ArrayList<Book>();
-        Book book = new Book(1, "titree", "auteurr", "sujettt", "isbnnn", 200, 2024, (float)1.5, 20);
-        books.add(book);
-
-        tableListeLivre.setModel(new BookTableModel(books));
+        tableListeLivre.setModel(new BookTableModel(new ArrayList<Book>()));
         tableListeLivre.setColumnModel(new BookTableColumnModel());
 
         tableListeLivre.setFillsViewportHeight(true);
@@ -81,6 +77,8 @@ public class MainWindow extends JFrame {
 
         model = new SpinnerNumberModel(0, 0, Integer.MAX_VALUE, 5);
         spinnerStocks.setModel(model);
+
+        setVisible(true);
     }
 
 
