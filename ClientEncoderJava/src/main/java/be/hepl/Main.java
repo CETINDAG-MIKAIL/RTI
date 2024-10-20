@@ -1,5 +1,7 @@
 package be.hepl;
 
+import be.hepl.vue.window.MainWindow;
+
 import java.net.Socket;
 
 import static be.hepl.myLibraries.file.FileHelper.*;
@@ -16,12 +18,12 @@ public class Main {
         sClient = clientSocket(ipServ, portServeur);
 
         if(sClient == null) {
-            System.out.println("Erreur de connexion");
+            System.out.println("Erreur de connexion au Serveur");
             return;
         }
 
 
-        System.out.println("Hello world!");
+        new MainWindow();
     }
 
     public static Socket getSClient() {

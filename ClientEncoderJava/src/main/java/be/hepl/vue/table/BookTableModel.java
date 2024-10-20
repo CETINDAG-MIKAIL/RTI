@@ -1,9 +1,17 @@
 package be.hepl.vue.table;
 
+import be.hepl.entity.Book;
+
 import javax.swing.table.AbstractTableModel;
+import java.util.ArrayList;
 
 public class BookTableModel extends AbstractTableModel {
-    // Faire une classe Book ! --------------------------------------------------------------
+    private ArrayList<Book> books;
+
+    public BookTableModel(ArrayList<Book> books) {
+        this.books = books;
+    }
+
     @Override
     public Class<?> getColumnClass(int columnIndex) {
         if(columnIndex == 0) return Integer.class;
@@ -21,16 +29,48 @@ public class BookTableModel extends AbstractTableModel {
 
     @Override
     public int getRowCount() {
-        return 0;
+        return books.size();
     }
 
     @Override
     public int getColumnCount() {
-        return 0;
+        return 9;
     }
 
     @Override
     public Object getValueAt(int rowIndex, int columnIndex) {
-        return null;
+        Book book = books.get(rowIndex);
+        switch(columnIndex) {
+            case 0:
+                return book.getId();
+            case 1:
+                return book.getTitle();
+            case 2:
+                return book.getAuthor();
+            case 3:
+                return book.getSubject();
+            case 4:
+                return book.getIsbn();
+            case 5:
+                return book.getPages();
+            case 6:
+                return book.getYear();
+            case 7:
+                return book.getPrice();
+            case 8:
+                return book.getStock();
+
+            default:
+                throw new IllegalStateException("Unexpected value: " + columnIndex);
+        }
+    }
+
+    public Book getBook(int rowIndex) {
+        return books.get(rowIndex);
+    }
+
+    public void addRow(Book book) {
+        this.books.add(book);
+        fireTableRowsInserted(books.size() - 1, books.size() - 1);
     }
 }
