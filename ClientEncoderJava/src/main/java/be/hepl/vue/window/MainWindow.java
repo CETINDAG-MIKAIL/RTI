@@ -3,12 +3,14 @@ package be.hepl.vue.window;
 import be.hepl.entity.Author;
 import be.hepl.entity.Book;
 import be.hepl.vue.listener.ButtonListener;
+import be.hepl.vue.table.BookTableColumnModel;
 import be.hepl.vue.table.BookTableModel;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 
 public class MainWindow extends JFrame {
     private MyJMenu myJMenu;
@@ -58,7 +60,14 @@ public class MainWindow extends JFrame {
         ajouterButtonSujet.addActionListener(buttonListener.getAddSubject());
         ajouterButtonNouveauLivre.addActionListener(buttonListener.getAddBook());
 
+        ArrayList<Book> books = new ArrayList<Book>();
+        Book book = new Book(1, "titree", "auteurr", "sujettt", "isbnnn", 200, 2024, (float)1.5, 20);
+        books.add(book);
 
+        tableListeLivre.setModel(new BookTableModel(books));
+        tableListeLivre.setColumnModel(new BookTableColumnModel());
+
+        tableListeLivre.setFillsViewportHeight(true);
 
 
         SpinnerNumberModel model = new SpinnerNumberModel(0, 0, Integer.MAX_VALUE, 1);
