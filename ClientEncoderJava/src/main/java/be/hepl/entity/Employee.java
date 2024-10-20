@@ -5,8 +5,8 @@ public class Employee {
     String password;
 
     public Employee(String login, String password) {
-        login = login;
-        password = password;
+        this.login = login;
+        this.password = password;
     }
 
     public String getLogin() {

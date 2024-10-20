@@ -52,9 +52,14 @@ public class ButtonListener {
                 ArrayList<String> allAuthors;
                 ArrayList<String> allSubjects;
 
+                System.out.println("----------- newEmploye : " + newEmploye);
+
+
                 if(newEmploye != null) {
                     try {
                         response = login(newEmploye.getLogin(), newEmploye.getPassword(), sClient);
+
+                        System.out.println("----------- response : " + response);
 
                         if(createResponseMessage(response, "Login")) {
                             app.getComboBoxAuteur().removeAllItems();
