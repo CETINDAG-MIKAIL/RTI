@@ -4,6 +4,7 @@ import java.io.*;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.Socket;
+import java.nio.charset.StandardCharsets;
 
 public class TCP {
     public static Socket clientSocket(String ipServeur, int portServeur) {
@@ -34,19 +35,32 @@ public class TCP {
     }
 
     public static String receive(Socket sSocket) throws IOException {
+        System.out.println("---------------1");
         StringBuilder maRequete = new StringBuilder();
+        System.out.println("---------------2");
         try {
-            BufferedReader reader = new BufferedReader(new InputStreamReader(sSocket.getInputStream()));
-            String line;
-            while ((line = reader.readLine()) != null) {
-                maRequete.append(line).append("\n");
+            System.out.println("---------------3");
+            int bite, nbBiteAuTotal = 0;
+
+            while ((bite = sSocket.getInputStream().read()) != -1 && bite != '#') {
+                maRequete.append(Character.toString(bite));
+                nbBiteAuTotal = nbBiteAuTotal * 10 + Character.getNumericValue(bite);
             }
+            maRequete.append('#');
+
+            System.out.println("---------------4 et nbBiteAuTotal = " + nbBiteAuTotal);
+
+            byte[] responseBytes = new byte[nbBiteAuTotal];
+
+            sSocket.getInputStream().read(responseBytes);
+
+            maRequete.append(new String(responseBytes));
+
         } catch (IOException e) {
             System.err.println("Erreur de lecture : " + e.getMessage());
             sSocket.close();
             return "";
         }
-
         System.out.println("Trame reçue = " + maRequete);
 
         return maRequete.toString();

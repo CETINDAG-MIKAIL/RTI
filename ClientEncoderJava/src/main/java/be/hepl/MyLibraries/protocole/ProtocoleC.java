@@ -70,7 +70,7 @@ public class ProtocoleC {
     public static ArrayList<String> getSubjects(Socket sClient) throws IOException {
         ArrayList<String> envoyerQT = new ArrayList<>();
         ArrayList<String> champs = new ArrayList<>();
-        champs.add("GET_SUBJECT");
+        champs.add("GET_SUBJECTS");
         ArrayList<String> vecRecu = responseSwing(sClient, champs);
 
         // Traiter la réponse reçue
