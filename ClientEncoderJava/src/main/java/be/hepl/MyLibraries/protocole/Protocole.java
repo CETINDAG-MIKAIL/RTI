@@ -17,6 +17,8 @@ public class Protocole {
             requete.append(champ);
         }
 
+        System.out.println("requete à envoyer = " + requete.toString());
+
         return requete.toString();
     }
 

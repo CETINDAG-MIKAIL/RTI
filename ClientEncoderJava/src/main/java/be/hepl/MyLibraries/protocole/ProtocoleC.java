@@ -96,12 +96,8 @@ public class ProtocoleC {
         return envoyerQT;
     }
 
-    public static ArrayList<String> executeRequest(Socket sClient, String command) throws IOException {
+    public static ArrayList<String> executeRequest(Socket sClient, String trame) throws IOException {
         ArrayList<String> envoyerQT = new ArrayList<>();
-        ArrayList<String> champs = new ArrayList<>();
-        champs.add(command);
-
-        String trame = createTrame(champs);
 
         if (send(sClient, trame) == -1) {
             System.err.println("Erreur send (ProtocoleC) - logout");
