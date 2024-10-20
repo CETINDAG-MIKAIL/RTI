@@ -2,6 +2,7 @@ package be.hepl.vue.listener;
 
 import be.hepl.entity.Author;
 import be.hepl.entity.Book;
+import be.hepl.entity.Employee;
 import be.hepl.entity.Subject;
 import be.hepl.vue.window.MainWindow;
 
@@ -45,8 +46,35 @@ public class ButtonListener {
         return new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                showLoginDialog(app);
-                setComponentsEnabled(true);
+                Employee newEmploye = showLoginDialog(app);
+
+                ArrayList<String> response;
+                ArrayList<String> allAuthors;
+                ArrayList<String> allSubjects;
+
+                if(newEmploye != null) {
+                    try {
+                        response = login(newEmploye.getLogin(), newEmploye.getPassword(), sClient);
+
+                        if(createResponseMessage(response, "Login")) {
+                            app.getComboBoxAuteur().removeAllItems();
+                            app.getComboBoxSujet().removeAllItems();
+                            allAuthors = getAuthors(sClient);
+                            allSubjects = getSubjects(sClient);
+
+                            for (String subject : allSubjects) {
+                                app.getComboBoxSujet().addItem(subject);
+                            }
+
+                            for (String author : allAuthors) {
+                                app.getComboBoxAuteur().addItem(author);
+                            }
+                            setComponentsEnabled(true);
+                        }
+                    } catch (IOException ex) {
+                        throw new RuntimeException(ex);
+                    }
+                }
             }
         };
     }
@@ -55,8 +83,15 @@ public class ButtonListener {
         return new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                JOptionPane.showMessageDialog(app, "Vous êtes déconnecté.", "Logout", JOptionPane.INFORMATION_MESSAGE);
-                setComponentsEnabled(false);
+                try {
+                    ArrayList<String> response = logout(sClient);
+
+                    if(createResponseMessage(response, "Déconnexion")) {
+                        setComponentsEnabled(false);
+                    }
+                } catch (IOException ex) {
+                    throw new RuntimeException(ex);
+                }
             }
         };
     }
@@ -91,7 +126,7 @@ public class ButtonListener {
                     try {
                         response = addAuthor(newAuthor.getLastName(), newAuthor.getFirstName(), newAuthor.getDateOfBirth(), sClient);
 
-                        if(CreateResponseMessage(response, "Ajouter auteur")) {
+                        if(createResponseMessage(response, "Ajouter auteur")) {
                             app.getComboBoxAuteur().removeAllItems();
                             allAuthors = getAuthors(sClient);
 
@@ -119,7 +154,7 @@ public class ButtonListener {
                     try {
                         response = addSubject(newSubject.getName(), sClient);
 
-                        if(CreateResponseMessage(response, "Ajouter sujet")) {
+                        if(createResponseMessage(response, "Ajouter sujet")) {
                             app.getComboBoxSujet().removeAllItems();
                             allSubjects = getSubjects(sClient);
 
@@ -156,7 +191,7 @@ public class ButtonListener {
 
                     ArrayList<String> bookArray = addBook(newBook, sClient);
 
-                    if(CreateResponseMessage(bookArray, "Ajouter livre")) {
+                    if(createResponseMessage(bookArray, "Ajouter livre")) {
                         Book newBookRow = new Book(
                                 Integer.parseInt(bookArray.get(2)),
                                 app.getTextFieldTitre().getText(),
@@ -181,7 +216,7 @@ public class ButtonListener {
         };
     }
 
-    private Boolean CreateResponseMessage(ArrayList<String> response, String title) {
+    private Boolean createResponseMessage(ArrayList<String> response, String title) {
         if(response.getFirst().equals("ok")) {
             JOptionPane.showMessageDialog(app, response.get(1), title, JOptionPane.INFORMATION_MESSAGE);
             return true;
