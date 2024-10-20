@@ -11,7 +11,7 @@ public class Book {
     Float price;
     Integer stock;
 
-    public Book(String title, String author, String subject, String isbn, Integer pages, Integer year, Float price) {
+    public Book(String title, String author, String subject, String isbn, Integer pages, Integer year, Float price, Integer stock) {
         this.id = -1;
         this.title = title;
         this.author = author;
@@ -20,9 +20,10 @@ public class Book {
         this.pages = pages;
         this.year = year;
         this.price = price;
+        this.stock = stock;
     }
 
-    public Book(Integer id, String title, String author, String subject, String isbn, Integer pages, Integer year, Float price) {
+    public Book(Integer id, String title, String author, String subject, String isbn, Integer pages, Integer year, Float price, Integer stock) {
         this.id = id;
         this.title = title;
         this.author = author;
@@ -31,6 +32,7 @@ public class Book {
         this.pages = pages;
         this.year = year;
         this.price = price;
+        this.stock = stock;
     }
 
     public Integer getId() {

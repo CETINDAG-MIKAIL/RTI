@@ -1,18 +1,22 @@
 package be.hepl.vue.listener;
 
-import be.hepl.Main;
 import be.hepl.entity.Author;
 import be.hepl.entity.Book;
+import be.hepl.entity.Subject;
 import be.hepl.vue.window.MainWindow;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
+import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Objects;
 
+import static be.hepl.myLibraries.file.FileHelper.getSettingInt;
+import static be.hepl.myLibraries.file.FileHelper.getSettingString;
 import static be.hepl.myLibraries.protocole.ProtocoleC.*;
+import static be.hepl.myLibraries.socket.TCP.clientSocket;
 import static be.hepl.vue.window.dialog.AddAuthorDialog.showAddAuthorDialog;
 import static be.hepl.vue.window.dialog.AddSubjectDialog.showAddSubjectDialog;
 import static be.hepl.vue.window.dialog.LoginDialog.showLoginDialog;
@@ -20,16 +24,29 @@ import static be.hepl.vue.window.windowHelper.MainWindowHelper.ClearFieldsBook;
 
 public class ButtonListener {
     final private MainWindow app;
+    final private Socket sClient;
 
     public ButtonListener(MainWindow appEncodage) {
         this.app = appEncodage;
-    };
+
+        setComponentsEnabled(false);
+
+        int portServeur = getSettingInt("../config.txt", "PORT_ENCODING");
+        String ipServ = getSettingString("../config.txt", "IP_ENCODING");
+
+        sClient = clientSocket(ipServ, portServeur);
+
+        if(sClient == null) {
+            System.out.println("Erreur de connexion");
+        }
+    }
 
     public ActionListener getLogin() {
         return new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 showLoginDialog(app);
+                setComponentsEnabled(true);
             }
         };
     }
@@ -38,8 +55,8 @@ public class ButtonListener {
         return new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                // Gérer le logout (par exemple, réinitialiser l'état de l'application)
                 JOptionPane.showMessageDialog(app, "Vous êtes déconnecté.", "Logout", JOptionPane.INFORMATION_MESSAGE);
+                setComponentsEnabled(false);
             }
         };
     }
@@ -48,7 +65,6 @@ public class ButtonListener {
         return new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                // Quitter l'application
                 System.exit(0);
             }
         };
@@ -73,21 +89,16 @@ public class ButtonListener {
 
                 if(newAuthor != null) {
                     try {
-                        response = addAuthor(newAuthor.getLastName(), newAuthor.getFirstName(), newAuthor.getDateOfBirth(), Main.getSClient());
+                        response = addAuthor(newAuthor.getLastName(), newAuthor.getFirstName(), newAuthor.getDateOfBirth(), sClient);
 
-                        if(response.getFirst().equals("ok")) {
-                            JOptionPane.showMessageDialog(app, response.get(1), "Ajouter auteur", JOptionPane.INFORMATION_MESSAGE);
-
+                        if(CreateResponseMessage(response, "Ajouter auteur")) {
                             app.getComboBoxAuteur().removeAllItems();
-                            allAuthors = getAuthors(Main.getSClient());
+                            allAuthors = getAuthors(sClient);
 
                             for (String author : allAuthors) {
                                 app.getComboBoxAuteur().addItem(author);
                             }
-                        } else {
-                            JOptionPane.showMessageDialog(app, response.get(1), "Ajouter auteur", JOptionPane.ERROR_MESSAGE);
                         }
-
                     } catch (IOException ex) {
                         throw new RuntimeException(ex);
                     }
@@ -100,27 +111,22 @@ public class ButtonListener {
         return new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                String newSubject = showAddSubjectDialog(app);
+                Subject newSubject = showAddSubjectDialog(app);
                 ArrayList<String> response;
                 ArrayList<String> allSubjects;
 
                 if(newSubject != null) {
                     try {
-                        response = addSubject(newSubject, Main.getSClient());
+                        response = addSubject(newSubject.getName(), sClient);
 
-                        if(response.getFirst().equals("ok")) {
-                            JOptionPane.showMessageDialog(app, response.get(1), "Ajouter sujet", JOptionPane.INFORMATION_MESSAGE);
-
+                        if(CreateResponseMessage(response, "Ajouter sujet")) {
                             app.getComboBoxSujet().removeAllItems();
-                            allSubjects = getSubjects(Main.getSClient());
+                            allSubjects = getSubjects(sClient);
 
                             for (String subject : allSubjects) {
                                 app.getComboBoxSujet().addItem(subject);
                             }
-                        } else {
-                            JOptionPane.showMessageDialog(app, response.get(1), "Ajouter sujet", JOptionPane.ERROR_MESSAGE);
                         }
-
                     } catch (IOException ex) {
                         throw new RuntimeException(ex);
                     }
@@ -141,7 +147,6 @@ public class ButtonListener {
 
                     newBook.add(selectedAuthor);
                     newBook.add(selectedSubject);
-
                     newBook.add(app.getTextFieldTitre().toString());
                     newBook.add(app.getTextFieldISBN().toString());
                     newBook.add(app.getSpinnerPages().toString());
@@ -149,47 +154,62 @@ public class ButtonListener {
                     newBook.add(app.getSpinnerPrix().toString());
                     newBook.add(app.getSpinnerAnneePublication().toString());
 
+                    ArrayList<String> bookArray = addBook(newBook, sClient);
 
-                    Integer id;
-                    String title;
-                    String author;
-                    String subject;
-                    String isbn;
-                    Integer pages;
-                    Integer year;
-                    Float price;
-                    Integer stock;
-
-                    ArrayList<String> bookArray = addBook(newBook, Main.getSClient());
-
-                    Book newBookRow = new Book(
-                            Integer.parseInt(bookArray.get(2)),
-                            app.getTextFieldTitre().getText(),
-                            selectedAuthor,
-                            selectedSubject,
-                            app.getTextFieldISBN().getText(),
-                            Integer.parseInt(app.getSpinnerPages().getValue().toString()),
-                            Integer.parseInt(app.getSpinnerAnneePublication().getValue().toString()),
-                            Float.parseFloat(app.getSpinnerPrix().getValue().toString()),
-                            Integer.parseInt(app.getSpinnerStocks().getValue().toString())
-                    );
-
-                    if(bookArray.getFirst().equals("ok")) {
-                        JOptionPane.showMessageDialog(app, bookArray.get(1), "Ajouter livre", JOptionPane.INFORMATION_MESSAGE);
+                    if(CreateResponseMessage(bookArray, "Ajouter livre")) {
+                        Book newBookRow = new Book(
+                                Integer.parseInt(bookArray.get(2)),
+                                app.getTextFieldTitre().getText(),
+                                selectedAuthor,
+                                selectedSubject,
+                                app.getTextFieldISBN().getText(),
+                                Integer.parseInt(app.getSpinnerPages().getValue().toString()),
+                                Integer.parseInt(app.getSpinnerAnneePublication().getValue().toString()),
+                                Float.parseFloat(app.getSpinnerPrix().getValue().toString()),
+                                Integer.parseInt(app.getSpinnerStocks().getValue().toString())
+                        );
+                        app.addBookTable(newBookRow);
 
                         ClearFieldsBook(app);
-                    } else
-                        JOptionPane.showMessageDialog(app, bookArray.get(1), "Ajouter livre", JOptionPane.ERROR_MESSAGE);
+                    }
                 } catch (IOException ex) {
                     throw new RuntimeException(ex);
                 } catch (Exception ex) {
                     System.out.println("Aucun champ sélectionnné");
                 }
-
-
-
-                //app.getTableListeLivre().add(MonArray);
             }
         };
+    }
+
+    private Boolean CreateResponseMessage(ArrayList<String> response, String title) {
+        if(response.getFirst().equals("ok")) {
+            JOptionPane.showMessageDialog(app, response.get(1), title, JOptionPane.INFORMATION_MESSAGE);
+            return true;
+        } else {
+            JOptionPane.showMessageDialog(app, response.get(1), title, JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
+    }
+
+    private void setComponentsEnabled(boolean enabled) {
+        // Boutons
+        app.getAjouterButtonAuteur().setEnabled(enabled);
+        app.getAjouterButtonSujet().setEnabled(enabled);
+        app.getAjouterButtonNouveauLivre().setEnabled(enabled);
+        app.getViderLesChampsButton().setEnabled(enabled);
+
+        // ComboBox
+        app.getComboBoxAuteur().setEnabled(enabled);
+        app.getComboBoxSujet().setEnabled(enabled);
+
+        // Spinners
+        app.getSpinnerAnneePublication().setEnabled(enabled);
+        app.getSpinnerPrix().setEnabled(enabled);
+        app.getSpinnerPages().setEnabled(enabled);
+        app.getSpinnerStocks().setEnabled(enabled);
+
+        // TextFields
+        app.getTextFieldISBN().setEnabled(enabled);
+        app.getTextFieldTitre().setEnabled(enabled);
     }
 }

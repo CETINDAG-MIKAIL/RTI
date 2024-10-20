@@ -1,12 +1,13 @@
 package be.hepl.vue.window.dialog;
 
+import be.hepl.entity.Subject;
 import be.hepl.vue.window.MainWindow;
 
 import javax.swing.*;
 import java.awt.*;
 
 public class AddSubjectDialog {
-    public static String showAddSubjectDialog(MainWindow mainWindow) {
+    public static Subject showAddSubjectDialog(MainWindow mainWindow) {
         JPanel panel = new JPanel();
         panel.setLayout(new GridLayout(1, 2));
 
@@ -18,10 +19,10 @@ public class AddSubjectDialog {
         int option = JOptionPane.showConfirmDialog(mainWindow, panel, "AddSubject", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
 
         if (option == JOptionPane.OK_OPTION) {
-            String subject = nameField.getText();
+            Subject subject = new Subject(nameField.getText());
 
-            if (subject.trim().isEmpty()) {
-                JOptionPane.showMessageDialog(mainWindow, "Veuillez entrer les données du sujet.", "Erreur", JOptionPane.ERROR_MESSAGE);
+            if (subject.getName().trim().isEmpty()) {
+                JOptionPane.showMessageDialog(mainWindow, "Veuillez le nom du sujet.", "Erreur", JOptionPane.ERROR_MESSAGE);
 
                 return subject;
             } else {

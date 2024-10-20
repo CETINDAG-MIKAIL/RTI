@@ -11,7 +11,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class MainWindow extends JFrame {
-    MyJMenu myJMenu;
+    private MyJMenu myJMenu;
 
     private JTextField textFieldTitre;
 
@@ -22,14 +22,11 @@ public class MainWindow extends JFrame {
     private JButton viderLesChampsButton;
     private JButton ajouterButtonNouveauLivre;
 
-
-
     private JTable tableListeLivre;
     private JSpinner spinnerPages;
     private JSpinner spinnerPrix;
     private JSpinner spinnerAnneePublication;
     private JSpinner spinnerStocks;
-
 
     private JTextField textFieldISBN;
     private JPanel JPanelMain;
@@ -41,25 +38,26 @@ public class MainWindow extends JFrame {
     private JPanel JpanelSpinner;
     private JPanel JpanelISBN;
 
-    // Constructeur
+
     public MainWindow() {
-        // Initialisation de la fenêtre principale
         setContentPane(JPanelMain);
         setTitle("Application Encodage");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(1100, 500);
 
-        MyJMenu myJMenu = new MyJMenu();
-        this.myJMenu = myJMenu;
+        this.myJMenu = new MyJMenu();
         setJMenuBar(myJMenu.getMenuBar());
 
         setVisible(true);
 
         ButtonListener buttonListener = new ButtonListener(this);
+        this.myJMenu.getLoginItem().addActionListener(buttonListener.getLogin());
+        this.myJMenu.getLogoutItem().addActionListener(buttonListener.getLogout());
         viderLesChampsButton.addActionListener(buttonListener.getEmptyValues());
         ajouterButtonAuteur.addActionListener(buttonListener.getAddAuthor());
         ajouterButtonSujet.addActionListener(buttonListener.getAddSubject());
         ajouterButtonNouveauLivre.addActionListener(buttonListener.getAddBook());
+
 
 
 
@@ -77,7 +75,6 @@ public class MainWindow extends JFrame {
     }
 
 
-    // Méthode principale pour démarrer l'application
     public static void main(String[] args) {
         SwingUtilities.invokeLater(new Runnable() {
             @Override
@@ -87,7 +84,7 @@ public class MainWindow extends JFrame {
         });
     }
 
-    public void addPlayer(Book player) {
+    public void addBookTable(Book player) {
         BookTableModel model = (BookTableModel) tableListeLivre.getModel();
         model.addRow(player);
     }
@@ -104,7 +101,6 @@ public class MainWindow extends JFrame {
     public JComboBox<String> getComboBoxSujet() {
         return comboBoxSujet;
     }
-
 
     public JTextField getTextFieldTitre() {
         return textFieldTitre;
@@ -129,7 +125,16 @@ public class MainWindow extends JFrame {
     public JSpinner getSpinnerPages() {
         return spinnerPages;
     }
+
     public JTable getTableListeLivre() {
         return tableListeLivre;
     }
+
+    public JButton getAjouterButtonAuteur() {return ajouterButtonAuteur;}
+
+    public JButton getAjouterButtonSujet() {return ajouterButtonSujet;}
+
+    public JButton getViderLesChampsButton() {return viderLesChampsButton;}
+
+    public JButton getAjouterButtonNouveauLivre() {return ajouterButtonNouveauLivre;}
 }
