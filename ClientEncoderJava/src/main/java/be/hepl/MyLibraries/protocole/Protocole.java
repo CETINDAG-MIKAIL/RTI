@@ -35,7 +35,6 @@ public class Protocole {
             }
 
             int totalLength = Integer.parseInt(lengthStr.toString());
-            System.out.println("Total length of the frame: " + totalLength);
 
             while (inputStream.available() > 0 && totalRead < totalLength) {
                 lengthStr.setLength(0);
@@ -66,10 +65,6 @@ public class Protocole {
             System.err.println("Format error: " + e.getMessage());
             return null;
         }
-
-        //for(String field : fields) {
-        //    System.out.println("champ READTRAME = " + field);
-        //}
 
         return fields;
     }

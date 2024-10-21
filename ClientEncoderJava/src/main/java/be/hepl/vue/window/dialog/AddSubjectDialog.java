@@ -13,7 +13,7 @@ public class AddSubjectDialog {
 
         JTextField nameField = new JTextField();
 
-        panel.add(new JLabel("Nom :"));
+        panel.add(new JLabel("Nom : "));
         panel.add(nameField);
 
         int option = JOptionPane.showConfirmDialog(mainWindow, panel, "AddSubject", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
@@ -24,9 +24,9 @@ public class AddSubjectDialog {
             if (subject.getName().trim().isEmpty()) {
                 JOptionPane.showMessageDialog(mainWindow, "Veuillez le nom du sujet.", "Erreur", JOptionPane.ERROR_MESSAGE);
 
-                return subject;
-            } else
                 return null;
+            } else
+                return subject;
         }
         return null;
     }

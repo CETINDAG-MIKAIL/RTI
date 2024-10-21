@@ -26,9 +26,6 @@ public class LoginDialog {
         if (option == JOptionPane.OK_OPTION) {
             Employee employee = new Employee(usernameField.getText(), passwordField.getText());
 
-            System.out.println("username = " + employee.getLogin().trim());
-            System.out.println("password = " + employee.getPassword().trim());
-
             if (employee.getLogin().trim().isEmpty() || employee.getPassword().trim().isEmpty()) {
                 JOptionPane.showMessageDialog(mainWindow, "Veuillez entrer un nom d'utilisateur et un mot de passe.", "Erreur", JOptionPane.ERROR_MESSAGE);
                 return null;

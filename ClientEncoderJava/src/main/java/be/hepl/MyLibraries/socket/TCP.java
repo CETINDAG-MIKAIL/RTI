@@ -35,11 +35,8 @@ public class TCP {
     }
 
     public static String receive(Socket sSocket) throws IOException {
-        System.out.println("---------------1");
         StringBuilder maRequete = new StringBuilder();
-        System.out.println("---------------2");
         try {
-            System.out.println("---------------3");
             int bite, nbBiteAuTotal = 0;
 
             while ((bite = sSocket.getInputStream().read()) != -1 && bite != '#') {
@@ -47,8 +44,6 @@ public class TCP {
                 nbBiteAuTotal = nbBiteAuTotal * 10 + Character.getNumericValue(bite);
             }
             maRequete.append('#');
-
-            System.out.println("---------------4 et nbBiteAuTotal = " + nbBiteAuTotal);
 
             byte[] responseBytes = new byte[nbBiteAuTotal];
 

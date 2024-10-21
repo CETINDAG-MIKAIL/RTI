@@ -52,14 +52,9 @@ public class ButtonListener {
                 ArrayList<String> allAuthors;
                 ArrayList<String> allSubjects;
 
-                System.out.println("----------- newEmploye : " + newEmploye);
-
-
                 if(newEmploye != null) {
                     try {
                         response = login(newEmploye.getLogin(), newEmploye.getPassword(), sClient);
-
-                        System.out.println("----------- response : " + response);
 
                         if(createResponseMessage(response, "Login")) {
                             app.getComboBoxAuteur().removeAllItems();
@@ -67,18 +62,13 @@ public class ButtonListener {
                             allAuthors = getAuthors(sClient);
                             allSubjects = getSubjects(sClient);
 
-                            System.out.println("On va mettre les auteurs dans le comboBox et allAuthors.size() = " + allAuthors.size());
                             for (String author : allAuthors) {
-                                System.out.println("author : " + author);
                                 app.getComboBoxAuteur().addItem(author);
                             }
 
-                            System.out.println("On va mettre les sujets dans le comboBox et allSubjects.size() = " + allSubjects.size());
                             for (String subject : allSubjects) {
-                                System.out.println("subject : " + subject);
                                 app.getComboBoxSujet().addItem(subject);
                             }
-
 
                             setComponentsEnabled(true);
                         }
@@ -98,6 +88,8 @@ public class ButtonListener {
                     ArrayList<String> response = logout(sClient);
 
                     if(createResponseMessage(response, "Déconnexion")) {
+                        ClearFieldsBook(app);
+                        app.clearBooksTable();
                         setComponentsEnabled(false);
                     }
                 } catch (IOException ex) {
@@ -165,11 +157,6 @@ public class ButtonListener {
                     try {
                         response = addSubject(newSubject.getName(), sClient);
 
-                        for(String rep : response) {
-                            System.out.println("rep = " + rep);
-                        }
-
-
                         if(createResponseMessage(response, "Ajouter sujet")) {
                             app.getComboBoxSujet().removeAllItems();
                             allSubjects = getSubjects(sClient);
@@ -198,12 +185,12 @@ public class ButtonListener {
 
                     newBook.add(selectedAuthor);
                     newBook.add(selectedSubject);
-                    newBook.add(app.getTextFieldTitre().toString());
-                    newBook.add(app.getTextFieldISBN().toString());
-                    newBook.add(app.getSpinnerPages().toString());
-                    newBook.add(app.getSpinnerStocks().toString());
-                    newBook.add(app.getSpinnerPrix().toString());
-                    newBook.add(app.getSpinnerAnneePublication().toString());
+                    newBook.add(app.getTextFieldTitre().getText());
+                    newBook.add(app.getTextFieldISBN().getText());
+                    newBook.add(app.getSpinnerPages().getValue().toString());
+                    newBook.add(app.getSpinnerStocks().getValue().toString());
+                    newBook.add(app.getSpinnerPrix().getValue().toString());
+                    newBook.add(app.getSpinnerAnneePublication().getValue().toString());
 
                     ArrayList<String> bookArray = addBook(newBook, sClient);
 

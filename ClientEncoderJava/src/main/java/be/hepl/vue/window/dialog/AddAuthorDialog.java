@@ -15,11 +15,11 @@ public class AddAuthorDialog {
         JTextField lastnameField = new JTextField();
         JTextField birthDate = new JTextField();
 
-        panel.add(new JLabel("Prénom :"));
+        panel.add(new JLabel("Prénom : "));
         panel.add(firstnameField);
-        panel.add(new JLabel("Nom :"));
+        panel.add(new JLabel("Nom : "));
         panel.add(lastnameField);
-        panel.add(new JLabel("Date de naissance format YYYY-MM-DD :"));
+        panel.add(new JLabel("Date de naissance format YYYY-MM-DD : "));
         panel.add(birthDate);
 
         int option = JOptionPane.showConfirmDialog(mainWindow, panel, "AddAuthor", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);

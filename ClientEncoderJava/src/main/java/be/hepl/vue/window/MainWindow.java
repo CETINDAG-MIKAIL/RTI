@@ -50,33 +50,10 @@ public class MainWindow extends JFrame {
         this.myJMenu = new MyJMenu();
         setJMenuBar(myJMenu.getMenuBar());
 
-
-
-        ButtonListener buttonListener = new ButtonListener(this);
-        this.myJMenu.getLoginItem().addActionListener(buttonListener.getLogin());
-        this.myJMenu.getLogoutItem().addActionListener(buttonListener.getLogout());
-        viderLesChampsButton.addActionListener(buttonListener.getEmptyValues());
-        ajouterButtonAuteur.addActionListener(buttonListener.getAddAuthor());
-        ajouterButtonSujet.addActionListener(buttonListener.getAddSubject());
-        ajouterButtonNouveauLivre.addActionListener(buttonListener.getAddBook());
-
-        tableListeLivre.setModel(new BookTableModel(new ArrayList<Book>()));
-        tableListeLivre.setColumnModel(new BookTableColumnModel());
-
+        initializeListeners();
+        clearBooksTable();
         tableListeLivre.setFillsViewportHeight(true);
-
-
-        SpinnerNumberModel model = new SpinnerNumberModel(0, 0, Integer.MAX_VALUE, 1);
-        spinnerPages.setModel(model);
-
-        model = new SpinnerNumberModel(0, 0, Integer.MAX_VALUE, 0.5);
-        spinnerPrix.setModel(model);
-
-        model = new SpinnerNumberModel(2000, 1000, Integer.MAX_VALUE, 1);
-        spinnerAnneePublication.setModel(model);
-
-        model = new SpinnerNumberModel(0, 0, Integer.MAX_VALUE, 5);
-        spinnerStocks.setModel(model);
+        setSpinners();
 
         setVisible(true);
     }
@@ -96,6 +73,35 @@ public class MainWindow extends JFrame {
         model.addRow(player);
     }
 
+    public void clearBooksTable() {
+        tableListeLivre.setModel(new BookTableModel(new ArrayList<Book>()));
+        tableListeLivre.setColumnModel(new BookTableColumnModel());
+    }
+
+    private void setSpinners() {
+        SpinnerNumberModel model = new SpinnerNumberModel(0, 0, Integer.MAX_VALUE, 1);
+        spinnerPages.setModel(model);
+
+        model = new SpinnerNumberModel(0, 0, Integer.MAX_VALUE, 0.5);
+        spinnerPrix.setModel(model);
+
+        model = new SpinnerNumberModel(2000, 1000, Integer.MAX_VALUE, 1);
+        spinnerAnneePublication.setModel(model);
+
+        model = new SpinnerNumberModel(0, 0, Integer.MAX_VALUE, 5);
+        spinnerStocks.setModel(model);
+    }
+
+    private void initializeListeners() {
+        ButtonListener buttonListener = new ButtonListener(this);
+        this.myJMenu.getLoginItem().addActionListener(buttonListener.getLogin());
+        this.myJMenu.getLogoutItem().addActionListener(buttonListener.getLogout());
+        this.myJMenu.getExitItem().addActionListener(buttonListener.getExit());
+        viderLesChampsButton.addActionListener(buttonListener.getEmptyValues());
+        ajouterButtonAuteur.addActionListener(buttonListener.getAddAuthor());
+        ajouterButtonSujet.addActionListener(buttonListener.getAddSubject());
+        ajouterButtonNouveauLivre.addActionListener(buttonListener.getAddBook());
+    }
 
     public MyJMenu getMyJMenu() {
         return myJMenu;

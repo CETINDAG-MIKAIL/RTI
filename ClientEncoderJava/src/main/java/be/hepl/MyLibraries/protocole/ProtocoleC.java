@@ -21,7 +21,8 @@ public class ProtocoleC {
     public static ArrayList<String> logout(Socket sClient) throws IOException {
         ArrayList<String> champs = new ArrayList<>();
 
-        champs.add("LOGOUT");;
+        champs.add("LOGOUT");
+
 
         return responseSwing(sClient, champs);
     }
@@ -54,7 +55,7 @@ public class ProtocoleC {
         String priceElement = vecBook.get(6);   // se trouve à la 7e position
 
         priceElement = priceElement.replace(',', '.');
-        vecBook.set(2, priceElement);
+        vecBook.set(6, priceElement);
 
         ArrayList<String> champs = new ArrayList<>();
 
@@ -73,18 +74,11 @@ public class ProtocoleC {
         champs.add("GET_AUTHORS");
         ArrayList<String> vecRecu = responseSwing(sClient, champs);
 
-        System.out.println("--- getAuthors :");
-        System.out.println("vecRecu.size() = " + vecRecu.size());
-
-
         // Traiter la réponse reçue
         for (int i = 3; i < vecRecu.size(); i += 4) {
             String nomPrenom = vecRecu.get(i) + ", " + vecRecu.get(i + 1);
             sendVue.add(nomPrenom);
         }
-
-        System.out.println("---getAuthors--- sendVue.size() = " + sendVue.size());
-        System.out.println("--------------------------------\n\n");
 
         return sendVue;
     }
@@ -115,14 +109,6 @@ public class ProtocoleC {
         trame = receive(sClient);
         ArrayList<String> vecRecu = readTrame(trame);
 
-
-        System.out.println("--- executeRequest :");
-        System.out.println("vecRecu.size() = " + vecRecu.size());
-        System.out.println("--------------------------------\n\n");
-        //for(String champ : vecRecu) {
-        //    System.out.println("champ = " + champ);
-        //}
-
         return vecRecu;
     }
 
@@ -141,7 +127,7 @@ public class ProtocoleC {
         }
 
         if (vecRecu.get(1).equals("ko")) {
-            System.err.println("Erreur send (ProtocoleC) - logout");
+            System.err.println("ko -> " + vecRecu.get(2));
             envoyerQT.add("ko");
             envoyerQT.add(vecRecu.get(2));
             return envoyerQT;
@@ -154,17 +140,9 @@ public class ProtocoleC {
             envoyerQT.add(vecRecu.get(3)); // ID du livre
         }
 
-        System.out.println("envoyerQT.size() = " + envoyerQT.size());
-        System.out.println("vecRecu.size() = " + vecRecu.size());
-
         for (int i = envoyerQT.size() + 1 ; i < vecRecu.size(); i++) {
-            System.out.println("vecRecu.get(i) = " + vecRecu.get(i));
             envoyerQT.add(vecRecu.get(i));
         }
-
-        System.out.println("--- responseSwing :");
-        System.out.println("envoyerQT.size() = " + envoyerQT.size());
-        System.out.println("--------------------------------\n\n");
 
         return envoyerQT;
     }
