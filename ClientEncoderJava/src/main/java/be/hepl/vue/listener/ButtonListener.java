@@ -14,9 +14,9 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Objects;
 
+import static be.hepl.MyLibraries.protocole.ProtocoleC.*;
 import static be.hepl.myLibraries.file.FileHelper.getSettingInt;
 import static be.hepl.myLibraries.file.FileHelper.getSettingString;
-import static be.hepl.myLibraries.protocole.ProtocoleC.*;
 import static be.hepl.myLibraries.socket.TCP.clientSocket;
 import static be.hepl.vue.window.dialog.AddAuthorDialog.showAddAuthorDialog;
 import static be.hepl.vue.window.dialog.AddSubjectDialog.showAddSubjectDialog;

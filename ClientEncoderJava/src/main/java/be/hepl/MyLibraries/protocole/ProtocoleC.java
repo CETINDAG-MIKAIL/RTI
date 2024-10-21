@@ -1,4 +1,4 @@
-package be.hepl.myLibraries.protocole;
+package be.hepl.MyLibraries.protocole;
 
 import java.io.IOException;
 import java.net.Socket;
