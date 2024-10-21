@@ -67,33 +67,40 @@ public class ProtocoleC {
     // ----------------------------------------------------------------------------- //
     // ------------------------------------ GET ------------------------------------ //
     // ----------------------------------------------------------------------------- //
+    public static ArrayList<String> getAuthors(Socket sClient) throws IOException {
+        ArrayList<String> sendVue = new ArrayList<>();
+        ArrayList<String> champs = new ArrayList<>();
+        champs.add("GET_AUTHORS");
+        ArrayList<String> vecRecu = responseSwing(sClient, champs);
+
+        System.out.println("--- getAuthors :");
+        System.out.println("vecRecu.size() = " + vecRecu.size());
+
+
+        // Traiter la réponse reçue
+        for (int i = 3; i < vecRecu.size(); i += 4) {
+            String nomPrenom = vecRecu.get(i) + ", " + vecRecu.get(i + 1);
+            sendVue.add(nomPrenom);
+        }
+
+        System.out.println("---getAuthors--- sendVue.size() = " + sendVue.size());
+        System.out.println("--------------------------------\n\n");
+
+        return sendVue;
+    }
+
     public static ArrayList<String> getSubjects(Socket sClient) throws IOException {
-        ArrayList<String> envoyerQT = new ArrayList<>();
+        ArrayList<String> sendVue = new ArrayList<>();
         ArrayList<String> champs = new ArrayList<>();
         champs.add("GET_SUBJECTS");
         ArrayList<String> vecRecu = responseSwing(sClient, champs);
 
         // Traiter la réponse reçue
-        for (int i = 4; i < vecRecu.size(); i += 2) {
-            envoyerQT.add(vecRecu.get(i));
+        for (int i = 3; i < vecRecu.size(); i += 2) {
+            sendVue.add(vecRecu.get(i));
         }
 
-        return envoyerQT;
-    }
-
-    public static ArrayList<String> getAuthors(Socket sClient) throws IOException {
-        ArrayList<String> envoyerQT = new ArrayList<>();
-        ArrayList<String> champs = new ArrayList<>();
-        champs.add("GET_AUTHORS");
-        ArrayList<String> vecRecu = responseSwing(sClient, champs);
-
-        // Traiter la réponse reçue
-        for (int i = 4; i < vecRecu.size(); i += 4) {
-            String nomPrenom = vecRecu.get(i) + ", " + vecRecu.get(i + 1);
-            envoyerQT.add(nomPrenom);
-        }
-
-        return envoyerQT;
+        return sendVue;
     }
 
     public static ArrayList<String> executeRequest(Socket sClient, String trame) throws IOException {
@@ -107,6 +114,14 @@ public class ProtocoleC {
 
         trame = receive(sClient);
         ArrayList<String> vecRecu = readTrame(trame);
+
+
+        System.out.println("--- executeRequest :");
+        System.out.println("vecRecu.size() = " + vecRecu.size());
+        System.out.println("--------------------------------\n\n");
+        //for(String champ : vecRecu) {
+        //    System.out.println("champ = " + champ);
+        //}
 
         return vecRecu;
     }
@@ -133,11 +148,23 @@ public class ProtocoleC {
         }
 
         envoyerQT.add("ok");
-        envoyerQT.add(vecRecu.get(2));
+        envoyerQT.add(vecRecu.get(2));  // le message du serveur
 
         if (vecRecu.get(0).equals("ADD_BOOK")) {
             envoyerQT.add(vecRecu.get(3)); // ID du livre
         }
+
+        System.out.println("envoyerQT.size() = " + envoyerQT.size());
+        System.out.println("vecRecu.size() = " + vecRecu.size());
+
+        for (int i = envoyerQT.size() + 1 ; i < vecRecu.size(); i++) {
+            System.out.println("vecRecu.get(i) = " + vecRecu.get(i));
+            envoyerQT.add(vecRecu.get(i));
+        }
+
+        System.out.println("--- responseSwing :");
+        System.out.println("envoyerQT.size() = " + envoyerQT.size());
+        System.out.println("--------------------------------\n\n");
 
         return envoyerQT;
     }

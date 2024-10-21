@@ -15,11 +15,11 @@ public class AddAuthorDialog {
         JTextField lastnameField = new JTextField();
         JTextField birthDate = new JTextField();
 
-        panel.add(new JLabel("Prénom auteur:"));
+        panel.add(new JLabel("Prénom :"));
         panel.add(firstnameField);
-        panel.add(new JLabel("Nom auteur:"));
+        panel.add(new JLabel("Nom :"));
         panel.add(lastnameField);
-        panel.add(new JLabel("Date de naissance:"));
+        panel.add(new JLabel("Date de naissance format YYYY-MM-DD :"));
         panel.add(birthDate);
 
         int option = JOptionPane.showConfirmDialog(mainWindow, panel, "AddAuthor", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
@@ -30,10 +30,8 @@ public class AddAuthorDialog {
             if (author.getFirstName().trim().isEmpty() || author.getLastName().trim().isEmpty() ||  author.getDateOfBirth().trim().isEmpty()) {
                 JOptionPane.showMessageDialog(mainWindow, "Tous les champs sont obligatoires, auteur non ajouté.", "Erreur", JOptionPane.ERROR_MESSAGE);
                 return null;
-            } else {
-                JOptionPane.showMessageDialog(mainWindow, "Auteur bien ajouté", "Ajout réussi", JOptionPane.INFORMATION_MESSAGE);
+            } else
                 return author;
-            }
         }
         return null;
     }

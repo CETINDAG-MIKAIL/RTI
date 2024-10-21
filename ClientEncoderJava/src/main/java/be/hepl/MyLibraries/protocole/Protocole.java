@@ -67,9 +67,9 @@ public class Protocole {
             return null;
         }
 
-        for(String field : fields) {
-            System.out.println("champ READTRAME = " + field);
-        }
+        //for(String field : fields) {
+        //    System.out.println("champ READTRAME = " + field);
+        //}
 
         return fields;
     }

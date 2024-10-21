@@ -15,9 +15,9 @@ public class LoginDialog {
         JTextField usernameField = new JTextField();
         JTextField passwordField = new JTextField();
 
-        panel.add(new JLabel("Nom d'utilisateur:"));
+        panel.add(new JLabel("Nom d'utilisateur :"));
         panel.add(usernameField);
-        panel.add(new JLabel("Mot de passe:"));
+        panel.add(new JLabel("Mot de passe :"));
         panel.add(passwordField);
 
         int option = JOptionPane.showConfirmDialog(mainWindow, panel, "Login", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
@@ -32,10 +32,8 @@ public class LoginDialog {
             if (employee.getLogin().trim().isEmpty() || employee.getPassword().trim().isEmpty()) {
                 JOptionPane.showMessageDialog(mainWindow, "Veuillez entrer un nom d'utilisateur et un mot de passe.", "Erreur", JOptionPane.ERROR_MESSAGE);
                 return null;
-            } else {
-                JOptionPane.showMessageDialog(mainWindow, "Bienvenue, " + employee.getLogin() + "!", "Login réussi", JOptionPane.INFORMATION_MESSAGE);
+            } else
                 return employee;
-            }
         }
         return null;
     }

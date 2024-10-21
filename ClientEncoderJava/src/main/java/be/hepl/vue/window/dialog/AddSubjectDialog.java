@@ -13,7 +13,7 @@ public class AddSubjectDialog {
 
         JTextField nameField = new JTextField();
 
-        panel.add(new JLabel("Nom sujet:"));
+        panel.add(new JLabel("Nom :"));
         panel.add(nameField);
 
         int option = JOptionPane.showConfirmDialog(mainWindow, panel, "AddSubject", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
@@ -25,11 +25,8 @@ public class AddSubjectDialog {
                 JOptionPane.showMessageDialog(mainWindow, "Veuillez le nom du sujet.", "Erreur", JOptionPane.ERROR_MESSAGE);
 
                 return subject;
-            } else {
-                JOptionPane.showMessageDialog(mainWindow, "Sujet bien ajouté", "Ajout réussi", JOptionPane.INFORMATION_MESSAGE);
-
+            } else
                 return null;
-            }
         }
         return null;
     }

@@ -67,13 +67,19 @@ public class ButtonListener {
                             allAuthors = getAuthors(sClient);
                             allSubjects = getSubjects(sClient);
 
+                            System.out.println("On va mettre les auteurs dans le comboBox et allAuthors.size() = " + allAuthors.size());
+                            for (String author : allAuthors) {
+                                System.out.println("author : " + author);
+                                app.getComboBoxAuteur().addItem(author);
+                            }
+
+                            System.out.println("On va mettre les sujets dans le comboBox et allSubjects.size() = " + allSubjects.size());
                             for (String subject : allSubjects) {
+                                System.out.println("subject : " + subject);
                                 app.getComboBoxSujet().addItem(subject);
                             }
 
-                            for (String author : allAuthors) {
-                                app.getComboBoxAuteur().addItem(author);
-                            }
+
                             setComponentsEnabled(true);
                         }
                     } catch (IOException ex) {
@@ -158,6 +164,11 @@ public class ButtonListener {
                 if(newSubject != null) {
                     try {
                         response = addSubject(newSubject.getName(), sClient);
+
+                        for(String rep : response) {
+                            System.out.println("rep = " + rep);
+                        }
+
 
                         if(createResponseMessage(response, "Ajouter sujet")) {
                             app.getComboBoxSujet().removeAllItems();
