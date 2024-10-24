@@ -1,4 +1,4 @@
 package be.hepl.model.viewmodel;
 
-public class CaddieSearch {
+public class CaddieSearchVM {
 }
