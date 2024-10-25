@@ -37,6 +37,7 @@ public class ClientDAO {
         return this.load(null);
     }
 
+    // language=sql
     public ArrayList<Client> load(ClientSearchVM csvm) {
         try {
             String sql = "SELECT " +

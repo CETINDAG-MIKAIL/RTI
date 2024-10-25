@@ -2,18 +2,18 @@ package be.hepl.model.entity;
 
 public class CaddyItem {
     private Integer id;
-    private Integer caddyId;
-    private Integer bookId;
+    private Caddy caddy;
+    private Book book;
     private Integer quantity;
 
     public CaddyItem() {
 
     }
 
-    public CaddyItem(Integer id, Integer caddyId, Integer bookId, Integer quantity) {
+    public CaddyItem(Integer id, Caddy caddy, Book book, Integer quantity) {
         this.id = id;
-        this.caddyId = caddyId;
-        this.bookId = bookId;
+        this.caddy = caddy;
+        this.book = book;
         this.quantity = quantity;
     }
 
@@ -25,12 +25,12 @@ public class CaddyItem {
         this.id = id;
     }
 
-    public Integer getBookId() {
-        return bookId;
+    public Book getBookId() {
+        return book;
     }
 
-    public void setBookId(Integer bookId) {
-        this.bookId = bookId;
+    public void setBookId(Book book) {
+        this.book = book;
     }
 
     public Integer getQuantity() {
@@ -41,11 +41,11 @@ public class CaddyItem {
         this.quantity = quantity;
     }
 
-    public Integer getCaddyId() {
-        return caddyId;
+    public Caddy getCaddy() {
+        return caddy;
     }
 
-    public void setCaddyId(Integer caddyId) {
-        this.caddyId = caddyId;
+    public void setCaddy(Caddy caddy) {
+        this.caddy = caddy;
     }
 }

@@ -2,20 +2,20 @@ package be.hepl.model.entity;
 
 import java.time.LocalDate;
 
-public class Caddie {
+public class Caddy {
     private Integer id;
-    private Integer clientId;
+    private Client client;
     private LocalDate date;
     private Integer amount;
     private boolean payed;
 
-    public Caddie() {
+    public Caddy() {
 
     }
 
-    public Caddie(Integer id, Integer clientId, LocalDate date, Integer amount, boolean payed) {
+    public Caddy(Integer id, Client client, LocalDate date, Integer amount, boolean payed) {
         this.id = id;
-        this.clientId = clientId;
+        this.client = client;
         this.date = date;
         this.amount = amount;
         this.payed = payed;
@@ -29,12 +29,12 @@ public class Caddie {
         this.id = id;
     }
 
-    public Integer getClientId() {
-        return clientId;
+    public Client getClient() {
+        return client;
     }
 
-    public void setClientId(Integer clientId) {
-        this.clientId = clientId;
+    public void setClient(Client client) {
+        this.client = client;
     }
 
     public LocalDate getDate() {
