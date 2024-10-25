@@ -48,8 +48,7 @@ typedef struct {
   int   id;
   int   clientId;   // clé étrangère
   char  date[20];
-  int   amound;
-  int   payed;
+  bool  payed;
 } CADDIES;
 
 typedef struct {
@@ -217,8 +216,7 @@ int main(int argc,char *argv[])
   if (mysql_query(connexion, "CREATE TABLE caddies ("
                        "id INT(4) AUTO_INCREMENT PRIMARY KEY, "
                        "clientId INT, "
-                       "date VARCHAR(20), "
-                       "amound INT, "
+                       "amound BOOL, "
                        "payed INT, "
                        "FOREIGN KEY (clientId) REFERENCES clients(id));")) {
     finish_with_error(connexion);

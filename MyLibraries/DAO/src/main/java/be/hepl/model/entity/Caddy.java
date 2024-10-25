@@ -6,14 +6,14 @@ public class Caddy {
     private Integer id;
     private Client client;
     private LocalDate date;
-    private Integer amount;
-    private boolean payed;
+    private Integer amount;             // ce sera calculé, donc pas stocké dans la BD
+    private Boolean payed;
 
     public Caddy() {
 
     }
 
-    public Caddy(Integer id, Client client, LocalDate date, Integer amount, boolean payed) {
+    public Caddy(Integer id, Client client, LocalDate date, Integer amount, Boolean payed) {
         this.id = id;
         this.client = client;
         this.date = date;
@@ -53,11 +53,11 @@ public class Caddy {
         this.amount = amount;
     }
 
-    public boolean isPayed() {
+    public Boolean getPayed() {
         return payed;
     }
 
-    public void setPayed(boolean payed) {
+    public void setPayed(Boolean payed) {
         this.payed = payed;
     }
 }

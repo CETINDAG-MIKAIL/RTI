@@ -101,7 +101,7 @@ public class ClientDAO {
 
                 if(csvm.getContainAddress() != null) {
                     paramNumber++;
-                    stmt.setString(paramNumber, csvm.getContainAddress());
+                    stmt.setString(paramNumber, "%" + csvm.getContainAddress() + "%");
                 }
             }
 

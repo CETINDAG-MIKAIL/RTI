@@ -9,7 +9,8 @@ public class CaddySearchVM {
     private Integer clientId;
     private LocalDate date;
     private Integer minAmount;
-    private boolean payed;
+    private Integer maxAmount;
+    private Boolean payed;
 
     public Integer getId() {
         return id;
@@ -19,11 +20,11 @@ public class CaddySearchVM {
         this.id = id;
     }
 
-    public boolean isPayed() {
+    public Boolean getPayed() {
         return payed;
     }
 
-    public void setPayed(boolean payed) {
+    public void setPayed(Boolean payed) {
         this.payed = payed;
     }
 
@@ -33,6 +34,14 @@ public class CaddySearchVM {
 
     public void setMinAmount(Integer minAmount) {
         this.minAmount = minAmount;
+    }
+
+    public Integer getMaxAmount() {
+        return maxAmount;
+    }
+
+    public void setMaxAmount(Integer maxAmount) {
+        this.maxAmount = maxAmount;
     }
 
     public LocalDate getDate() {
