@@ -1,6 +1,6 @@
 package be.hepl.model.entity;
 
-public class Client {
+public class Client implements Entity {
     private Integer id;
     private String lastName;
     private String firstName;
@@ -18,6 +18,7 @@ public class Client {
         this.address = address;
     }
 
+    @Override
     public Integer getId() {
         return id;
     }

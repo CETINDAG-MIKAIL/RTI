@@ -2,7 +2,7 @@ package be.hepl.model.entity;
 
 import java.time.LocalDate;
 
-public class Caddy {
+public class Caddy implements Entity {
     private Integer id;
     private Client client;
     private LocalDate date;
@@ -21,6 +21,7 @@ public class Caddy {
         this.payed = payed;
     }
 
+    @Override
     public Integer getId() {
         return id;
     }

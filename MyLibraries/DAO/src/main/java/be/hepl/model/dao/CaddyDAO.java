@@ -47,10 +47,10 @@ public class CaddyDAO {
                     "id, " +
                     "clientId, " +
                     "date, " +
-                    "SUM(b.price * ci.quantity) AS amount, "
+                    "SUM(b.price * ci.quantity) AS amount, " +
                     "payed " +
-                    "FROM caddies "
-                    "JOIN clients ON caddies.clientId = clients.id "
+                    "FROM caddies " +
+                    "JOIN clients ON caddies.clientId = clients.id " +
                     "JOIN caddy_items ON caddies.id = caddy_items.caddyId ";
 
             if(csvm != null) {
@@ -113,42 +113,36 @@ public class CaddyDAO {
 
             while(rs.next()) {
                 Client client = new Client();
-                client.setId(rs.getInt("id"));
-                client.setLastName(rs.getString("lastName"));
-                client.setFirstName(rs.getString("firstName"));
-                client.setNumClient(rs.getInt("numClient"));
-                client.setAddress(rs.getString("address"));
+                client.setId(rs.getInt("clients.id"));
+                client.setLastName(rs.getString("clients.lastName"));
+                client.setFirstName(rs.getString("clients.firstName"));
+                client.setNumClient(rs.getInt("clients.numClient"));
+                client.setAddress(rs.getString("clients.address"));
 
                 Caddy caddy = new Caddy();
-                caddy.setId(rs.getInt("id"));
+                caddy.setId(rs.getInt("caddies.id"));
                 caddy.setClient(client);
-                caddy.setDate(rs.getDate("date").toLocalDate());
+                caddy.setDate(rs.getDate("caddies.date").toLocalDate());
                 //caddy.setAmount(rs.getInt());     // -> à calculer ????
-                caddy.setPayed(rs.getBoolean("payed"));
+                caddy.setPayed(rs.getBoolean("caddies.payed"));
 
                 caddies.add(caddy);
             }
             stmt.close();
         } catch (SQLException ex) {
-            Logger.getLogger(ClientDAO.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(CaddyDAO.class.getName()).log(Level.SEVERE, null, ex);
         }
         finally {
             return caddies;
         }
     }
 
-    private Integer id;
-    private Client client;
-    private LocalDate date;
-    private Integer amount;             // ce sera calculé, donc pas stocké dans la BD
-    private Boolean payed;
-
     public void save(Caddy caddy) {
         try {
             String sql;
             if (caddy != null) {
                 if (caddy.getId() != null) { // UPDATE
-                    sql = "UPDATE clients SET " +
+                    sql = "UPDATE caddies SET " +
                             "clientId = ?, " +
                             "date = ?, " +
                             "payed = ? " +
@@ -161,7 +155,7 @@ public class CaddyDAO {
                     pStmt.executeUpdate();
                     pStmt.close();
                 } else { // CREATE
-                    sql = "INSERT INTO clients (clientId, date, payed) VALUES (?, ?, ?)";
+                    sql = "INSERT INTO caddies (clientId, date, payed) VALUES (?, ?, ?)";
                     PreparedStatement pStmt = connectDB.getConn().prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS);
                     pStmt.setInt(1, caddy.getClient().getId());
                     pStmt.setDate(2, Date.valueOf(caddy.getDate()));
@@ -176,7 +170,7 @@ public class CaddyDAO {
                 }
             }
         } catch (SQLException ex) {
-            Logger.getLogger(ClientDAO.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(CaddyDAO.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -195,7 +189,7 @@ public class CaddyDAO {
                 stmt.executeUpdate();
                 stmt.close();
             } catch (SQLException ex) {
-                Logger.getLogger(ClientDAO.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(CaddyDAO.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
     }

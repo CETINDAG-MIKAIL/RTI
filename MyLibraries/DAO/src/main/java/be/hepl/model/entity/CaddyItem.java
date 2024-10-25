@@ -1,6 +1,6 @@
 package be.hepl.model.entity;
 
-public class CaddyItem {
+public class CaddyItem implements Entity {
     private Integer id;
     private Caddy caddy;
     private Book book;
@@ -17,6 +17,7 @@ public class CaddyItem {
         this.quantity = quantity;
     }
 
+    @Override
     public Integer getId() {
         return id;
     }
@@ -25,11 +26,11 @@ public class CaddyItem {
         this.id = id;
     }
 
-    public Book getBookId() {
+    public Book getBook() {
         return book;
     }
 
-    public void setBookId(Book book) {
+    public void setBook(Book book) {
         this.book = book;
     }
 
