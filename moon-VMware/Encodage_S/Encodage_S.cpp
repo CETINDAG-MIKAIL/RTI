@@ -33,11 +33,11 @@ pthread_cond_t condSocketsAcceptees;
 
 int main()
 {
-    ifstream configFile("../config.txt");
+    ifstream configFile("../../config.txt");
     string line;
 
-    int portServeur = GetSettingInt("../config.txt", "PORT_ENCODING");
-    nbThreadsPool = GetSettingInt("../config.txt", "NUM_THREADS");
+    int portServeur = GetSettingInt("../../config.txt", "PORT_ENCODING");
+    nbThreadsPool = GetSettingInt("../../config.txt", "NUM_THREADS");
 
     // Initialisation socketsAcceptees
     pthread_mutex_init(&mutexSocketsAcceptees,NULL);

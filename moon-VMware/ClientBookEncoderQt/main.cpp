@@ -16,8 +16,6 @@ void HandlerSIGINT(int);
 
 int main(int argc, char *argv[])
 {
-    char ipServeur[30] = {"192.168.216.128"};
-
     QApplication a(argc, argv);
     MainWindowClientBookEncoder w;
     w.show();

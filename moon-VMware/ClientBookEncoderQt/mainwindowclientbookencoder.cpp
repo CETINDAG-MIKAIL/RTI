@@ -39,9 +39,9 @@ MainWindowClientBookEncoder::MainWindowClientBookEncoder(QWidget *parent)
     this->logoutOk();
 
 
-    int portServeur = GetSettingInt("../config.txt", "PORT_ENCODING");
+    int portServeur = GetSettingInt("../../config.txt", "PORT_ENCODING");
 
-    string ipServ = GetSettingString("../config.txt", "IP_ENCODING");
+    string ipServ = GetSettingString("../../config.txt", "IP_ENCODING");
     char ipServeur[30];
     
     strcpy(ipServeur, ipServ.c_str());      // transformer de string en char*
