@@ -1,4 +1,0 @@
-/home/student/Documents/RTI/RTI/build/CMakeFiles/rebuild_cache.dir
-/home/student/Documents/RTI/RTI/build/CMakeFiles/edit_cache.dir
-/home/student/Documents/RTI/RTI/build/CMakeFiles/ServerApp.dir
-/home/student/Documents/RTI/RTI/build/CMakeFiles/ClientApp.dir
