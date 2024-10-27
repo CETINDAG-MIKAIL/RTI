@@ -6,6 +6,8 @@ import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import static be.hepl.FileHelper.getSettingString;
+
 public class ConnectDB {
     private static Connection conn = null;
 
@@ -28,7 +30,7 @@ public class ConnectDB {
                 conn = DriverManager.getConnection(sCon, sUser, sPwd);
             }
         }
-        catch (ClassNotFoundException | SQLException ex) {
+        catch (SQLException ex) {
             Logger.getLogger(ConnectDB.class.getName()).log(Level.SEVERE, null, ex);
         }
     }

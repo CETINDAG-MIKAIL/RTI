@@ -215,7 +215,7 @@ int main(int argc,char *argv[])
   printf("Creation de la table caddies...\n");
   if (mysql_query(connexion, "CREATE TABLE caddies ("
                        "id INT(4) AUTO_INCREMENT PRIMARY KEY, "
-                       "clientId INT, "
+                       "client_id INT, "
                        "amound BOOL, "
                        "payed INT, "
                        "FOREIGN KEY (clientId) REFERENCES clients(id));")) {
@@ -226,8 +226,8 @@ int main(int argc,char *argv[])
   printf("Creation de la table caddy_items...\n");
   if (mysql_query(connexion, "CREATE TABLE caddy_items ("
                        "id INT(4) AUTO_INCREMENT PRIMARY KEY, "
-                       "caddyid INT, "
-                       "bookId INT, "
+                       "caddy_id INT, "
+                       "book_id INT, "
                        "quantity INT, "
                        "FOREIGN KEY (caddyid) REFERENCES caddies(id), "
                        "FOREIGN KEY (bookId) REFERENCES books(id));")) {
