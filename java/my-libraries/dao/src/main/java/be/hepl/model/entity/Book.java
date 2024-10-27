@@ -1,26 +1,45 @@
 package be.hepl.model.entity;
 /*
        typedef struct {
-           int   id;
-           int   author_id;    // clé étrangère
-           int   subject_id;   // clé étrangère
+           Integer   id;
+           Integer   author_id;    // clé étrangère
+           Integer   subject_id;   // clé étrangère
            char  title[100];
            char  isbn[20];
-           int   page_count;
-           int   stock_quantity;
+           Integer   page_count;
+           Integer   stock_quantity;
            float price;
-           int   publish_year;
+           Integer   publish_year;
        } BOOK;
    */
 public class Book implements Entity{
-    private int id;
-    private Author authorId;
-    private Subject subjectId;
+
+
+    private Integer id;
+    private Author author;
+    private Subject subject;
     private String title;
-    private String author;
-    private int stock_quantity;
-    private int publish_year;
+    private String isbn;
+    private Integer page_count;
+    private Integer stock_quantity;
     private float price;
+    private Integer publish_year;
+
+    public Book(Integer id, Author author, Subject subject, String title, String isbn, Integer pageCount, Integer stockQuantity, Integer publishYear, float price) {
+        this.id = id;
+        this.author = author;
+        this.subject = subject;
+        this.title = title;
+        this.isbn = isbn;
+        this.page_count = pageCount;
+        this.stock_quantity = stockQuantity;
+        this.publish_year = publishYear;
+        this.price = price;
+    }
+
+    public Book() {
+
+    }
 
 
     //***************************************************
@@ -28,25 +47,27 @@ public class Book implements Entity{
     //***************************************************
     @Override
     public Integer getId() {return 0;}
-    public float getPrice() {return price;}
-    public int getPublish_year() {return publish_year;}
-    public int getStock_quantity() {return stock_quantity;}
-    public String getAuthor() {return author;}
-    public String getTitle() {return title;}
-    public Subject getSubjectId() {return subjectId;}
-    public Author getAuthorId() {return authorId;}
-
-
+    public Author getAuthor() { return author; }
+    public Subject getSubject() { return subject; }
+    public String getTitle() { return title; }
+    public String getIsbn() { return isbn; }
+    public Integer getPage_count() { return page_count; }
+    public Integer getStock_quantity() { return stock_quantity; }
+    public Integer getPublish_year() { return publish_year; }
+    public float getPrice() { return price; }
 
     //***************************************************
     //*********************** SET ***********************
     //***************************************************
-    public void setAuthorId(Author authorId) {this.authorId = authorId;}
-    public void setSubjectId(Subject subjectId) {this.subjectId = subjectId;}
-    public void setAuthor(String author) {this.author = author;}
-    public void setStock_quantity(int stock_quantity) {this.stock_quantity = stock_quantity;}
-    public void setPrice(float price) {this.price = price;}
-    public void setPublish_year(int publish_year) {this.publish_year = publish_year;}
-    public void setTitle(String title) {this.title = title;}
+    public void setId(Integer id) {this.id = id;}
+    public void setAuthor(Author author) { this.author = author; }
+    public void setSubject(Subject subject) { this.subject = subject; }
+    public void setTitle(String title) { this.title = title; }
+    public void setIsbn(String isbn) { this.isbn = isbn; }
+    public void setPage_count(Integer page_count) { this.page_count = page_count; }
+    public void setStock_quantity(Integer stock_quantity) { this.stock_quantity = stock_quantity; }
+    public void setPublish_year(Integer publish_year) { this.publish_year = publish_year; }
+    public void setPrice(float price) { this.price = price; }
+
 
 }
