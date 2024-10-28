@@ -18,4 +18,16 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
+    <dependencies>
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <version>8.0.32</version> <!-- Utilisez la dernière version disponible -->
+        </dependency>
+
+        <dependency>
+            <groupId>be.hepl</groupId>
+            <artifactId>file</artifactId>
+        </dependency>
+    </dependencies>
 </project>

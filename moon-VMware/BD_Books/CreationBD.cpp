@@ -206,7 +206,7 @@ int main(int argc,char *argv[])
                        "id INT(4) AUTO_INCREMENT PRIMARY KEY, "
                        "nom VARCHAR(20), "
                        "prenom VARCHAR(20), "
-                       "numClient INT, "
+                       "num_client INT, "
                        "adresse VARCHAR(200))")) {
     finish_with_error(connexion);
   }
@@ -216,9 +216,8 @@ int main(int argc,char *argv[])
   if (mysql_query(connexion, "CREATE TABLE caddies ("
                        "id INT(4) AUTO_INCREMENT PRIMARY KEY, "
                        "client_id INT, "
-                       "amound BOOL, "
                        "payed INT, "
-                       "FOREIGN KEY (clientId) REFERENCES clients(id));")) {
+                       "FOREIGN KEY (client_id) REFERENCES clients(id));")) {
     finish_with_error(connexion);
   }
 
@@ -229,8 +228,8 @@ int main(int argc,char *argv[])
                        "caddy_id INT, "
                        "book_id INT, "
                        "quantity INT, "
-                       "FOREIGN KEY (caddyid) REFERENCES caddies(id), "
-                       "FOREIGN KEY (bookId) REFERENCES books(id));")) {
+                       "FOREIGN KEY (caddy_id) REFERENCES caddies(id), "
+                       "FOREIGN KEY (book_id) REFERENCES books(id));")) {
     finish_with_error(connexion);
   }
   // ---------------------------------------------------

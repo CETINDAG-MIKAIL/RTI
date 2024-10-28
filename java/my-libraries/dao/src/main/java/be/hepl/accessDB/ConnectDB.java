@@ -11,7 +11,7 @@ import static be.hepl.FileHelper.getSettingString;
 public class ConnectDB {
     private static Connection conn = null;
 
-    private static String fileName = "settingsDB.txt";
+    private static String fileName = "./java/settingsDB.txt";
     private static String sCon;
     private static String sUser;
     private static String sPwd;
@@ -25,13 +25,21 @@ public class ConnectDB {
             ConnectDB.forName = getSettingString(fileName, "DB_S_FOR_NAME");
         }
 
+        System.out.println("ConnectDB.sCon = " + ConnectDB.sCon);
+        System.out.println("ConnectDB.sUser = " + ConnectDB.sUser);
+        System.out.println("ConnectDB.sPwd = " + ConnectDB.sPwd);
+        System.out.println("ConnectDB.forName = " + ConnectDB.forName);
+
         try {
+            Class.forName(forName);
             if (conn == null || conn.isClosed()) {
                 conn = DriverManager.getConnection(sCon, sUser, sPwd);
             }
         }
         catch (SQLException ex) {
             Logger.getLogger(ConnectDB.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
         }
     }
 
