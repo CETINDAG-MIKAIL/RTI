@@ -6,6 +6,7 @@ import be.hepl.model.entity.Book;
 import be.hepl.model.entity.Subject;
 import be.hepl.model.viewmodel.BookSearchVM;
 
+import java.io.InterruptedIOException;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -15,7 +16,7 @@ import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class BookDAO implements CRUD {
+public class BookDAO implements CRUD<Book, BookSearchVM> {
     private ConnectDB connectDB;
     private ArrayList<Book> books;
 
@@ -43,6 +44,54 @@ public class BookDAO implements CRUD {
 
     public ArrayList<Book> load(BookSearchVM bsvm) {
         ArrayList<Book> books = new ArrayList<>();
+        books = read(bsvm);
+        return books;
+    }
+    public void save(Book book) {
+        try {
+            String sql;
+            if (book != null) {
+                if (book.getId() != null) { // UPDATE
+                   update(book);
+                } else { // CREATE
+                    create(book);
+                }
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(BookDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+
+
+   @Override
+    public void create(Book book) throws SQLException {
+       String sql = "INSERT INTO books (author_id, subject_id, title, isbn, page_count, stock_quantity, publish_year, price) "
+               + "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+       PreparedStatement pStmt = connectDB.getConn().prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS);
+       pStmt.setInt(1, book.getAuthor().getId());
+       pStmt.setInt(2, book.getSubject().getId());
+       pStmt.setString(3, book.getTitle());
+       pStmt.setString(4, book.getIsbn());
+       pStmt.setInt(5, book.getPageCount());
+       pStmt.setInt(6, book.getStockQuantity());
+       pStmt.setInt(7, book.getPublishYear());
+       pStmt.setFloat(8, book.getPrice());
+       pStmt.executeUpdate();
+       ResultSet rs = pStmt.getGeneratedKeys();
+       rs.next();
+       book.setId((int) rs.getLong(1));
+       rs.close();
+       pStmt.close();
+    }
+
+    @Override
+    public ArrayList<Book> read() {
+        return this.load(null);
+    }
+
+    @Override
+    public ArrayList<Book> read(BookSearchVM search) {
         try {
             String sql = "SELECT " +
                     "books.id, " +
@@ -53,66 +102,87 @@ public class BookDAO implements CRUD {
                     "books.publish_year, " +
                     "books.price, "+
                     "books.author_id, "+
-                    "books.subject_id, " +
+                    "books.subject_id " +
                     "FROM books ";
 
-            if (bsvm != null) {
+            if (search != null) {
                 String where = " WHERE 1=1 ";
-                if (bsvm.getId() != null) {
+                if (search.getId() != null) {
                     where += "AND books.id = ? ";
                 }
-                if (bsvm.getTitle() != null && bsvm.getTitle().length() > 0) {
+                if (search.getTitle() != null && search.getTitle().length() > 0) {
                     where += "AND books.title LIKE ? ";
                 }
-                if (bsvm.getIsbn() != null && bsvm.getIsbn().length() > 0) {
+                if (search.getIsbn() != null && search.getIsbn().length() > 0) {
                     where += "AND books.isbn LIKE ? ";
                 }
-                if (bsvm.getPage_count() != null) {
-                    where += "AND books.page_count = ? ";
+                if (search.getMinPageCount() != null) {
+                    where += "AND books.page_count >= ? ";
                 }
-                if (bsvm.getStock_quantity() != null) {
-                    where += "AND books.stock_quantity = ? ";
+                if (search.getMaxPageCount() != null) {
+                    where += "AND books.page_count <= ? ";
                 }
-                if (bsvm.getPublish_year() != null) {
-                    where += "AND books.publish_year = ? ";
+                if (search.getMinStockQuantity() != null) {
+                    where += "AND books.stock_quantity >= ? ";
                 }
-                if (bsvm.getPrice() > 0) {
-                    where += "AND books.price = ? ";
+                if (search.getMinStockQuantity() != null) {
+                    where += "AND books.publish_year >= ? ";
+                }
+                if (search.getMaxPublishYear() != null) {
+                    where += "AND books.publish_year <= ? ";
+                }
+                if (search.getMinPrice() > 0) {
+                    where += "AND books.price >= ? ";
+                }
+                if (search.getMaxPrice() > 0) {
+                    where += "AND books.price <= ? ";
                 }
                 sql += where + "ORDER BY books.title ASC;";
             }
 
             PreparedStatement stmt = connectDB.getConn().prepareStatement(sql);
 
-            if (bsvm != null) {
+            if (search != null) {
                 int paramNumber = 0;
-                if (bsvm.getId() != null) {
+                if (search.getId() != null) {
                     paramNumber++;
-                    stmt.setInt(paramNumber, bsvm.getId());
+                    stmt.setInt(paramNumber, search.getId());
                 }
-                if (bsvm.getTitle() != null && bsvm.getTitle().length() > 0) {
+                if (search.getTitle() != null && search.getTitle().length() > 0) {
                     paramNumber++;
-                    stmt.setString(paramNumber, "%" + bsvm.getTitle() + "%");
+                    stmt.setString(paramNumber, "%" + search.getTitle() + "%");
                 }
-                if (bsvm.getIsbn() != null && bsvm.getIsbn().length() > 0) {
+                if (search.getIsbn() != null && search.getIsbn().length() > 0) {
                     paramNumber++;
-                    stmt.setString(paramNumber, "%" + bsvm.getIsbn() + "%");
+                    stmt.setString(paramNumber, "%" + search.getIsbn() + "%");
                 }
-                if (bsvm.getPage_count() != null) {
+                if (search.getMinPageCount() != null) {
                     paramNumber++;
-                    stmt.setInt(paramNumber, bsvm.getPage_count());
+                    stmt.setInt(paramNumber, search.getMinPageCount());
                 }
-                if (bsvm.getStock_quantity() != null) {
+                if (search.getMaxPageCount() != null) {
                     paramNumber++;
-                    stmt.setInt(paramNumber, bsvm.getStock_quantity());
+                    stmt.setInt(paramNumber, search.getMaxPageCount());
                 }
-                if (bsvm.getPublish_year() != null) {
+                if (search.getMinStockQuantity() != null) {
                     paramNumber++;
-                    stmt.setInt(paramNumber, bsvm.getPublish_year());
+                    stmt.setInt(paramNumber, search.getMinStockQuantity());
                 }
-                if (bsvm.getPrice() > 0) {
+                if (search.getMinPublishYear() != null) {
                     paramNumber++;
-                    stmt.setFloat(paramNumber, bsvm.getPrice());
+                    stmt.setInt(paramNumber, search.getMinPublishYear());
+                }
+                if (search.getMaxPublishYear() != null) {
+                    paramNumber++;
+                    stmt.setInt(paramNumber, search.getMaxPublishYear());
+                }
+                if (search.getMinPrice() > 0) {
+                    paramNumber++;
+                    stmt.setFloat(paramNumber, search.getMinPrice());
+                }
+                if (search.getMaxPrice() > 0) {
+                    paramNumber++;
+                    stmt.setFloat(paramNumber, search.getMaxPrice());
                 }
             }
 
@@ -140,64 +210,35 @@ public class BookDAO implements CRUD {
             return books;
         }
     }
-    public void save(Book book) {
-        try {
-            String sql;
-            if (book != null) {
-                if (book.getId() != null) { // UPDATE
-                    sql = "UPDATE books SET "
-                            + " author_id = ?, "
-                            + " subject_id = ?, "
-                            + " title = ?, "
-                            + " isbn = ?, "
-                            + " page_count = ?, "
-                            + " stock_quantity = ?, "
-                            + " publish_year = ?, "
-                            + " price = ? "
-                            + " WHERE id = ?";
-                    PreparedStatement pStmt = connectDB.getConn().prepareStatement(sql);
-                    pStmt.setInt(1, book.getAuthor().getId());
-                    pStmt.setInt(2, book.getSubject().getId());
-                    pStmt.setString(3, book.getTitle());
-                    pStmt.setString(4, book.getIsbn());
-                    pStmt.setInt(5, book.getPage_count());
-                    pStmt.setInt(6, book.getStock_quantity());
-                    pStmt.setInt(7, book.getPublish_year());
-                    pStmt.setFloat(8, book.getPrice());
-                    pStmt.setInt(9, book.getId());
-                    pStmt.executeUpdate();
-                    pStmt.close();
-                } else { // CREATE
-                    sql = "INSERT INTO books (author_id, subject_id, title, isbn, page_count, stock_quantity, publish_year, price) "
-                            + "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
-                    PreparedStatement pStmt = connectDB.getConn().prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS);
-                    pStmt.setInt(1, book.getAuthor().getId());
-                    pStmt.setInt(2, book.getSubject().getId());
-                    pStmt.setString(3, book.getTitle());
-                    pStmt.setString(4, book.getIsbn());
-                    pStmt.setInt(5, book.getPage_count());
-                    pStmt.setInt(6, book.getStock_quantity());
-                    pStmt.setInt(7, book.getPublish_year());
-                    pStmt.setFloat(8, book.getPrice());
-                    pStmt.executeUpdate();
-                    ResultSet rs = pStmt.getGeneratedKeys();
-                    rs.next();
-                    book.setId((int) rs.getLong(1));
-                    rs.close();
-                    pStmt.close();
-                }
-            }
-        } catch (SQLException ex) {
-            Logger.getLogger(BookDAO.class.getName()).log(Level.SEVERE, null, ex);
-        }
+
+
+    @Override
+    public void update(Book book) throws SQLException {
+        String sql = "UPDATE books SET "
+                + " author_id = ?, "
+                + " subject_id = ?, "
+                + " title = ?, "
+                + " isbn = ?, "
+                + " page_count = ?, "
+                + " stock_quantity = ?, "
+                + " publish_year = ?, "
+                + " price = ? "
+                + " WHERE id = ?";
+        PreparedStatement pStmt = connectDB.getConn().prepareStatement(sql);
+        pStmt.setInt(1, book.getAuthor().getId());
+        pStmt.setInt(2, book.getSubject().getId());
+        pStmt.setString(3, book.getTitle());
+        pStmt.setString(4, book.getIsbn());
+        pStmt.setInt(5, book.getPageCount());
+        pStmt.setInt(6, book.getStockQuantity());
+        pStmt.setInt(7, book.getPublishYear());
+        pStmt.setFloat(8, book.getPrice());
+        pStmt.setInt(9, book.getId());
+        pStmt.executeUpdate();
+        pStmt.close();
     }
 
-    public void delete(Book book) {
-        if (book != null && book.getId() != null) {
-            this.delete(book.getId());
-        }
-    }
-
+    @Override
     public void delete(Integer id) {
         if (id != null) {
             try {
@@ -211,29 +252,12 @@ public class BookDAO implements CRUD {
             }
         }
     }
-
     @Override
-    public boolean create(Object entity) {
-        return false;
+    public void delete(Book book) {
+        if (book != null && book.getId() != null) {
+            this.delete(book.getId());
+        }
     }
 
-    @Override
-    public Object findById(int id) {
-        return null;
-    }
 
-    @Override
-    public List findAll() {
-        return List.of();
-    }
-
-    @Override
-    public boolean update(Object entity) {
-        return false;
-    }
-
-    @Override
-    public void delete(int id) {
-
-    }
 }

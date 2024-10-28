@@ -2,7 +2,9 @@ package be.hepl.model.dao;
 
 import be.hepl.accessDB.ConnectDB;
 import be.hepl.model.entity.Author;
+import be.hepl.model.entity.Subject;
 import be.hepl.model.viewmodel.AuthorSearchVM;
+import be.hepl.model.viewmodel.SubjectSearchVM;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -13,7 +15,7 @@ import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class AuthorDAO implements CRUD {
+public class AuthorDAO implements CRUD<Author, AuthorSearchVM> {
     private ConnectDB connectDB;
     private ArrayList<Author> authors;
 
@@ -41,50 +43,89 @@ public class AuthorDAO implements CRUD {
 
     public ArrayList<Author> load(AuthorSearchVM csvm) {
         ArrayList<Author> authors = new ArrayList<>();
+        authors = read(csvm);
+        return authors;
+    }
+
+    public void save(Author author) {
+        try {
+            String sql;
+            if (author != null) {
+                if (author.getId() != null) { // UPDATE
+                   update(author);
+                } else { // CREATE
+                   create(author);
+                }
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(AuthorDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    @Override
+    public void create(Author author) throws SQLException {
+        String sql = "INSERT INTO authors (last_name, first_name, birth_date) VALUES (?, ?, ?)";
+        PreparedStatement pStmt = connectDB.getConn().prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS);
+        pStmt.setString(1, author.getLastName());
+        pStmt.setString(2, author.getFirstName());
+        pStmt.setString(3, author.getBirthDate());
+        pStmt.executeUpdate();
+        ResultSet rs = pStmt.getGeneratedKeys();
+        rs.next();
+        author.setId((int) rs.getLong(1));
+        rs.close();
+        pStmt.close();
+    }
+
+    @Override
+    public ArrayList<Author> read() {
+        return this.load(null);
+    }
+    @Override
+    public ArrayList<Author> read(AuthorSearchVM search) {
         try {
             String sql = "SELECT " +
                     "authors.id, " +
                     "authors.last_name, " +
                     "authors.first_name, " +
-                    "authors.birth_date " + // Correction : suppression de la virgule
+                    "authors.birth_date " +
                     "FROM authors ";
 
-            if (csvm != null) {
+            if (search != null) {
                 String where = " WHERE 1=1 ";
-                if (csvm.getId() != null) {
+                if (search.getId() != null) {
                     where += "AND authors.id = ? ";
                 }
-                if (csvm.getLast_name() != null && csvm.getLast_name().length() > 0) {
+                if (search.getLastName() != null && search.getLastName().length() > 0) {
                     where += "AND authors.last_name LIKE ? ";
                 }
-                if (csvm.getFirst_name() != null && csvm.getFirst_name().length() > 0) {
+                if (search.getFirstName() != null && search.getFirstName().length() > 0) {
                     where += "AND authors.first_name LIKE ? ";
                 }
-                if (csvm.getBirth_date() != null) {
-                    where += "AND authors.birth_date LIKE ? ";
+                if (search.getBirthDate() != null) {
+                    where += "AND authors.birth_date = ? ";
                 }
                 sql += where + "ORDER BY authors.last_name ASC;";
             }
 
             PreparedStatement stmt = connectDB.getConn().prepareStatement(sql);
 
-            if (csvm != null) {
+            if (search != null) {
                 int paramNumber = 0;
-                if (csvm.getId() != null) {
+                if (search.getId() != null) {
                     paramNumber++;
-                    stmt.setInt(paramNumber, csvm.getId());
+                    stmt.setInt(paramNumber, search.getId());
                 }
-                if (csvm.getLast_name() != null && csvm.getLast_name().length() > 0) {
+                if (search.getLastName() != null && search.getLastName().length() > 0) {
                     paramNumber++;
-                    stmt.setString(paramNumber, "%" + csvm.getLast_name() + "%");
+                    stmt.setString(paramNumber, "%" + search.getLastName() + "%");
                 }
-                if (csvm.getFirst_name() != null && csvm.getFirst_name().length() > 0) {
+                if (search.getFirstName() != null && search.getFirstName().length() > 0) {
                     paramNumber++;
-                    stmt.setString(paramNumber, "%" + csvm.getFirst_name() + "%");
+                    stmt.setString(paramNumber, "%" + search.getFirstName() + "%");
                 }
-                if (csvm.getBirth_date() != null) {
+                if (search.getBirthDate() != null) {
                     paramNumber++;
-                    stmt.setString(paramNumber, csvm.getBirth_date());
+                    stmt.setString(paramNumber, search.getBirthDate());
                 }
             }
 
@@ -106,84 +147,44 @@ public class AuthorDAO implements CRUD {
         }
     }
 
-    public void save(Author author) {
-        try {
-            String sql;
-            if (author != null) {
-                if (author.getId() != null) { // UPDATE
-                    sql = "UPDATE authors SET "
-                            + " last_name = ?, "
-                            + " first_name = ?, "
-                            + " birth_date = ? "
-                            + " WHERE id = ?";
-                    PreparedStatement pStmt = connectDB.getConn().prepareStatement(sql);
-                    pStmt.setString(1, author.getLast_name());
-                    pStmt.setString(2, author.getFirst_name());
-                    pStmt.setString(3, author.getBirth_date());
-                    pStmt.setInt(4, author.getId());
-                    pStmt.executeUpdate();
-                    pStmt.close();
-                } else { // CREATE
-                    sql = "INSERT INTO authors (last_name, first_name, birth_date) VALUES (?, ?, ?)";
-                    PreparedStatement pStmt = connectDB.getConn().prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS);
-                    pStmt.setString(1, author.getLast_name());
-                    pStmt.setString(2, author.getFirst_name());
-                    pStmt.setString(3, author.getBirth_date());
-                    pStmt.executeUpdate();
-                    ResultSet rs = pStmt.getGeneratedKeys();
-                    rs.next();
-                    author.setId((int) rs.getLong(1));
-                    rs.close();
-                    pStmt.close();
+    @Override
+    public void update(Author author) throws SQLException {
+        String sql = "UPDATE authors SET "
+                + " last_name = ?, "
+                + " first_name = ?, "
+                + " birth_date = ? "
+                + " WHERE id = ?";
+        PreparedStatement pStmt = connectDB.getConn().prepareStatement(sql);
+        pStmt.setString(1, author.getLastName());
+        pStmt.setString(2, author.getFirstName());
+        pStmt.setString(3, author.getBirthDate());
+        pStmt.setInt(4, author.getId());
+        pStmt.executeUpdate();
+        pStmt.close();
+    }
+
+
+    @Override
+    public void delete(Integer id) {
+        {
+            if (id != null) {
+                try {
+                    String sql = "DELETE FROM authors WHERE id = ?";
+                    PreparedStatement stmt = connectDB.getConn().prepareStatement(sql);
+                    stmt.setInt(1, id);
+                    stmt.executeUpdate();
+                    stmt.close();
+                } catch (SQLException ex) {
+                    Logger.getLogger(AuthorDAO.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
-        } catch (SQLException ex) {
-            Logger.getLogger(AuthorDAO.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
+    @Override
     public void delete(Author author) {
-        if (author != null && author.getId() != null) {
+        if(author != null && author.getId() != null) {
             this.delete(author.getId());
         }
-    }
-
-    public void delete(Integer id) {
-        if (id != null) {
-            try {
-                String sql = "DELETE FROM authors WHERE id = ?";
-                PreparedStatement stmt = connectDB.getConn().prepareStatement(sql);
-                stmt.setInt(1, id);
-                stmt.executeUpdate();
-                stmt.close();
-            } catch (SQLException ex) {
-                Logger.getLogger(AuthorDAO.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        }
-    }
-
-    @Override
-    public boolean create(Object entity) {
-        return false;
-    }
-
-    @Override
-    public Object findById(int id) {
-        return null;
-    }
-
-    @Override
-    public List findAll() {
-        return List.of();
-    }
-
-    @Override
-    public boolean update(Object entity) {
-        return false;
-    }
-
-    @Override
-    public void delete(int id) {
-
     }
 }

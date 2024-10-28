@@ -113,9 +113,9 @@ public class CaddyItemDAO {
 
                 Author author = new Author();
                 author.setId(rs.getInt("caddies.id"));
-                author.setLast_name(rs.getString("caddies.lastName"));
-                author.setFirst_name(rs.getString("caddies.lastName"));
-                author.setBirth_date(String.valueOf(rs.getDate("caddies.birthDate").toLocalDate())); // il acceptait pas directement rs.getDate donc j'ai mis en string.Valueof
+                author.setLastName(rs.getString("caddies.lastName"));
+                author.setFirstName(rs.getString("caddies.lastName"));
+                author.setBirthDate(String.valueOf(rs.getDate("caddies.birthDate").toLocalDate())); // il acceptait pas directement rs.getDate donc j'ai mis en string.Valueof
 
                 Subject subject = new Subject();
                 subject.setName(rs.getString("subjects.name"));
@@ -125,9 +125,9 @@ public class CaddyItemDAO {
                 book.setSubject(subject);
                 book.setTitle(rs.getString("books.title"));
                 book.setIsbn(rs.getString("books.isbn"));
-                book.setStock_quantity(rs.getInt("books.stock_quantity"));
-                book.setPage_count(rs.getInt("books.page_count"));
-                book.setPublish_year(rs.getInt("books.publish_year"));
+                book.setStockQuantity(rs.getInt("books.stock_quantity"));
+                book.setPageCount(rs.getInt("books.page_count"));
+                book.setPublishYear(rs.getInt("books.publish_year"));
                 book.setPrice(rs.getFloat("books.price"));
 
                 CaddyItem caddyItem = new CaddyItem();

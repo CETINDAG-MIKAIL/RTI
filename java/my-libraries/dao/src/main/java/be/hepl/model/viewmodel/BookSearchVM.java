@@ -11,13 +11,13 @@ public class BookSearchVM {
     private Subject subject;
     private String title;
     private String isbn;
-    private Integer maxPage_count;
-    private Integer minPage_count;
-    private Integer minStock_quantity;
+    private Integer maxPageCount;
+    private Integer minPageCount;
+    private Integer minStockQuantity;
     private float minPrice;
     private float maxPrice;
-    private Integer minPublish_year;
-    private Integer maxPublish_year;
+    private Integer minPublishYear;
+    private Integer maxPublishYear;
 
 
 
@@ -53,20 +53,20 @@ public class BookSearchVM {
         this.isbn = isbn;
     }
 
-    public Integer getMaxPublish_year() {
-        return maxPublish_year;
+    public Integer getMaxPublishYear() {
+        return maxPublishYear;
     }
 
-    public void setMaxPublish_year(Integer maxPublish_year) {
-        this.maxPublish_year = maxPublish_year;
+    public void setMaxPublishYear(Integer maxPublishYear) {
+        this.maxPublishYear = maxPublishYear;
     }
 
-    public Integer getMinPublish_year() {
-        return minPublish_year;
+    public Integer getMinPublishYear() {
+        return minPublishYear;
     }
 
-    public void setMinPublish_year(Integer minPublish_year) {
-        this.minPublish_year = minPublish_year;
+    public void setMinPublishYear(Integer minPublishYear) {
+        this.minPublishYear = minPublishYear;
     }
 
     public float getMaxPrice() {
@@ -85,28 +85,28 @@ public class BookSearchVM {
         this.minPrice = minPrice;
     }
 
-    public Integer getMinStock_quantity() {
-        return minStock_quantity;
+    public Integer getMinStockQuantity() {
+        return minStockQuantity;
     }
 
-    public void setMinStock_quantity(Integer minStock_quantity) {
-        this.minStock_quantity = minStock_quantity;
+    public void setMinStockQuantity(Integer minStockQuantity) {
+        this.minStockQuantity = minStockQuantity;
     }
 
-    public Integer getMinPage_count() {
-        return minPage_count;
+    public Integer getMinPageCount() {
+        return minPageCount;
     }
 
-    public void setMinPage_count(Integer minPage_count) {
-        this.minPage_count = minPage_count;
+    public void setMinPageCount(Integer minPageCount) {
+        this.minPageCount = minPageCount;
     }
 
-    public Integer getMaxPage_count() {
-        return maxPage_count;
+    public Integer getMaxPageCount() {
+        return maxPageCount;
     }
 
-    public void setMaxPage_count(Integer maxPage_count) {
-        this.maxPage_count = maxPage_count;
+    public void setMaxPageCount(Integer maxPageCount) {
+        this.maxPageCount = maxPageCount;
     }
 
     public String getTitle() {

@@ -1,12 +1,10 @@
 package be.hepl.model.viewmodel;
 
-import be.hepl.model.entity.Author;
-
 public class AuthorSearchVM {
     private Integer id;
-    private String last_name;
-    private String first_name;
-    private String birth_date;
+    private String lastName;
+    private String firstName;
+    private String birthDate;
 
 
     public AuthorSearchVM() {}
@@ -15,17 +13,17 @@ public class AuthorSearchVM {
     //*********************** GET ***********************
     //***************************************************
     public Integer getId() { return id; }
-    public String getLast_name() { return last_name; }
-    public String getFirst_name() { return first_name; }
-    public String getBirth_date() { return birth_date; }
+    public String getLastName() { return lastName; }
+    public String getFirstName() { return firstName; }
+    public String getBirthDate() { return birthDate; }
 
     //***************************************************
     //*********************** SET ***********************
     //***************************************************
 
     public void setId(Integer id) { this.id = id; }
-    public void setLast_name(String last_name) { this.last_name = last_name; }
-    public void setFirst_name(String first_name) { this.first_name = first_name; }
-    public void setBirth_date(String birth_date) { this.birth_date = birth_date; }
+    public void setLastName(String lastName) { this.lastName = lastName; }
+    public void setFirstName(String firstName) { this.firstName = firstName; }
+    public void setBirthDate(String birthDate) { this.birthDate = birthDate; }
 
 }

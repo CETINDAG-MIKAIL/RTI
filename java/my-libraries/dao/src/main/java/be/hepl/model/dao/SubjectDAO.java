@@ -13,7 +13,7 @@ import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class SubjectDAO implements CRUD {
+public class SubjectDAO implements CRUD<Subject, SubjectSearchVM> {
     private ConnectDB connectDB;
     private ArrayList<Subject> subjects;
 
@@ -35,24 +35,59 @@ public class SubjectDAO implements CRUD {
         return null;
     }
 
+
     public ArrayList<Subject> load() {
         return this.load(null);
     }
-
     public ArrayList<Subject> load(SubjectSearchVM ssvm) {
         ArrayList<Subject> subjects = new ArrayList<>();
+        subjects = read(ssvm);
+
+        return subjects;
+    }
+    public void save(Subject subject) {
+        try {
+            String sql;
+            if (subject != null) {
+                if (subject.getId() != null) { // UPDATE
+                  update(subject);
+                } else { // CREATE
+                 create(subject);
+                }
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(SubjectDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+  
+    @Override
+    public void create(Subject subject) throws SQLException {
+        String sql = "INSERT INTO subjects (name) VALUES (?)";
+        PreparedStatement pStmt = connectDB.getConn().prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS);
+        pStmt.setString(1, subject.getName());
+        pStmt.executeUpdate();
+        ResultSet rs = pStmt.getGeneratedKeys();
+        rs.next();
+        subject.setId((int) rs.getLong(1));
+        rs.close();
+        pStmt.close();
+    }
+
+    @Override
+    public ArrayList<Subject> read(SubjectSearchVM search) {
         try {
             String sql = "SELECT"+
                     " subjects.id, "+
                     "subjects.name,  "+
                     "FROM subjects ";
 
-            if (ssvm != null) {
+            if (search != null) {
                 String where = " WHERE 1=1 ";
-                if (ssvm.getId() != null) {
+                if (search.getId() != null) {
                     where += "AND subjects.id = ? ";
                 }
-                if (ssvm.getName() != null && !ssvm.getName().isEmpty()) {
+                if (search.getName() != null && !search.getName().isEmpty()) {
                     where += "AND subjects.name LIKE ? ";
                 }
                 sql += where + " ORDER BY subjects.name ASC;";
@@ -60,15 +95,15 @@ public class SubjectDAO implements CRUD {
 
             PreparedStatement stmt = connectDB.getConn().prepareStatement(sql);
 
-            if (ssvm != null) {
+            if (search != null) {
                 int paramNumber = 0;
-                if (ssvm.getId() != null) {
+                if (search.getId() != null) {
                     paramNumber++;
-                    stmt.setInt(paramNumber, ssvm.getId());
+                    stmt.setInt(paramNumber, search.getId());
                 }
-                if (ssvm.getName() != null && !ssvm.getName().isEmpty()) {
+                if (search.getName() != null && !search.getName().isEmpty()) {
                     paramNumber++;
-                    stmt.setString(paramNumber, "%" + ssvm.getName() + "%");
+                    stmt.setString(paramNumber, "%" + search.getName() + "%");
                 }
             }
 
@@ -88,40 +123,23 @@ public class SubjectDAO implements CRUD {
             return subjects;
         }
     }
-    public void save(Subject subject) {
-        try {
-            String sql;
-            if (subject != null) {
-                if (subject.getId() != null) { // UPDATE
-                    sql = "UPDATE subjects SET name = ? WHERE id = ?";
-                    PreparedStatement pStmt = connectDB.getConn().prepareStatement(sql);
-                    pStmt.setString(1, subject.getName());
-                    pStmt.setInt(2, subject.getId());
-                    pStmt.executeUpdate();
-                    pStmt.close();
-                } else { // CREATE
-                    sql = "INSERT INTO subjects (name) VALUES (?)";
-                    PreparedStatement pStmt = connectDB.getConn().prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS);
-                    pStmt.setString(1, subject.getName());
-                    pStmt.executeUpdate();
-                    ResultSet rs = pStmt.getGeneratedKeys();
-                    rs.next();
-                    subject.setId((int) rs.getLong(1));
-                    rs.close();
-                    pStmt.close();
-                }
-            }
-        } catch (SQLException ex) {
-            Logger.getLogger(SubjectDAO.class.getName()).log(Level.SEVERE, null, ex);
-        }
+
+    @Override
+    public ArrayList<Subject> read() {
+        return this.load(null);
     }
 
-    public void delete(Subject subject) {
-        if (subject != null && subject.getId() != null) {
-            this.delete(subject.getId());
-        }
+    @Override
+    public void update(Subject subject) throws SQLException {
+        String sql = "UPDATE subjects SET name = ? WHERE id = ?";
+        PreparedStatement pStmt = connectDB.getConn().prepareStatement(sql);
+        pStmt.setString(1, subject.getName());
+        pStmt.setInt(2, subject.getId());
+        pStmt.executeUpdate();
+        pStmt.close();
     }
 
+    @Override
     public void delete(Integer id) {
         if (id != null) {
             try {
@@ -136,30 +154,10 @@ public class SubjectDAO implements CRUD {
         }
     }
 
-
-
     @Override
-    public boolean create(Object entity) {
-        return false;
-    }
-
-    @Override
-    public Object findById(int id) {
-        return null;
-    }
-
-    @Override
-    public List findAll() {
-        return List.of();
-    }
-
-    @Override
-    public boolean update(Object entity) {
-        return false;
-    }
-
-    @Override
-    public void delete(int id) {
-
+    public void delete(Subject subject) {
+        if(subject != null && subject.getId() != null) {
+            this.delete(subject.getId());
+        }
     }
 }

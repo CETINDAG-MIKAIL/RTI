@@ -20,10 +20,10 @@ public class Book implements Entity{
     private Subject subject;
     private String title;
     private String isbn;
-    private Integer page_count;
-    private Integer stock_quantity;
+    private Integer pageCount;
+    private Integer stockQuantity;
     private float price;
-    private Integer publish_year;
+    private Integer publishYear;
 
     public Book(Integer id, Author author, Subject subject, String title, String isbn, Integer pageCount, Integer stockQuantity, Integer publishYear, float price) {
         this.id = id;
@@ -31,9 +31,9 @@ public class Book implements Entity{
         this.subject = subject;
         this.title = title;
         this.isbn = isbn;
-        this.page_count = pageCount;
-        this.stock_quantity = stockQuantity;
-        this.publish_year = publishYear;
+        this.pageCount = pageCount;
+        this.stockQuantity = stockQuantity;
+        this.publishYear = publishYear;
         this.price = price;
     }
 
@@ -51,9 +51,9 @@ public class Book implements Entity{
     public Subject getSubject() { return subject; }
     public String getTitle() { return title; }
     public String getIsbn() { return isbn; }
-    public Integer getPage_count() { return page_count; }
-    public Integer getStock_quantity() { return stock_quantity; }
-    public Integer getPublish_year() { return publish_year; }
+    public Integer getPageCount() { return pageCount; }
+    public Integer getStockQuantity() { return stockQuantity; }
+    public Integer getPublishYear() { return publishYear; }
     public float getPrice() { return price; }
 
     //***************************************************
@@ -64,9 +64,9 @@ public class Book implements Entity{
     public void setSubject(Subject subject) { this.subject = subject; }
     public void setTitle(String title) { this.title = title; }
     public void setIsbn(String isbn) { this.isbn = isbn; }
-    public void setPage_count(Integer page_count) { this.page_count = page_count; }
-    public void setStock_quantity(Integer stock_quantity) { this.stock_quantity = stock_quantity; }
-    public void setPublish_year(Integer publish_year) { this.publish_year = publish_year; }
+    public void setPageCount(Integer pageCount) { this.pageCount = pageCount; }
+    public void setStockQuantity(Integer stockQuantity) { this.stockQuantity = stockQuantity; }
+    public void setPublishYear(Integer publishYear) { this.publishYear = publishYear; }
     public void setPrice(float price) { this.price = price; }
 
 
