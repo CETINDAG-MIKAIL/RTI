@@ -6,14 +6,14 @@ public class Caddy implements Entity {
     private Integer id;
     private Client client;
     private LocalDate date;
-    private Integer amount;             // ce sera calculé, donc pas stocké dans la BD
+    private Double amount;             // ce sera calculé, donc pas stocké dans la BD
     private Boolean payed;
 
     public Caddy() {
 
     }
 
-    public Caddy(Integer id, Client client, LocalDate date, Integer amount, Boolean payed) {
+    public Caddy(Integer id, Client client, LocalDate date, Double amount, Boolean payed) {
         this.id = id;
         this.client = client;
         this.date = date;
@@ -46,11 +46,11 @@ public class Caddy implements Entity {
         this.date = date;
     }
 
-    public Integer getAmount() {
+    public Double getAmount() {
         return amount;
     }
 
-    public void setAmount(Integer amount) {
+    public void setAmount(Double amount) {
         this.amount = amount;
     }
 

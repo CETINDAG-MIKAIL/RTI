@@ -15,7 +15,7 @@ import java.util.logging.Logger;
 
 public class CaddyDAO {
     private ConnectDB connectDB;
-    private ArrayList<Caddy> caddies;
+    public ArrayList<Caddy> caddies;
 
     public CaddyDAO() {
         connectDB = new ConnectDB();
@@ -43,20 +43,26 @@ public class CaddyDAO {
     public ArrayList<Caddy> load(CaddySearchVM csvm) {
         try {
             String sql = "SELECT " +
-                    "id, " +
-                    "client_id, " +
-                    "date, " +
-                    "SUM(b.price * ci.quantity) AS amount, " +
-                    "payed " +
+                    "caddies.id, " +
+                    "clients.id, " +
+                    "clients.nom, " +
+                    "clients.prenom, " +
+                    "clients.num_client, " +
+                    "clients.adresse, " +
+                    "caddies.date, " +
+                    "SUM(books.price * caddy_items.quantity) AS amount, " +
+                    "caddies.payed " +
                     "FROM caddies " +
-                    "JOIN clients ON caddies.clientId = clients.id " +
-                    "JOIN caddy_items ON caddies.id = caddy_items.caddyId ";
+                    "JOIN clients ON caddies.client_id = clients.id " +
+                    "JOIN caddy_items ON caddies.id = caddy_items.caddy_id " +
+                    "JOIN books ON caddy_items.book_id = books.id " +
+                    "GROUP BY caddies.id, clients.id, caddies.date, caddies.payed";
 
             if(csvm != null) {
                 String where = "WHERE 1=1 ";
 
                 if(csvm.getId() != null) {
-                    where += "AND id = ? ";
+                    where += "AND caddies.id = ? ";
                 }
 
                 if(csvm.getClientId() != null) {
@@ -64,14 +70,14 @@ public class CaddyDAO {
                 }
 
                 if(csvm.getDate() != null) {
-                    where += "AND date = ? ";
+                    where += "AND caddies.date = ? ";
                 }
 
                 if(csvm.getPayed() != null) {
-                    where += "AND payed LIKE ? ";
+                    where += "AND caddies.payed LIKE ? ";
                 }
 
-                sql += where + "ORDER BY id ASC ";
+                sql += where + "GROUP BY caddies.id, clients.id ORDER BY caddies.id ASC ";
 
                 if(csvm.getMinAmount() != null) {
                     sql += "HAVING amount > ? ";
@@ -113,10 +119,10 @@ public class CaddyDAO {
             while(rs.next()) {
                 Client client = new Client();
                 client.setId(rs.getInt("clients.id"));
-                client.setLastName(rs.getString("clients.lastName"));
-                client.setFirstName(rs.getString("clients.firstName"));
-                client.setNumClient(rs.getInt("clients.numClient"));
-                client.setAddress(rs.getString("clients.address"));
+                client.setLastName(rs.getString("clients.nom"));
+                client.setFirstName(rs.getString("clients.prenom"));
+                client.setNumClient(rs.getInt("clients.num_client"));
+                client.setAddress(rs.getString("clients.adresse"));
 
                 Caddy caddy = new Caddy();
                 caddy.setId(rs.getInt("caddies.id"));
@@ -124,6 +130,13 @@ public class CaddyDAO {
                 caddy.setDate(rs.getDate("caddies.date").toLocalDate());
                 //caddy.setAmount(rs.getInt());     // -> à calculer ????
                 caddy.setPayed(rs.getBoolean("caddies.payed"));
+
+                Double amount = rs.getDouble("amount");
+                if (amount != null) {
+                    caddy.setAmount(amount);
+                } else {
+                    caddy.setAmount(0.0);
+                }
 
                 caddies.add(caddy);
             }

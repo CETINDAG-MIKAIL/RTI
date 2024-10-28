@@ -12,7 +12,7 @@ public class TestCaddies {
         CaddyDAO dao = new CaddyDAO();
 
         Client client = new Client();
-        client.setId(5);
+        client.setId(1);
         client.setLastName("Boss");
         client.setFirstName("Hugo");
         client.setNumClient(10);
@@ -32,6 +32,16 @@ public class TestCaddies {
 
         System.out.println("--- SELECT BY ID ---");
         dao.load();
+
+        // TESTTTTT ça ne fonctionne toujours pas, après remettre dao.caddies en private
+        System.out.println("Affichage des caddy :");
+        for(Caddy caddyyy : dao.caddies) {
+            System.out.println(caddyyy);
+        }
+        System.out.println("--------------");
+        // ------------------------------------------------------------------------------
+
+
         Caddy caddy2 = dao.getById(id);
         System.out.println(caddy2);
     }
