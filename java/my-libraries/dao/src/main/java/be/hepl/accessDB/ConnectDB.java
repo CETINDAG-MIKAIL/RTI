@@ -25,11 +25,6 @@ public class ConnectDB {
             ConnectDB.forName = getSettingString(fileName, "DB_S_FOR_NAME");
         }
 
-        System.out.println("ConnectDB.sCon = " + ConnectDB.sCon);
-        System.out.println("ConnectDB.sUser = " + ConnectDB.sUser);
-        System.out.println("ConnectDB.sPwd = " + ConnectDB.sPwd);
-        System.out.println("ConnectDB.forName = " + ConnectDB.forName);
-
         try {
             Class.forName(forName);
             if (conn == null || conn.isClosed()) {

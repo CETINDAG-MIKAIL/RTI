@@ -44,7 +44,7 @@ public class ClientDAO {
                     "id, " +
                     "nom, " +
                     "prenom, " +
-                    "numClient, " +
+                    "num_client, " +
                     "adresse " +
                     "FROM clients ";
 
@@ -64,7 +64,7 @@ public class ClientDAO {
                 }
 
                 if(csvm.getNumClient() != null) {
-                    where += "AND numClient = ? ";
+                    where += "AND num_client = ? ";
                 }
 
                 if(csvm.getContainAddress() != null) {
@@ -112,10 +112,10 @@ public class ClientDAO {
             while(rs.next()) {
                 Client client = new Client();
                 client.setId(rs.getInt("id"));
-                client.setLastName(rs.getString("lastName"));
-                client.setFirstName(rs.getString("firstName"));
-                client.setNumClient(rs.getInt("numClient"));
-                client.setAddress(rs.getString("address"));
+                client.setLastName(rs.getString("nom"));
+                client.setFirstName(rs.getString("prenom"));
+                client.setNumClient(rs.getInt("num_client"));
+                client.setAddress(rs.getString("adresse"));
 
                 clients.add(client);
             }
@@ -136,7 +136,7 @@ public class ClientDAO {
                     sql = "UPDATE clients SET " +
                             "nom = ?, " +
                             "prenom = ?, " +
-                            "numClient = ?, " +
+                            "num_client = ?, " +
                             "adress = ? " +
                             "WHERE id = ?";
                     PreparedStatement pStmt = connectDB.getConn().prepareStatement(sql);
@@ -148,7 +148,7 @@ public class ClientDAO {
                     pStmt.executeUpdate();
                     pStmt.close();
                 } else { // CREATE
-                    sql = "INSERT INTO clients (nom, prenom, numClient, adresse) VALUES (?, ?, ?, ?)";
+                    sql = "INSERT INTO clients (nom, prenom, num_client, adresse) VALUES (?, ?, ?, ?)";
                     PreparedStatement pStmt = connectDB.getConn().prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS);
                     pStmt.setString(1, client.getLastName());
                     pStmt.setString(2, client.getFirstName());

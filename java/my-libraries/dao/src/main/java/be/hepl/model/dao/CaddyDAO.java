@@ -44,7 +44,7 @@ public class CaddyDAO {
         try {
             String sql = "SELECT " +
                     "id, " +
-                    "clientId, " +
+                    "client_id, " +
                     "date, " +
                     "SUM(b.price * ci.quantity) AS amount, " +
                     "payed " +
@@ -60,7 +60,7 @@ public class CaddyDAO {
                 }
 
                 if(csvm.getClientId() != null) {
-                    where += "AND clientId = ? ";
+                    where += "AND client_id = ? ";
                 }
 
                 if(csvm.getDate() != null) {
@@ -142,7 +142,7 @@ public class CaddyDAO {
             if (caddy != null) {
                 if (caddy.getId() != null) { // UPDATE
                     sql = "UPDATE caddies SET " +
-                            "clientId = ?, " +
+                            "client_id = ?, " +
                             "date = ?, " +
                             "payed = ? " +
                             "WHERE id = ?";
@@ -154,7 +154,7 @@ public class CaddyDAO {
                     pStmt.executeUpdate();
                     pStmt.close();
                 } else { // CREATE
-                    sql = "INSERT INTO caddies (clientId, date, payed) VALUES (?, ?, ?)";
+                    sql = "INSERT INTO caddies (client_id, date, payed) VALUES (?, ?, ?)";
                     PreparedStatement pStmt = connectDB.getConn().prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS);
                     pStmt.setInt(1, caddy.getClient().getId());
                     pStmt.setDate(2, Date.valueOf(caddy.getDate()));

@@ -216,6 +216,7 @@ int main(int argc,char *argv[])
   if (mysql_query(connexion, "CREATE TABLE caddies ("
                        "id INT(4) AUTO_INCREMENT PRIMARY KEY, "
                        "client_id INT, "
+                       "date DATE,"
                        "payed INT, "
                        "FOREIGN KEY (client_id) REFERENCES clients(id));")) {
     finish_with_error(connexion);

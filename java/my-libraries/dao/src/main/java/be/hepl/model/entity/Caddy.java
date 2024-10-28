@@ -61,4 +61,15 @@ public class Caddy implements Entity {
     public void setPayed(Boolean payed) {
         this.payed = payed;
     }
+
+    @Override
+    public String toString() {
+        return "Caddy{" +
+                "id=" + id +
+                ", client=" + (client != null ? client.toString() : "null") +
+                ", date=" + (date != null ? date.toString() : "null") +
+                ", amount=" + amount +
+                ", payed=" + payed +
+                '}';
+    }
 }

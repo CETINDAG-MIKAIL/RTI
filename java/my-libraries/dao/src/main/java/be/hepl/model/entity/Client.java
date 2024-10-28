@@ -58,4 +58,15 @@ public class Client implements Entity {
     public void setAddress(String address) {
         this.address = address;
     }
+
+    @Override
+    public String toString() {
+        return "Client{" +
+                "id=" + id +
+                ", lastName='" + lastName + '\'' +
+                ", firstName='" + firstName + '\'' +
+                ", numClient=" + numClient +
+                ", address='" + address + '\'' +
+                '}';
+    }
 }
