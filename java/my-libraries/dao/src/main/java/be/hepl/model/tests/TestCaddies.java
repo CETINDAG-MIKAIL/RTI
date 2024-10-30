@@ -4,8 +4,11 @@ import be.hepl.model.dao.CaddyDAO;
 import be.hepl.model.dao.ClientDAO;
 import be.hepl.model.entity.Caddy;
 import be.hepl.model.entity.Client;
+import be.hepl.model.viewmodel.CaddySearchVM;
+import be.hepl.model.viewmodel.ClientSearchVM;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 
 public class TestCaddies {
     public static void main(String[] args) {
@@ -30,19 +33,41 @@ public class TestCaddies {
         int id = caddy.getId();
         System.out.println("Ajout réussi : id = " + id);
 
+        System.out.println("\n--- Tous les caddies ---");
+        ArrayList<Caddy> caddies = dao.load();
+        for(Caddy c : caddies) {
+            System.out.println(c);
+        }
+
         System.out.println("--- SELECT BY ID ---");
         dao.load();
-
-        // TESTTTTT ça ne fonctionne toujours pas, après remettre dao.caddies en private
-        System.out.println("Affichage des caddy :");
-        for(Caddy caddyyy : dao.caddies) {
-            System.out.println(caddyyy);
-        }
-        System.out.println("--------------");
-        // ------------------------------------------------------------------------------
-
-
         Caddy caddy2 = dao.getById(id);
         System.out.println(caddy2);
+
+        System.out.println("\n--- SELECT sur account > 10 ---");
+        CaddySearchVM vm = new CaddySearchVM();
+        vm.setMinAmount(10);
+        caddies = dao.load(vm);
+        for(Caddy c : caddies) {
+            System.out.println(c);
+        }
+
+        System.out.println("\n--- SELECT sur account < 50 ---");
+        vm.setMinAmount(null);
+        vm.setMaxAmount(50);
+        caddies = dao.load(vm);
+        for(Caddy c : caddies) {
+            System.out.println(c);
+        }
+
+        System.out.println("\n--- DELETE sur l'id ---");
+        dao.delete(id);
+        System.out.println("Caddy avec id = " + id + " a été supprimé.");
+
+        System.out.println("\n--- Tous les caddies ---");
+        caddies = dao.load();
+        for(Caddy c : caddies) {
+            System.out.println(c);
+        }
     }
 }

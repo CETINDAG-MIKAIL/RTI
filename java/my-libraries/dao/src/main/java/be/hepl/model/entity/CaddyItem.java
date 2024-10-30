@@ -49,4 +49,14 @@ public class CaddyItem implements Entity {
     public void setCaddy(Caddy caddy) {
         this.caddy = caddy;
     }
+
+    @Override
+    public String toString() {
+        return "CaddyItem{" +
+                "id=" + id +
+                ", caddy=" + (caddy != null ? caddy.toString() : "null") +
+                ", book=" + (book != null ? book.toString() : "null") +
+                ", quantity=" + quantity +
+                '}';
+    }
 }

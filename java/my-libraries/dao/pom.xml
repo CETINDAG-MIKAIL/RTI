@@ -5,9 +5,9 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>be.hepl</groupId>
-        <artifactId>RTI</artifactId>
+        <artifactId>my-libraries</artifactId>
         <version>1.0-SNAPSHOT</version>
-        <relativePath>../../../pom.xml</relativePath>
+        <relativePath>../pom.xml</relativePath>
     </parent>
 
     <artifactId>dao</artifactId>
@@ -20,14 +20,15 @@
 
     <dependencies>
         <dependency>
-            <groupId>mysql</groupId>
-            <artifactId>mysql-connector-java</artifactId>
-            <version>8.0.32</version> <!-- Utilisez la dernière version disponible -->
+            <groupId>com.mysql</groupId>
+            <artifactId>mysql-connector-j</artifactId>
+            <version>8.0.32</version>
         </dependency>
 
         <dependency>
             <groupId>be.hepl</groupId>
             <artifactId>file</artifactId>
+            <version>1.0-SNAPSHOT</version>
         </dependency>
     </dependencies>
 </project>

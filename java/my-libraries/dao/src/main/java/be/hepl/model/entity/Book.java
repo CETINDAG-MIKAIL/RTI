@@ -46,7 +46,7 @@ public class Book implements Entity{
     //*********************** GET ***********************
     //***************************************************
     @Override
-    public Integer getId() {return 0;}
+    public Integer getId() {return id;}
     public Author getAuthor() { return author; }
     public Subject getSubject() { return subject; }
     public String getTitle() { return title; }

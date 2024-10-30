@@ -68,7 +68,7 @@ public class ClientDAO {
                 }
 
                 if(csvm.getContainAddress() != null) {
-                    where += "AND adresse LIKE ? ";
+                    where += "AND UPPER(adresse) LIKE UPPER(?) ";
                 }
 
                 sql += where + "ORDER BY id ASC;";
