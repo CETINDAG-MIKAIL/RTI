@@ -22,29 +22,22 @@ public class SubjectDAO implements CRUD<Subject, SubjectSearchVM> {
         subjects = new ArrayList<>();
     }
 
+    @Override
     public ArrayList<Subject> getList() {
         return subjects;
     }
 
-    public Subject getById(Integer id) {
+    @Override
+    public Subject getById(int id) {
         for (Subject subject : subjects) {
-            if (Objects.equals(subject.getId(), id)) {
+            if (subject.getId() == id) {
                 return subject;
             }
         }
         return null;
     }
 
-
-    public ArrayList<Subject> load() {
-        return this.load(null);
-    }
-    public ArrayList<Subject> load(SubjectSearchVM ssvm) {
-        ArrayList<Subject> subjects = new ArrayList<>();
-        subjects = read(ssvm);
-
-        return subjects;
-    }
+    @Override
     public void save(Subject subject) {
         try {
             String sql;
@@ -60,7 +53,6 @@ public class SubjectDAO implements CRUD<Subject, SubjectSearchVM> {
         }
     }
 
-  
     @Override
     public void create(Subject subject) throws SQLException {
         String sql = "INSERT INTO subjects (name) VALUES (?)";
@@ -79,7 +71,7 @@ public class SubjectDAO implements CRUD<Subject, SubjectSearchVM> {
         try {
             String sql = "SELECT"+
                     " subjects.id, "+
-                    "subjects.name,  "+
+                    "subjects.name  "+
                     "FROM subjects ";
 
             if (search != null) {
@@ -126,7 +118,7 @@ public class SubjectDAO implements CRUD<Subject, SubjectSearchVM> {
 
     @Override
     public ArrayList<Subject> read() {
-        return this.load(null);
+        return this.read(null);
     }
 
     @Override
@@ -143,6 +135,12 @@ public class SubjectDAO implements CRUD<Subject, SubjectSearchVM> {
     public void delete(Integer id) {
         if (id != null) {
             try {
+                String deleteBooksSQL = "DELETE FROM books WHERE subject_id = ?";
+                PreparedStatement stmtBooks = connectDB.getConn().prepareStatement(deleteBooksSQL);
+                stmtBooks.setInt(1, id);
+                stmtBooks.executeUpdate();
+                stmtBooks.close();
+
                 String sql = "DELETE FROM subjects WHERE id = ?";
                 PreparedStatement stmt = connectDB.getConn().prepareStatement(sql);
                 stmt.setInt(1, id);

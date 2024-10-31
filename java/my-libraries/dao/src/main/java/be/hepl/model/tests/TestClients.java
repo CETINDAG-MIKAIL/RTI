@@ -22,20 +22,20 @@ public class TestClients {
         System.out.println("Ajout réussi : id = " + id);
 
         System.out.println("\n--- Tous les clients ---");
-        ArrayList<Client> clients = dao.load();
+        ArrayList<Client> clients = dao.read();
         for(Client c : clients) {
             System.out.println(c);
         }
 
         System.out.println("\n--- SELECT BY ID ---");
-        dao.load();
+        dao.read();
         Client client2 = dao.getById(id);
         System.out.println(client2);
 
         System.out.println("\n--- SELECT sur le prénom ---");
         ClientSearchVM vm = new ClientSearchVM();
         vm.setFirstName("Claude");
-        clients = dao.load(vm);
+        clients = dao.read(vm);
         for(Client c : clients) {
             System.out.println(c);
         }
@@ -43,7 +43,7 @@ public class TestClients {
         System.out.println("\n--- SELECT sur l'adresse contenant 'seraing' ---");
         vm.setFirstName(null);
         vm.setContainAddress("seraing");
-        clients = dao.load(vm);
+        clients = dao.read(vm);
         for(Client c : clients) {
             System.out.println(c);
         }
@@ -53,7 +53,7 @@ public class TestClients {
         System.out.println("Client avec id = " + id + " a été supprimé.");
 
         System.out.println("\n--- Tous les clients ---");
-        clients = dao.load();
+        clients = dao.read();
         for(Client c : clients) {
             System.out.println(c);
         }

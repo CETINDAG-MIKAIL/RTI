@@ -1,8 +1,10 @@
 package be.hepl.model.dao;
 
 import be.hepl.accessDB.ConnectDB;
+import be.hepl.model.entity.Author;
 import be.hepl.model.entity.Caddy;
 import be.hepl.model.entity.Client;
+import be.hepl.model.viewmodel.AuthorSearchVM;
 import be.hepl.model.viewmodel.CaddySearchVM;
 
 import java.sql.Date;
@@ -13,7 +15,7 @@ import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class CaddyDAO {
+public class CaddyDAO implements CRUD<Caddy, CaddySearchVM> {
     private ConnectDB connectDB;
     private ArrayList<Caddy> caddies;
 
@@ -22,10 +24,12 @@ public class CaddyDAO {
         caddies = new ArrayList<>();
     }
 
+    @Override
     public ArrayList<Caddy> getList() {
         return caddies;
     }
 
+    @Override
     public Caddy getById(int id) {
         for (Caddy caddy : caddies) {
             if (caddy.getId() == id) {
@@ -35,12 +39,14 @@ public class CaddyDAO {
         return null;
     }
 
-    public ArrayList<Caddy> load() {
-        return this.load(null);
+    @Override
+    public ArrayList<Caddy> read() {
+        return this.read(null);
     }
 
     // language=sql
-    public ArrayList<Caddy> load(CaddySearchVM csvm) {
+    @Override
+    public ArrayList<Caddy> read(CaddySearchVM csvm) {
         try {
             String sql = "SELECT " +
                     "caddies.id AS caddy_id, " +
@@ -160,36 +166,15 @@ public class CaddyDAO {
         }
     }
 
+    @Override
     public void save(Caddy caddy) {
         try {
             String sql;
             if (caddy != null) {
                 if (caddy.getId() != null) { // UPDATE
-                    sql = "UPDATE caddies SET " +
-                            "client_id = ?, " +
-                            "date = ?, " +
-                            "payed = ? " +
-                            "WHERE id = ?";
-                    PreparedStatement pStmt = connectDB.getConn().prepareStatement(sql);
-                    pStmt.setInt(1, caddy.getClient().getId());
-                    pStmt.setDate(2, Date.valueOf(caddy.getDate()));
-                    pStmt.setBoolean(3, caddy.getPayed());
-                    pStmt.setInt(4, caddy.getId());
-                    pStmt.executeUpdate();
-                    pStmt.close();
+                    update(caddy);
                 } else { // CREATE
-                    sql = "INSERT INTO caddies (client_id, date, payed) VALUES (?, ?, ?)";
-                    PreparedStatement pStmt = connectDB.getConn().prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS);
-                    pStmt.setInt(1, caddy.getClient().getId());
-                    pStmt.setDate(2, Date.valueOf(caddy.getDate()));
-                    pStmt.setBoolean(3, caddy.getPayed());
-                    pStmt.executeUpdate();
-                    ResultSet rs = pStmt.getGeneratedKeys();
-                    if (rs.next()) {
-                        caddy.setId(rs.getInt(1));         // set the generated ID
-                    }
-                    rs.close();
-                    pStmt.close();
+                    create(caddy);
                 }
             }
         } catch (SQLException ex) {
@@ -197,17 +182,59 @@ public class CaddyDAO {
         }
     }
 
+    @Override
+    public void update(Caddy caddy) throws SQLException {
+        String sql;
+        sql = "UPDATE caddies SET " +
+                "client_id = ?, " +
+                "date = ?, " +
+                "payed = ? " +
+                "WHERE id = ?";
+        PreparedStatement pStmt = connectDB.getConn().prepareStatement(sql);
+        pStmt.setInt(1, caddy.getClient().getId());
+        pStmt.setDate(2, Date.valueOf(caddy.getDate()));
+        pStmt.setBoolean(3, caddy.getPayed());
+        pStmt.setInt(4, caddy.getId());
+        pStmt.executeUpdate();
+        pStmt.close();
+    }
+
+    @Override
+    public void create(Caddy caddy) throws SQLException {
+        String sql;
+        sql = "INSERT INTO caddies (client_id, date, payed) VALUES (?, ?, ?)";
+        PreparedStatement pStmt = connectDB.getConn().prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS);
+        pStmt.setInt(1, caddy.getClient().getId());
+        pStmt.setDate(2, Date.valueOf(caddy.getDate()));
+        pStmt.setBoolean(3, caddy.getPayed());
+        pStmt.executeUpdate();
+        ResultSet rs = pStmt.getGeneratedKeys();
+        if (rs.next()) {
+            caddy.setId(rs.getInt(1));         // set the generated ID
+        }
+        rs.close();
+        pStmt.close();
+    }
+
+    @Override
     public void delete(Caddy caddy) {
         if(caddy != null && caddy.getId() != null) {
             this.delete(caddy.getId());
         }
     }
 
+    @Override
     public void delete(Integer id) {
         if(id != null) {
             try {
-                String sql = "DELETE FROM clients WHERE id = ?";
+                String sql = "DELETE FROM caddy_items WHERE caddy_id = ?";
                 PreparedStatement stmt = connectDB.getConn().prepareStatement(sql);
+                stmt.setInt(1, id);;
+                stmt.executeUpdate();
+                stmt.close();
+
+                sql = "DELETE FROM caddies WHERE id = ?";
+                stmt = connectDB.getConn().prepareStatement(sql);
                 stmt.setInt(1, id);;
                 stmt.executeUpdate();
                 stmt.close();

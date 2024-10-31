@@ -25,28 +25,22 @@ public class BookDAO implements CRUD<Book, BookSearchVM> {
         books = new ArrayList<>();
     }
 
+    @Override
     public ArrayList<Book> getList() {
         return books;
     }
 
-    public Book getById(Integer id) {
+    @Override
+    public Book getById(int id) {
         for (Book book : books) {
-            if (Objects.equals(book.getId(), id)) {
+            if (book.getId() == id) {
                 return book;
             }
         }
         return null;
     }
 
-    public ArrayList<Book> load() {
-        return this.load(null);
-    }
-
-    public ArrayList<Book> load(BookSearchVM bsvm) {
-        ArrayList<Book> books = new ArrayList<>();
-        books = read(bsvm);
-        return books;
-    }
+    @Override
     public void save(Book book) {
         try {
             String sql;
@@ -61,8 +55,6 @@ public class BookDAO implements CRUD<Book, BookSearchVM> {
             Logger.getLogger(BookDAO.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-
-
 
    @Override
     public void create(Book book) throws SQLException {
@@ -87,7 +79,7 @@ public class BookDAO implements CRUD<Book, BookSearchVM> {
 
     @Override
     public ArrayList<Book> read() {
-        return this.load(null);
+        return this.read(null);
     }
 
     @Override
@@ -98,12 +90,14 @@ public class BookDAO implements CRUD<Book, BookSearchVM> {
                     "books.title, " +
                     "books.isbn, " +
                     "books.page_count, " +
-                    "books.stock_quantity, "+
+                    "books.stock_quantity, " +
                     "books.publish_year, " +
-                    "books.price, "+
-                    "books.author_id, "+
-                    "books.subject_id " +
-                    "FROM books ";
+                    "books.price, " +
+                    "authors.id AS author_id, authors.last_name AS author_last_name, authors.first_name AS author_first_name, authors.birth_date AS author_birth_date, " +
+                    "subjects.id AS subject_id, subjects.name AS subject_name " +
+                    "FROM books " +
+                    "JOIN authors ON books.author_id = authors.id " +
+                    "JOIN subjects ON books.subject_id = subjects.id ";
 
             if (search != null) {
                 String where = " WHERE 1=1 ";
@@ -116,30 +110,32 @@ public class BookDAO implements CRUD<Book, BookSearchVM> {
                 if (search.getIsbn() != null && search.getIsbn().length() > 0) {
                     where += "AND books.isbn LIKE ? ";
                 }
+                sql += where;
+
+                // Vous utilisez WHERE pour les filtres sur les colonnes sans agrégation
                 if (search.getMinPageCount() != null) {
-                    where += "AND books.page_count >= ? ";
+                    sql += " AND books.page_count >= ? "; // Remplacez HAVING par AND dans WHERE
                 }
                 if (search.getMaxPageCount() != null) {
-                    where += "AND books.page_count <= ? ";
-                }
-                if (search.getMinStockQuantity() != null) {
-                    where += "AND books.stock_quantity >= ? ";
-                }
-                if (search.getMinStockQuantity() != null) {
-                    where += "AND books.publish_year >= ? ";
-                }
-                if (search.getMaxPublishYear() != null) {
-                    where += "AND books.publish_year <= ? ";
+                    sql += " AND books.page_count <= ? "; // Remplacez HAVING par AND dans WHERE
                 }
                 if (search.getMinPrice() > 0) {
-                    where += "AND books.price >= ? ";
+                    sql += " AND books.price >= ? "; // Remplacez HAVING par AND dans WHERE
                 }
                 if (search.getMaxPrice() > 0) {
-                    where += "AND books.price <= ? ";
+                    sql += " AND books.price <= ? "; // Remplacez HAVING par AND dans WHERE
                 }
-                sql += where + "ORDER BY books.title ASC;";
+                if (search.getMinStockQuantity() != null) {
+                    sql += " AND books.stock_quantity >= ? "; // Remplacez HAVING par AND dans WHERE
+                }
+                if (search.getMaxPublishYear() != null) {
+                    sql += " AND books.publish_year <= ? "; // Remplacez HAVING par AND dans WHERE
+                }
+                if (search.getMinPublishYear() != null) {
+                    sql += " AND books.publish_year >= ? "; // Remplacez HAVING par AND dans WHERE
+                }
+                sql += " ORDER BY books.title ASC;";
             }
-
             PreparedStatement stmt = connectDB.getConn().prepareStatement(sql);
 
             if (search != null) {
@@ -161,6 +157,7 @@ public class BookDAO implements CRUD<Book, BookSearchVM> {
                     stmt.setInt(paramNumber, search.getMinPageCount());
                 }
                 if (search.getMaxPageCount() != null) {
+                    System.out.println("maxPageCount: " + search.getMaxPageCount());
                     paramNumber++;
                     stmt.setInt(paramNumber, search.getMaxPageCount());
                 }
@@ -197,8 +194,16 @@ public class BookDAO implements CRUD<Book, BookSearchVM> {
                 Integer publishYear = rs.getInt("books.publish_year");
                 float price = rs.getFloat("books.price");
 
-                Author author = new AuthorDAO().getById(rs.getInt("books.author_id"));
-                Subject subject = new SubjectDAO().getById(rs.getInt("books.subject_id"));
+                Author author = new Author();
+                author.setId(rs.getInt("author_id"));
+                author.setLastName(rs.getString("author_last_name"));
+                author.setFirstName(rs.getString("author_first_name"));
+                author.setBirthDate(rs.getDate("author_birth_date").toLocalDate().toString());
+
+                Subject subject = new Subject();
+                subject.setId(rs.getInt("subject_id"));
+                subject.setName(rs.getString("subject_name"));
+
 
                 Book book = new Book(id, author, subject, title, isbn, pageCount, stockQuantity, publishYear, price);
                 books.add(book);
@@ -210,7 +215,6 @@ public class BookDAO implements CRUD<Book, BookSearchVM> {
             return books;
         }
     }
-
 
     @Override
     public void update(Book book) throws SQLException {
@@ -258,6 +262,4 @@ public class BookDAO implements CRUD<Book, BookSearchVM> {
             this.delete(book.getId());
         }
     }
-
-
 }

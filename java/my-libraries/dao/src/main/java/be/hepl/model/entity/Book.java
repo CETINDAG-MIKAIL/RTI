@@ -1,17 +1,5 @@
 package be.hepl.model.entity;
-/*
-       typedef struct {
-           Integer   id;
-           Integer   author_id;    // clé étrangère
-           Integer   subject_id;   // clé étrangère
-           char  title[100];
-           char  isbn[20];
-           Integer   page_count;
-           Integer   stock_quantity;
-           float price;
-           Integer   publish_year;
-       } BOOK;
-   */
+
 public class Book implements Entity{
 
 
@@ -22,10 +10,10 @@ public class Book implements Entity{
     private String isbn;
     private Integer pageCount;
     private Integer stockQuantity;
-    private float price;
+    private Float price;
     private Integer publishYear;
 
-    public Book(Integer id, Author author, Subject subject, String title, String isbn, Integer pageCount, Integer stockQuantity, Integer publishYear, float price) {
+    public Book(Integer id, Author author, Subject subject, String title, String isbn, Integer pageCount, Integer stockQuantity, Integer publishYear, Float price) {
         this.id = id;
         this.author = author;
         this.subject = subject;
@@ -36,7 +24,20 @@ public class Book implements Entity{
         this.publishYear = publishYear;
         this.price = price;
     }
-
+    @Override
+    public String toString() {
+        return "Book{" +
+                "id=" + id +
+                ", author=" + (author != null ? author : "Unknown") +
+                ", subject=" + (subject != null ? subject : "Unknown") +
+                ", title='" + title + '\'' +
+                ", isbn='" + isbn + '\'' +
+                ", pageCount=" + pageCount +
+                ", stockQuantity=" + stockQuantity +
+                ", publishYear=" + publishYear +
+                ", price=" + price +
+                '}';
+    }
     public Book() {
 
     }
@@ -54,7 +55,7 @@ public class Book implements Entity{
     public Integer getPageCount() { return pageCount; }
     public Integer getStockQuantity() { return stockQuantity; }
     public Integer getPublishYear() { return publishYear; }
-    public float getPrice() { return price; }
+    public Float getPrice() { return price; }
 
     //***************************************************
     //*********************** SET ***********************
@@ -67,7 +68,7 @@ public class Book implements Entity{
     public void setPageCount(Integer pageCount) { this.pageCount = pageCount; }
     public void setStockQuantity(Integer stockQuantity) { this.stockQuantity = stockQuantity; }
     public void setPublishYear(Integer publishYear) { this.publishYear = publishYear; }
-    public void setPrice(float price) { this.price = price; }
+    public void setPrice(Float price) { this.price = price; }
 
 
 }

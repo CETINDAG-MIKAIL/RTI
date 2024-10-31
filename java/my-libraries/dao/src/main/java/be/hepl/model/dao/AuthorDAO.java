@@ -24,29 +24,23 @@ public class AuthorDAO implements CRUD<Author, AuthorSearchVM> {
         authors = new ArrayList<>();
     }
 
+    @Override
     public ArrayList<Author> getList() {
         return authors;
     }
 
-    public Author getById(Integer id) {
-        for (Author entity : authors) {
-            if (Objects.equals(entity.getId(), id)) {
-                return entity;
+    @Override
+    public Author getById(int id) {
+        for (Author author : authors) {
+            if (author.getId() == id) {
+                System.out.println("getById : parametre id :" + id);
+                return author;
             }
         }
         return null;
     }
 
-    public ArrayList<Author> load() {
-        return this.load(null);
-    }
-
-    public ArrayList<Author> load(AuthorSearchVM csvm) {
-        ArrayList<Author> authors = new ArrayList<>();
-        authors = read(csvm);
-        return authors;
-    }
-
+    @Override
     public void save(Author author) {
         try {
             String sql;
@@ -78,7 +72,7 @@ public class AuthorDAO implements CRUD<Author, AuthorSearchVM> {
 
     @Override
     public ArrayList<Author> read() {
-        return this.load(null);
+        return this.read(null);
     }
     @Override
     public ArrayList<Author> read(AuthorSearchVM search) {
@@ -101,7 +95,7 @@ public class AuthorDAO implements CRUD<Author, AuthorSearchVM> {
                 if (search.getFirstName() != null && search.getFirstName().length() > 0) {
                     where += "AND authors.first_name LIKE ? ";
                 }
-                if (search.getBirthDate() != null) {
+                if (search.getBirthDate() != null && search.getBirthDate().length() > 0) {
                     where += "AND authors.birth_date = ? ";
                 }
                 sql += where + "ORDER BY authors.last_name ASC;";
@@ -169,6 +163,14 @@ public class AuthorDAO implements CRUD<Author, AuthorSearchVM> {
         {
             if (id != null) {
                 try {
+                    // Supprimer les livres associés à cet auteur
+                    String deleteBooksSQL = "DELETE FROM books WHERE author_id = ?";
+                    PreparedStatement stmtBooks = connectDB.getConn().prepareStatement(deleteBooksSQL);
+                    stmtBooks.setInt(1, id);
+                    stmtBooks.executeUpdate();
+                    stmtBooks.close();
+
+                    // Supprimer l'auteur
                     String sql = "DELETE FROM authors WHERE id = ?";
                     PreparedStatement stmt = connectDB.getConn().prepareStatement(sql);
                     stmt.setInt(1, id);

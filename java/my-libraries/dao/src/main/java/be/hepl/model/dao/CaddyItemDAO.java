@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class CaddyItemDAO {
+public class CaddyItemDAO implements CRUD<CaddyItem, CaddyItemSearchVM> {
     private ConnectDB connectDB;
     private ArrayList<CaddyItem> caddyItems;
 
@@ -20,10 +20,12 @@ public class CaddyItemDAO {
         caddyItems = new ArrayList<>();
     }
 
+    @Override
     public ArrayList<CaddyItem> getList() {
         return caddyItems;
     }
 
+    @Override
     public CaddyItem getById(int id) {
         for (CaddyItem caddyItem : caddyItems) {
             if (caddyItem.getId() == id) {
@@ -33,12 +35,14 @@ public class CaddyItemDAO {
         return null;
     }
 
-    public ArrayList<CaddyItem> load() {
-        return this.load(null);
+    @Override
+    public ArrayList<CaddyItem> read() {
+        return this.read(null);
     }
 
     // language=sql
-    public ArrayList<CaddyItem> load(CaddyItemSearchVM cisvm) {
+    @Override
+    public ArrayList<CaddyItem> read(CaddyItemSearchVM cisvm) {
         try {
             String sql = "SELECT " +
                     "caddy_items.id AS caddy_item_id, " +
@@ -69,10 +73,10 @@ public class CaddyItemDAO {
                     "subjects.name AS subject_name " +
                     "FROM caddy_items " +
                     "JOIN caddies ON caddy_items.caddy_id = caddies.id " +
-                    "JOIN clients ON caddies.client_id = clients.id " +
-                    "JOIN books ON caddy_items.book_id = books.id " +
-                    "JOIN authors ON books.author_id = authors.id " +
-                    "JOIN subjects ON books.subject_id = subjects.id";
+                    "LEFT JOIN clients ON caddies.client_id = clients.id " +
+                    "LEFT JOIN books ON caddy_items.book_id = books.id " +
+                    "LEFT JOIN authors ON books.author_id = authors.id " +
+                    "LEFT JOIN subjects ON books.subject_id = subjects.id ";
 
             if(cisvm != null) {
                 String where = "WHERE 1=1 ";
@@ -89,7 +93,7 @@ public class CaddyItemDAO {
                     where += "AND caddy_items.book_id = ? ";
                 }
 
-                sql += where + "ORDER BY id ASC ";
+                sql += where + "ORDER BY caddy_items.id ASC ";
             }
 
             PreparedStatement stmt = connectDB.getConn().prepareStatement(sql);
@@ -170,53 +174,66 @@ public class CaddyItemDAO {
         }
     }
 
-
-
+    @Override
     public void save(CaddyItem caddyItem) {
         try {
-            String sql;
-            if (caddyItem.getId() != null) { // UPDATE
-                sql = "UPDATE caddy_items SET " +
-                        "caddy_id = ?, " +
-                        "book_id = ?, " +
-                        "quantity = ? " +
-                        "WHERE id = ?";
-                PreparedStatement pStmt = connectDB.getConn().prepareStatement(sql);
-                pStmt.setInt(1, caddyItem.getCaddy().getId());
-                pStmt.setInt(2, caddyItem.getBook().getId());
-                pStmt.setInt(3, caddyItem.getQuantity());
-                pStmt.setInt(4, caddyItem.getId());
-                    pStmt.executeUpdate();
-            } else { // CREATE
-                System.out.println("Caddy ID: " + caddyItem.getCaddy().getId());
-                System.out.println("Book ID: " + caddyItem.getBook().getId());
-                System.out.println("Quantity: " + caddyItem.getQuantity());
-
-                sql = "INSERT INTO caddy_items (caddy_id, book_id, quantity) VALUES (?, ?, ?)";
-                PreparedStatement pStmt = connectDB.getConn().prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS);
-                pStmt.setInt(1, caddyItem.getCaddy().getId());
-                pStmt.setInt(2, caddyItem.getBook().getId());
-                pStmt.setInt(3, caddyItem.getQuantity());
-                pStmt.executeUpdate();
-                ResultSet rs = pStmt.getGeneratedKeys();
-
-                if (rs.next()) {
-                    caddyItem.setId(rs.getInt(1)); // set the generated ID
+            if (caddyItem != null) {
+                if (caddyItem.getId() != null) { // UPDATE
+                    update(caddyItem);
+                } else { // CREATE
+                    create(caddyItem);
                 }
-                rs.close();
-                pStmt.close();
             }
         } catch (SQLException ex) {
-            Logger.getLogger(CaddyItem.class.getName()).log(Level.SEVERE, "Error saving CaddyItem", ex);
+            Logger.getLogger(ClientDAO.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
+
+    @Override
+    public void create(CaddyItem caddyItem) throws SQLException {
+        String sql;
+        sql = "INSERT INTO caddy_items (caddy_id, book_id, quantity) VALUES (?, ?, ?)";
+        PreparedStatement pStmt = connectDB.getConn().prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS);
+        pStmt.setInt(1, caddyItem.getCaddy().getId());
+        pStmt.setInt(2, caddyItem.getBook().getId());
+        pStmt.setInt(3, caddyItem.getQuantity());
+        pStmt.executeUpdate();
+        ResultSet rs = pStmt.getGeneratedKeys();
+
+        if (rs.next()) {
+            caddyItem.setId(rs.getInt(1)); // set the generated ID
+        }
+        rs.close();
+        pStmt.close();
+    }
+
+    @Override
+    public void update(CaddyItem caddyItem) throws SQLException {
+        String sql;
+        if (caddyItem.getId() != null) { // UPDATE
+            sql = "UPDATE caddy_items SET " +
+                    "caddy_id = ?, " +
+                    "book_id = ?, " +
+                    "quantity = ? " +
+                    "WHERE id = ?";
+            PreparedStatement pStmt = connectDB.getConn().prepareStatement(sql);
+            pStmt.setInt(1, caddyItem.getCaddy().getId());
+            pStmt.setInt(2, caddyItem.getBook().getId());
+            pStmt.setInt(3, caddyItem.getQuantity());
+            pStmt.setInt(4, caddyItem.getId());
+            pStmt.executeUpdate();
+        }
+    }
+
+    @Override
     public void delete(CaddyItem caddyItem) {
         if(caddyItem != null && caddyItem.getId() != null) {
             this.delete(caddyItem.getId());
         }
     }
 
+    @Override
     public void delete(Integer id) {
         if(id != null) {
             try {

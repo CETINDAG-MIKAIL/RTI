@@ -2,8 +2,11 @@ package be.hepl.model.tests;
 
 import be.hepl.model.dao.CaddyItemDAO;
 import be.hepl.model.entity.*;
+import be.hepl.model.viewmodel.CaddyItemSearchVM;
+import be.hepl.model.viewmodel.CaddySearchVM;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 
 public class TestCaddyItems {
     public static void main(String[] args) {
@@ -57,7 +60,7 @@ public class TestCaddyItems {
         book.setIsbn("9910154");
         book.setPageCount(155);
         book.setStockQuantity(8000);
-        book.setPrice(19);
+        book.setPrice(19F);
         book.setPublishYear(2015);
 
         // Créer un CaddyItem
@@ -68,18 +71,45 @@ public class TestCaddyItems {
         caddyItem.setQuantity(100); // Quantité à ajouter
 
         dao.save(caddyItem);
-
-        System.out.println("Ajout réussi : id = " + caddyItem.getId());
-
-
         int id = caddyItem.getId();
         System.out.println("Ajout réussi : id = " + id);
 
-        System.out.println("--- SELECT BY ID ---");
-        dao.load();
 
+        System.out.println("\n--- Tous les caddyItems ---");
+        ArrayList<CaddyItem> caddyItems = dao.read();
+        for(CaddyItem c : caddyItems) {
+            System.out.println(c);
+        }
 
+        System.out.println("\n--- SELECT BY ID ---");
+        dao.read();
         CaddyItem caddyItem2 = dao.getById(id);
         System.out.println(caddyItem2);
+
+        System.out.println("\n--- SELECT sur caddy_id = 2 ---");
+        CaddyItemSearchVM vm = new CaddyItemSearchVM();
+        vm.setCaddyId(2);
+        caddyItems = dao.read(vm);
+        for(CaddyItem c : caddyItems) {
+            System.out.println(c);
+        }
+
+        System.out.println("\n--- SELECT sur book_id = 14 ---");
+        vm.setCaddyId(null);
+        vm.setBookId(14);
+        caddyItems = dao.read(vm);
+        for(CaddyItem c : caddyItems) {
+            System.out.println(c);
+        }
+
+        System.out.println("\n--- DELETE sur l'id ---");
+        dao.delete(id);
+        System.out.println("Caddy avec id = " + id + " a été supprimé.");
+
+        System.out.println("\n--- Tous les caddyItems ---");
+        caddyItems = dao.read();
+        for(CaddyItem c : caddyItems) {
+            System.out.println(c);
+        }
     }
 }

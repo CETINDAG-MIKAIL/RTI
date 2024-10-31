@@ -34,20 +34,20 @@ public class TestCaddies {
         System.out.println("Ajout réussi : id = " + id);
 
         System.out.println("\n--- Tous les caddies ---");
-        ArrayList<Caddy> caddies = dao.load();
+        ArrayList<Caddy> caddies = dao.read();
         for(Caddy c : caddies) {
             System.out.println(c);
         }
 
-        System.out.println("--- SELECT BY ID ---");
-        dao.load();
+        System.out.println("\n--- SELECT BY ID ---");
+        dao.read();
         Caddy caddy2 = dao.getById(id);
         System.out.println(caddy2);
 
         System.out.println("\n--- SELECT sur account > 10 ---");
         CaddySearchVM vm = new CaddySearchVM();
         vm.setMinAmount(10);
-        caddies = dao.load(vm);
+        caddies = dao.read(vm);
         for(Caddy c : caddies) {
             System.out.println(c);
         }
@@ -55,7 +55,15 @@ public class TestCaddies {
         System.out.println("\n--- SELECT sur account < 50 ---");
         vm.setMinAmount(null);
         vm.setMaxAmount(50);
-        caddies = dao.load(vm);
+        caddies = dao.read(vm);
+        for(Caddy c : caddies) {
+            System.out.println(c);
+        }
+
+        System.out.println("\n--- SELECT sur payed = true ---");
+        vm.setMaxAmount(null);
+        vm.setPayed(true);
+        caddies = dao.read(vm);
         for(Caddy c : caddies) {
             System.out.println(c);
         }
@@ -65,7 +73,7 @@ public class TestCaddies {
         System.out.println("Caddy avec id = " + id + " a été supprimé.");
 
         System.out.println("\n--- Tous les caddies ---");
-        caddies = dao.load();
+        caddies = dao.read();
         for(Caddy c : caddies) {
             System.out.println(c);
         }

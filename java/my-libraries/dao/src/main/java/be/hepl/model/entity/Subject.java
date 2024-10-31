@@ -1,12 +1,5 @@
 package be.hepl.model.entity;
-/*
 
-    typedef struct {
-        int  id;
-        char name[20];
-    } SUBJECT;
-
-*/
 public class Subject implements Entity {
     private Integer id;
     private String name;
@@ -19,12 +12,16 @@ public class Subject implements Entity {
     public Subject() {
 
     }
+    @Override
+    public String toString() {
+        return "subject [id=" + id + ", name=" + name + "]";
+    }
 
     //***************************************************
     //*********************** GET ***********************
     //***************************************************
     @Override
-    public Integer getId() {return 0;}
+    public Integer getId() {return id;}
     public String getName() {return name;}
 
     //***************************************************

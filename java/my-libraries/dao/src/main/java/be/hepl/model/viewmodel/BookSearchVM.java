@@ -14,8 +14,8 @@ public class BookSearchVM {
     private Integer maxPageCount;
     private Integer minPageCount;
     private Integer minStockQuantity;
-    private float minPrice;
-    private float maxPrice;
+    private Float minPrice;
+    private Float maxPrice;
     private Integer minPublishYear;
     private Integer maxPublishYear;
 
@@ -69,19 +69,19 @@ public class BookSearchVM {
         this.minPublishYear = minPublishYear;
     }
 
-    public float getMaxPrice() {
+    public Float getMaxPrice() {
         return maxPrice;
     }
 
-    public void setMaxPrice(float maxPrice) {
+    public void setMaxPrice(Float maxPrice) {
         this.maxPrice = maxPrice;
     }
 
-    public float getMinPrice() {
+    public Float getMinPrice() {
         return minPrice;
     }
 
-    public void setMinPrice(float minPrice) {
+    public void setMinPrice(Float minPrice) {
         this.minPrice = minPrice;
     }
 

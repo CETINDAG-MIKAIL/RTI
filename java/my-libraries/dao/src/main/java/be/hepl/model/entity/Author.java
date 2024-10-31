@@ -14,17 +14,30 @@ public class Author implements Entity{
     private String birthDate;
 
     public Author(Integer authorId, String lastName, String firstName, String birthDate) {
+        this.id = authorId;
+        this.lastName = lastName;
+        this.firstName = firstName;
+        this.birthDate = birthDate;
     }
 
     public Author() {
 
+    }
+    @Override
+    public String toString() {
+        return "Author{" +
+                "id=" + id +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", birthDate='" + birthDate + '\'' +
+                '}';
     }
 
     //***************************************************
     //*********************** GET ***********************
     //***************************************************
     @Override
-    public Integer getId() {return 0;}
+    public Integer getId() {return id;}
     public String getFirstName() {return firstName;}
     public String getLastName() {return lastName;}
     public String getBirthDate() {return birthDate;}

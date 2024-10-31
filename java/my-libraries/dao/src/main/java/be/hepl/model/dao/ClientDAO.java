@@ -1,17 +1,20 @@
 package be.hepl.model.dao;
 
 import be.hepl.accessDB.ConnectDB;
+import be.hepl.model.entity.Author;
 import be.hepl.model.entity.Client;
+import be.hepl.model.viewmodel.AuthorSearchVM;
 import be.hepl.model.viewmodel.ClientSearchVM;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class ClientDAO {
+public class ClientDAO implements CRUD<Client, ClientSearchVM> {
     private ConnectDB connectDB;
     private ArrayList<Client> clients;
 
@@ -20,10 +23,12 @@ public class ClientDAO {
         clients = new ArrayList<>();
     }
 
+    @Override
     public ArrayList<Client> getList() {
         return clients;
     }
 
+    @Override
     public Client getById(int id) {
         for (Client client : clients) {
             if (client.getId() == id) {
@@ -33,12 +38,14 @@ public class ClientDAO {
         return null;
     }
 
-    public ArrayList<Client> load() {
-        return this.load(null);
+    @Override
+    public ArrayList<Client> read() {
+        return this.read(null);
     }
 
     // language=sql
-    public ArrayList<Client> load(ClientSearchVM csvm) {
+    @Override
+    public ArrayList<Client> read(ClientSearchVM csvm) {
         try {
             String sql = "SELECT " +
                     "id, " +
@@ -128,39 +135,14 @@ public class ClientDAO {
         }
     }
 
+    @Override
     public void save(Client client) {
         try {
-            String sql;
             if (client != null) {
                 if (client.getId() != null) { // UPDATE
-                    sql = "UPDATE clients SET " +
-                            "nom = ?, " +
-                            "prenom = ?, " +
-                            "num_client = ?, " +
-                            "adress = ? " +
-                            "WHERE id = ?";
-                    PreparedStatement pStmt = connectDB.getConn().prepareStatement(sql);
-                    pStmt.setString(1, client.getLastName());
-                    pStmt.setString(2, client.getFirstName());
-                    pStmt.setInt(3, client.getNumClient());
-                    pStmt.setString(4, client.getAddress());
-                    pStmt.setInt(5, client.getId());
-                    pStmt.executeUpdate();
-                    pStmt.close();
+                    update(client);
                 } else { // CREATE
-                    sql = "INSERT INTO clients (nom, prenom, num_client, adresse) VALUES (?, ?, ?, ?)";
-                    PreparedStatement pStmt = connectDB.getConn().prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS);
-                    pStmt.setString(1, client.getLastName());
-                    pStmt.setString(2, client.getFirstName());
-                    pStmt.setInt(3, client.getNumClient());
-                    pStmt.setString(4, client.getAddress());
-                    pStmt.executeUpdate();
-                    ResultSet rs = pStmt.getGeneratedKeys();
-                    if (rs.next()) {
-                        client.setId(rs.getInt(1));         // set the generated ID
-                    }
-                    rs.close();
-                    pStmt.close();
+                    create(client);
                 }
             }
         } catch (SQLException ex) {
@@ -168,12 +150,51 @@ public class ClientDAO {
         }
     }
 
+    @Override
+    public void create(Client client) throws SQLException {
+        String sql;
+        sql = "INSERT INTO clients (nom, prenom, num_client, adresse) VALUES (?, ?, ?, ?)";
+        PreparedStatement pStmt = connectDB.getConn().prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS);
+        pStmt.setString(1, client.getLastName());
+        pStmt.setString(2, client.getFirstName());
+        pStmt.setInt(3, client.getNumClient());
+        pStmt.setString(4, client.getAddress());
+        pStmt.executeUpdate();
+        ResultSet rs = pStmt.getGeneratedKeys();
+        if (rs.next()) {
+            client.setId(rs.getInt(1));         // set the generated ID
+        }
+        rs.close();
+        pStmt.close();
+    }
+
+    @Override
+    public void update(Client client) throws SQLException {
+        String sql;
+        sql = "UPDATE clients SET " +
+                "nom = ?, " +
+                "prenom = ?, " +
+                "num_client = ?, " +
+                "adress = ? " +
+                "WHERE id = ?";
+        PreparedStatement pStmt = connectDB.getConn().prepareStatement(sql);
+        pStmt.setString(1, client.getLastName());
+        pStmt.setString(2, client.getFirstName());
+        pStmt.setInt(3, client.getNumClient());
+        pStmt.setString(4, client.getAddress());
+        pStmt.setInt(5, client.getId());
+        pStmt.executeUpdate();
+        pStmt.close();
+    }
+
+    @Override
     public void delete(Client client) {
         if(client != null && client.getId() != null) {
             this.delete(client.getId());
         }
     }
 
+    @Override
     public void delete(Integer id) {
         if(id != null) {
             try {
