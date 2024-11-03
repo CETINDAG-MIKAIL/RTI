@@ -5,14 +5,10 @@ import be.hepl.model.entity.Author;
 import be.hepl.model.entity.Book;
 import be.hepl.model.entity.Subject;
 import be.hepl.model.viewmodel.BookSearchVM;
-
-import java.io.InterruptedIOException;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -43,10 +39,9 @@ public class BookDAO implements CRUD<Book, BookSearchVM> {
     @Override
     public void save(Book book) {
         try {
-            String sql;
             if (book != null) {
                 if (book.getId() != null) { // UPDATE
-                   update(book);
+                    update(book);
                 } else { // CREATE
                     create(book);
                 }
@@ -81,112 +76,121 @@ public class BookDAO implements CRUD<Book, BookSearchVM> {
     public ArrayList<Book> read() {
         return this.read(null);
     }
-
     @Override
     public ArrayList<Book> read(BookSearchVM search) {
+        ArrayList<Book> books = new ArrayList<>();
         try {
-            String sql = "SELECT " +
-                    "books.id, " +
+            StringBuilder sql = new StringBuilder("SELECT " +
+                    "books.id AS book_id, " +
                     "books.title, " +
                     "books.isbn, " +
                     "books.page_count, " +
                     "books.stock_quantity, " +
                     "books.publish_year, " +
                     "books.price, " +
-                    "authors.id AS author_id, authors.last_name AS author_last_name, authors.first_name AS author_first_name, authors.birth_date AS author_birth_date, " +
-                    "subjects.id AS subject_id, subjects.name AS subject_name " +
+                    "authors.id AS author_id, " +
+                    "authors.last_name AS author_last_name, " +
+                    "authors.first_name AS author_first_name, " +
+                    "authors.birth_date AS author_birth_date, " +
+                    "subjects.id AS subject_id, " +
+                    "subjects.name AS subject_name " +
                     "FROM books " +
                     "JOIN authors ON books.author_id = authors.id " +
-                    "JOIN subjects ON books.subject_id = subjects.id ";
+                    "JOIN subjects ON books.subject_id = subjects.id");
 
+            // Building the WHERE clause
             if (search != null) {
-                String where = " WHERE 1=1 ";
-                if (search.getId() != null) {
-                    where += "AND books.id = ? ";
-                }
-                if (search.getTitle() != null && search.getTitle().length() > 0) {
-                    where += "AND books.title LIKE ? ";
-                }
-                if (search.getIsbn() != null && search.getIsbn().length() > 0) {
-                    where += "AND books.isbn LIKE ? ";
-                }
-                sql += where;
+                sql.append(" WHERE 1=1");
 
-                // Vous utilisez WHERE pour les filtres sur les colonnes sans agrégation
+                if (search.getAuthor() != null && search.getAuthor().getId() != null) {
+                    sql.append(" AND authors.id = ?");
+                }
+                if (search.getSubject() != null && search.getSubject().getId() != null) {
+                    sql.append(" AND subjects.id = ?");
+                }
+                if (search.getId() != null) {
+                    sql.append(" AND books.id = ?");
+                }
+                if (search.getTitle() != null && !search.getTitle().isEmpty()) {
+                    sql.append(" AND books.title LIKE ?");
+                }
+                if (search.getIsbn() != null && !search.getIsbn().isEmpty()) {
+                    sql.append(" AND books.isbn LIKE ?");
+                }
                 if (search.getMinPageCount() != null) {
-                    sql += " AND books.page_count >= ? "; // Remplacez HAVING par AND dans WHERE
+                    sql.append(" AND books.page_count >= ?");
                 }
                 if (search.getMaxPageCount() != null) {
-                    sql += " AND books.page_count <= ? "; // Remplacez HAVING par AND dans WHERE
+                    sql.append(" AND books.page_count <= ?");
                 }
-                if (search.getMinPrice() > 0) {
-                    sql += " AND books.price >= ? "; // Remplacez HAVING par AND dans WHERE
+                if (search.getMinPrice() != null) {
+                    sql.append(" AND books.price >= ?");
                 }
-                if (search.getMaxPrice() > 0) {
-                    sql += " AND books.price <= ? "; // Remplacez HAVING par AND dans WHERE
+                if (search.getMaxPrice() != null) {
+                    sql.append(" AND books.price <= ?");
                 }
                 if (search.getMinStockQuantity() != null) {
-                    sql += " AND books.stock_quantity >= ? "; // Remplacez HAVING par AND dans WHERE
-                }
-                if (search.getMaxPublishYear() != null) {
-                    sql += " AND books.publish_year <= ? "; // Remplacez HAVING par AND dans WHERE
+                    sql.append(" AND books.stock_quantity >= ?");
                 }
                 if (search.getMinPublishYear() != null) {
-                    sql += " AND books.publish_year >= ? "; // Remplacez HAVING par AND dans WHERE
+                    sql.append(" AND books.publish_year >= ?");
                 }
-                sql += " ORDER BY books.title ASC;";
-            }
-            PreparedStatement stmt = connectDB.getConn().prepareStatement(sql);
+                if (search.getMaxPublishYear() != null) {
+                    sql.append(" AND books.publish_year <= ?");
+                }
 
+                sql.append(" ORDER BY books.title ASC");
+            }
+
+            PreparedStatement stmt = connectDB.getConn().prepareStatement(sql.toString());
+
+            // Setting parameters for the prepared statement
             if (search != null) {
                 int paramNumber = 0;
                 if (search.getId() != null) {
-                    paramNumber++;
-                    stmt.setInt(paramNumber, search.getId());
+                    stmt.setInt(++paramNumber, search.getId());
                 }
-                if (search.getTitle() != null && search.getTitle().length() > 0) {
-                    paramNumber++;
-                    stmt.setString(paramNumber, "%" + search.getTitle() + "%");
+                if (search.getAuthor() != null && search.getAuthor().getId() != null) {
+                    stmt.setInt(++paramNumber, search.getAuthor().getId());
                 }
-                if (search.getIsbn() != null && search.getIsbn().length() > 0) {
-                    paramNumber++;
-                    stmt.setString(paramNumber, "%" + search.getIsbn() + "%");
+                if (search.getSubject() != null && search.getSubject().getId() != null) {
+                    stmt.setInt(++paramNumber, search.getSubject().getId());
+                }
+                if (search.getTitle() != null && !search.getTitle().isEmpty()) {
+                    stmt.setString(++paramNumber, "%" + search.getTitle() + "%");
+                }
+                if (search.getIsbn() != null && !search.getIsbn().isEmpty()) {
+                    stmt.setString(++paramNumber, "%" + search.getIsbn() + "%");
                 }
                 if (search.getMinPageCount() != null) {
-                    paramNumber++;
-                    stmt.setInt(paramNumber, search.getMinPageCount());
+                    stmt.setInt(++paramNumber, search.getMinPageCount());
                 }
                 if (search.getMaxPageCount() != null) {
-                    System.out.println("maxPageCount: " + search.getMaxPageCount());
-                    paramNumber++;
-                    stmt.setInt(paramNumber, search.getMaxPageCount());
+                    stmt.setInt(++paramNumber, search.getMaxPageCount());
+                }
+                if (search.getMinPrice() != null) {
+                    stmt.setFloat(++paramNumber, search.getMinPrice());
+                }
+                if (search.getMaxPrice() != null) {
+                    stmt.setFloat(++paramNumber, search.getMaxPrice());
                 }
                 if (search.getMinStockQuantity() != null) {
-                    paramNumber++;
-                    stmt.setInt(paramNumber, search.getMinStockQuantity());
+                    stmt.setInt(++paramNumber, search.getMinStockQuantity());
                 }
                 if (search.getMinPublishYear() != null) {
-                    paramNumber++;
-                    stmt.setInt(paramNumber, search.getMinPublishYear());
+                    stmt.setInt(++paramNumber, search.getMinPublishYear());
                 }
                 if (search.getMaxPublishYear() != null) {
-                    paramNumber++;
-                    stmt.setInt(paramNumber, search.getMaxPublishYear());
-                }
-                if (search.getMinPrice() > 0) {
-                    paramNumber++;
-                    stmt.setFloat(paramNumber, search.getMinPrice());
-                }
-                if (search.getMaxPrice() > 0) {
-                    paramNumber++;
-                    stmt.setFloat(paramNumber, search.getMaxPrice());
+                    stmt.setInt(++paramNumber, search.getMaxPublishYear());
                 }
             }
 
             ResultSet rs = stmt.executeQuery();
-            books.clear();
+
+            // Processing the results
             while (rs.next()) {
-                Integer id = rs.getInt("books.id");
+                // Fetching the book details
+                Integer id = rs.getInt("book_id");
                 String title = rs.getString("books.title");
                 String isbn = rs.getString("books.isbn");
                 Integer pageCount = rs.getInt("books.page_count");
@@ -194,26 +198,27 @@ public class BookDAO implements CRUD<Book, BookSearchVM> {
                 Integer publishYear = rs.getInt("books.publish_year");
                 float price = rs.getFloat("books.price");
 
+                // Fetching the author details
                 Author author = new Author();
                 author.setId(rs.getInt("author_id"));
                 author.setLastName(rs.getString("author_last_name"));
                 author.setFirstName(rs.getString("author_first_name"));
-                author.setBirthDate(rs.getDate("author_birth_date").toLocalDate().toString());
+                author.setBirthDate(String.valueOf(rs.getDate("author_birth_date").toLocalDate()));
 
+                // Fetching the subject details
                 Subject subject = new Subject();
                 subject.setId(rs.getInt("subject_id"));
                 subject.setName(rs.getString("subject_name"));
 
-
+                // Creating and adding the book to the list
                 Book book = new Book(id, author, subject, title, isbn, pageCount, stockQuantity, publishYear, price);
                 books.add(book);
             }
             stmt.close();
         } catch (SQLException ex) {
             Logger.getLogger(BookDAO.class.getName()).log(Level.SEVERE, null, ex);
-        } finally {
-            return books;
         }
+        return books;
     }
 
     @Override

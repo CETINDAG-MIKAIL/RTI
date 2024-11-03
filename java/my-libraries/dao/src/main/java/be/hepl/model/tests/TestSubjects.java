@@ -16,7 +16,7 @@ public class TestSubjects {
         ArrayList<Subject> subjects;
         Subject subject = new Subject();
         subject.setId(null);
-        subject.setName("Romance");
+        subject.setName("Science-Fiction");
 
         dao.save(subject);
         int id = subject.getId();
