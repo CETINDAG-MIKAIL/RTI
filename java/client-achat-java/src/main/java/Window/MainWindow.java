@@ -16,6 +16,5 @@ public class MainWindow {
     private JTextField textField4;
     private JSpinner spinner1;
     private JSpinner spinner2;
-    private JCheckBox activerCheckBox;
-    private JCheckBox activerCheckBox1;
+    private JButton rechercheButton;
 }
