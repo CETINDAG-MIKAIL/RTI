@@ -7,6 +7,9 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import com.formdev.flatlaf.FlatDarkLaf;
+
+
 public class MainWindow extends JFrame{
     private JTable table1;
     private JTable table2;
@@ -117,12 +120,12 @@ public class MainWindow extends JFrame{
         boolean TextBool = !textField.getText().trim().isEmpty();
         button.setVisible(TextBool);
         button.setEnabled(TextBool);
-        label.setForeground(TextBool ? Color.BLACK : Color.GRAY);
+        label.setForeground(TextBool ? Color.WHITE : Color.GRAY);
     }
 
     private void updateButtonAndLabelVisibilityForSpinner(JSpinner spinner, JButton button, JLabel label) {
         boolean ValueBool = (int) spinner.getValue() != 0;
         button.setEnabled(ValueBool);
-        label.setForeground(ValueBool ? Color.BLACK : Color.GRAY);
+        label.setForeground(ValueBool ? Color.WHITE : Color.GRAY);
     }
 }

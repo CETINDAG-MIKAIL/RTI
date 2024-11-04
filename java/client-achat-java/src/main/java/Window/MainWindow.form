@@ -48,7 +48,7 @@
                   <grid row="1" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
                 </constraints>
                 <properties>
-                  <background color="-1769467"/>
+                  <background color="-3735548"/>
                   <foreground color="-1"/>
                   <text value="x"/>
                 </properties>
@@ -85,7 +85,7 @@
                   <grid row="1" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
                 </constraints>
                 <properties>
-                  <background color="-1769467"/>
+                  <background color="-3735548"/>
                   <text value="x"/>
                 </properties>
               </component>
@@ -121,7 +121,7 @@
                   <grid row="1" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
                 </constraints>
                 <properties>
-                  <background color="-1769467"/>
+                  <background color="-3735548"/>
                   <text value="x"/>
                 </properties>
               </component>
@@ -157,7 +157,7 @@
                   <grid row="1" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
                 </constraints>
                 <properties>
-                  <background color="-1769467"/>
+                  <background color="-3735548"/>
                   <text value="x"/>
                 </properties>
               </component>
@@ -195,7 +195,7 @@
                   <grid row="1" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
                 </constraints>
                 <properties>
-                  <background color="-1769467"/>
+                  <background color="-3735548"/>
                   <text value="x"/>
                 </properties>
               </component>
@@ -229,7 +229,7 @@
                   <grid row="1" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
                 </constraints>
                 <properties>
-                  <background color="-1769467"/>
+                  <background color="-3735548"/>
                   <text value="x"/>
                 </properties>
               </component>
@@ -279,7 +279,7 @@
                       <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
                     </constraints>
                     <properties>
-                      <foreground color="-1769467"/>
+                      <foreground color="-3735548"/>
                       <text value="Supprimer"/>
                     </properties>
                   </component>
@@ -298,7 +298,7 @@
                       <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
                     </constraints>
                     <properties>
-                      <foreground color="-16718579"/>
+                      <foreground color="-16526080"/>
                       <text value="Ajouter"/>
                     </properties>
                   </component>
@@ -319,7 +319,8 @@
                   <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
                 </constraints>
                 <properties>
-                  <background color="-16515328"/>
+                  <background color="-16526080"/>
+                  <foreground color="-394241"/>
                   <text value="Payer"/>
                 </properties>
               </component>
@@ -328,7 +329,8 @@
                   <grid row="1" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
                 </constraints>
                 <properties>
-                  <background color="-1769467"/>
+                  <background color="-3735548"/>
+                  <foreground color="-394241"/>
                   <text value="Annuler"/>
                 </properties>
               </component>
