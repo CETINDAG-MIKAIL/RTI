@@ -14,7 +14,7 @@ public class TestBooks {
         BookDAO dao = new BookDAO();
       BookSearchVM vm = new BookSearchVM();
         Author author = new Author();
-        author.setId(15);
+        author.setId(10);
         author.setFirstName("mikail");
         author.setLastName("Lebo");
         author.setBirthDate("1950-10-15");
@@ -23,9 +23,9 @@ public class TestBooks {
         System.out.println("authorID" + authorId);
 
         Subject subject = new Subject();
-        subject.setId(1);
-
+        subject.setId(10);
         subject.setName("Science-Fiction");
+
         //subject [id=1, name=Science-Fiction]
         int subjectId = subject.getId();
         System.out.println("subjectID" + subjectId);

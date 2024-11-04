@@ -15,10 +15,10 @@ public class TestAuthors {
         AuthorDAO dao = new AuthorDAO();
 
         Author author = new Author();
-        author.setId(2);
-        author.setFirstName("Luca");
-        author.setLastName("Geelen");
-        author.setBirthDate("2003-10-10");
+        author.setId(null);
+        author.setFirstName("mikail");
+        author.setLastName("Lebo");
+        author.setBirthDate("1950-10-15");
 
         dao.save(author);
         System.out.println(author.getId());
