@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <form xmlns="http://www.intellij.com/uidesigner/form/" version="1" bind-to-class="Window.MainWindow">
-  <grid id="27dc6" layout-manager="GridLayoutManager" row-count="3" column-count="2" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+  <grid id="27dc6" binding="MainPanel" layout-manager="GridLayoutManager" row-count="3" column-count="2" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
     <margin top="0" left="0" bottom="0" right="0"/>
     <constraints>
       <xy x="20" y="20" width="779" height="400"/>
@@ -16,7 +16,7 @@
         <properties/>
         <border type="none"/>
         <children>
-          <grid id="d41ae" layout-manager="GridLayoutManager" row-count="2" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+          <grid id="d41ae" layout-manager="GridLayoutManager" row-count="2" column-count="2" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
             <margin top="0" left="0" bottom="0" right="0"/>
             <constraints>
               <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
@@ -24,25 +24,38 @@
             <properties/>
             <border type="none"/>
             <children>
-              <component id="ac0f8" class="javax.swing.JTextField" binding="textField1" default-binding="true">
+              <component id="ac0f8" class="javax.swing.JTextField" binding="textFieldTitle">
                 <constraints>
                   <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
                     <preferred-size width="150" height="-1"/>
                   </grid>
                 </constraints>
-                <properties/>
+                <properties>
+                  <text value=""/>
+                </properties>
               </component>
-              <component id="3e93" class="javax.swing.JLabel">
+              <component id="3e93" class="javax.swing.JLabel" binding="labelTitle">
                 <constraints>
                   <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
                 </constraints>
                 <properties>
+                  <foreground color="-9604491"/>
                   <text value="Titre"/>
+                </properties>
+              </component>
+              <component id="19660" class="javax.swing.JButton" binding="xButtonTitle">
+                <constraints>
+                  <grid row="1" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties>
+                  <background color="-1769467"/>
+                  <foreground color="-1"/>
+                  <text value="x"/>
                 </properties>
               </component>
             </children>
           </grid>
-          <grid id="da069" layout-manager="GridLayoutManager" row-count="2" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+          <grid id="da069" layout-manager="GridLayoutManager" row-count="2" column-count="2" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
             <margin top="0" left="0" bottom="0" right="0"/>
             <constraints>
               <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
@@ -50,7 +63,7 @@
             <properties/>
             <border type="none"/>
             <children>
-              <component id="c513d" class="javax.swing.JTextField" binding="textField3" default-binding="true">
+              <component id="c513d" class="javax.swing.JTextField" binding="textFieldLastNameAuthor">
                 <constraints>
                   <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
                     <preferred-size width="150" height="-1"/>
@@ -58,17 +71,27 @@
                 </constraints>
                 <properties/>
               </component>
-              <component id="85f96" class="javax.swing.JLabel">
+              <component id="85f96" class="javax.swing.JLabel" binding="labelLastName">
                 <constraints>
                   <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
                 </constraints>
                 <properties>
+                  <foreground color="-9604491"/>
                   <text value="Nom de l'auteur"/>
+                </properties>
+              </component>
+              <component id="32213" class="javax.swing.JButton" binding="xButtonLastName">
+                <constraints>
+                  <grid row="1" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties>
+                  <background color="-1769467"/>
+                  <text value="x"/>
                 </properties>
               </component>
             </children>
           </grid>
-          <grid id="351a6" layout-manager="GridLayoutManager" row-count="2" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+          <grid id="351a6" layout-manager="GridLayoutManager" row-count="2" column-count="2" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
             <margin top="0" left="0" bottom="0" right="0"/>
             <constraints>
               <grid row="1" column="1" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
@@ -76,7 +99,7 @@
             <properties/>
             <border type="none"/>
             <children>
-              <component id="ac8c5" class="javax.swing.JTextField" binding="textField4" default-binding="true">
+              <component id="ac8c5" class="javax.swing.JTextField" binding="textFieldFirstNameAuthor">
                 <constraints>
                   <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
                     <preferred-size width="150" height="-1"/>
@@ -84,17 +107,27 @@
                 </constraints>
                 <properties/>
               </component>
-              <component id="caa36" class="javax.swing.JLabel">
+              <component id="caa36" class="javax.swing.JLabel" binding="labelFirstName">
                 <constraints>
                   <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
                 </constraints>
                 <properties>
+                  <foreground color="-9604491"/>
                   <text value="Prénom de l'auteur"/>
+                </properties>
+              </component>
+              <component id="c6d5b" class="javax.swing.JButton" binding="xButtonFirstName">
+                <constraints>
+                  <grid row="1" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties>
+                  <background color="-1769467"/>
+                  <text value="x"/>
                 </properties>
               </component>
             </children>
           </grid>
-          <grid id="5db2f" layout-manager="GridLayoutManager" row-count="2" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+          <grid id="5db2f" layout-manager="GridLayoutManager" row-count="2" column-count="2" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
             <margin top="0" left="0" bottom="0" right="0"/>
             <constraints>
               <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
@@ -102,7 +135,7 @@
             <properties/>
             <border type="none"/>
             <children>
-              <component id="5cc90" class="javax.swing.JTextField" binding="textField2" default-binding="true">
+              <component id="5cc90" class="javax.swing.JTextField" binding="textFieldSubject">
                 <constraints>
                   <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
                     <preferred-size width="150" height="-1"/>
@@ -110,17 +143,27 @@
                 </constraints>
                 <properties/>
               </component>
-              <component id="be26e" class="javax.swing.JLabel">
+              <component id="be26e" class="javax.swing.JLabel" binding="labelSubject">
                 <constraints>
                   <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
                 </constraints>
                 <properties>
+                  <foreground color="-9604491"/>
                   <text value="Sujet"/>
+                </properties>
+              </component>
+              <component id="70a1a" class="javax.swing.JButton" binding="xButtonSubject">
+                <constraints>
+                  <grid row="1" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties>
+                  <background color="-1769467"/>
+                  <text value="x"/>
                 </properties>
               </component>
             </children>
           </grid>
-          <grid id="71e1d" layout-manager="GridLayoutManager" row-count="2" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+          <grid id="71e1d" layout-manager="GridLayoutManager" row-count="2" column-count="2" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
             <margin top="0" left="0" bottom="0" right="0"/>
             <constraints>
               <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
@@ -130,7 +173,7 @@
             </properties>
             <border type="none"/>
             <children>
-              <component id="25cc1" class="javax.swing.JSpinner" binding="spinner1" default-binding="true">
+              <component id="25cc1" class="javax.swing.JSpinner" binding="spinnerMaxPrice">
                 <constraints>
                   <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
                 </constraints>
@@ -138,18 +181,27 @@
                   <foreground color="-10657949"/>
                 </properties>
               </component>
-              <component id="35d50" class="javax.swing.JLabel">
+              <component id="35d50" class="javax.swing.JLabel" binding="labelMaxPrice">
                 <constraints>
                   <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
                 </constraints>
                 <properties>
-                  <foreground color="-3289153"/>
+                  <foreground color="-9604491"/>
                   <text value="Prix maximum"/>
+                </properties>
+              </component>
+              <component id="5dd67" class="javax.swing.JButton" binding="xButtonMaxPrice">
+                <constraints>
+                  <grid row="1" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties>
+                  <background color="-1769467"/>
+                  <text value="x"/>
                 </properties>
               </component>
             </children>
           </grid>
-          <grid id="fd0e5" layout-manager="GridLayoutManager" row-count="2" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+          <grid id="fd0e5" layout-manager="GridLayoutManager" row-count="2" column-count="2" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
             <margin top="0" left="0" bottom="0" right="0"/>
             <constraints>
               <grid row="2" column="1" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
@@ -157,19 +209,28 @@
             <properties/>
             <border type="none"/>
             <children>
-              <component id="819ff" class="javax.swing.JSpinner" binding="spinner2" default-binding="true">
+              <component id="819ff" class="javax.swing.JSpinner" binding="spinnerMaxPageCount">
                 <constraints>
                   <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
                 </constraints>
                 <properties/>
               </component>
-              <component id="2d961" class="javax.swing.JLabel">
+              <component id="2d961" class="javax.swing.JLabel" binding="labelPageCount">
                 <constraints>
                   <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
                 </constraints>
                 <properties>
-                  <foreground color="-4077362"/>
+                  <foreground color="-9604491"/>
                   <text value="Page maximum"/>
+                </properties>
+              </component>
+              <component id="a9c53" class="javax.swing.JButton" binding="xButtonMaxPageCount">
+                <constraints>
+                  <grid row="1" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties>
+                  <background color="-1769467"/>
+                  <text value="x"/>
                 </properties>
               </component>
             </children>

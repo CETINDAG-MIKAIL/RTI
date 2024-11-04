@@ -1,6 +1,7 @@
 package Window;
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.*;
 
 public class ConnectClient extends JDialog {
@@ -13,6 +14,8 @@ public class ConnectClient extends JDialog {
 
     public ConnectClient() {
         setContentPane(contentPane);
+        setTitle("Client");
+        setSize(300, 200);
         setModal(true);
         getRootPane().setDefaultButton(buttonOK);
 
@@ -45,12 +48,12 @@ public class ConnectClient extends JDialog {
     }
 
     private void onOK() {
-        // add your code here
         dispose();
+        new MainWindow();
+
     }
 
     private void onCancel() {
-        // add your code here if necessary
         dispose();
     }
 
@@ -58,6 +61,5 @@ public class ConnectClient extends JDialog {
         ConnectClient dialog = new ConnectClient();
         dialog.pack();
         dialog.setVisible(true);
-        System.exit(0);
     }
 }
