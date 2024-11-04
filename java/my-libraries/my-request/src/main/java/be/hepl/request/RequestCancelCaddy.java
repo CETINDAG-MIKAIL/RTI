@@ -3,6 +3,12 @@ package src.main.java.be.hepl.request;
 public class RequestCancelCaddy implements Request {
     private int idClient;
 
+    public RequestCancelCaddy() {}
+
+    public RequestCancelCaddy(int idClient) {
+        this.idClient = idClient;
+    }
+
     public int getIdClient() {
         return idClient;
     }

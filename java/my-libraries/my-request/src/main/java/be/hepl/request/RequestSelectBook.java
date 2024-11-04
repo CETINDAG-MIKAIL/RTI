@@ -5,6 +5,12 @@ import be.hepl.model.viewmodel.BookSearchVM;
 public class RequestSelectBook implements Request {
     private BookSearchVM searchFilters;
 
+    public RequestSelectBook() {}
+
+    public RequestSelectBook(BookSearchVM searchFilters) {
+        this.searchFilters = searchFilters;
+    }
+
     public BookSearchVM getSearchFilters() {
         return searchFilters;
     }

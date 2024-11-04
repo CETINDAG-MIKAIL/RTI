@@ -4,6 +4,13 @@ public class RequestAddCaddyItem implements Request {
     private int idBook;
     private int quantity;
 
+    public RequestAddCaddyItem() {}
+
+    public RequestAddCaddyItem(int idBook, int quantity) {
+        this.idBook = idBook;
+        this.quantity = quantity;
+    }
+
     public int getIdBook() {
         return idBook;
     }
