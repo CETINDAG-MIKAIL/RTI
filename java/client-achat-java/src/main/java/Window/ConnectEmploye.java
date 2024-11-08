@@ -46,8 +46,4 @@ public class ConnectEmploye extends JDialog{
         dialog.setVisible(true);
         dialog.pack();
     }
-
-
-
-
 }
