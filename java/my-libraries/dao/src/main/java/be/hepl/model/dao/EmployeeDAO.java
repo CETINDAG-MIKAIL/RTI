@@ -112,50 +112,54 @@ public class EmployeeDAO implements CRUD<Employee, EmployeeSearchVM> {
 
     @Override
     public void save(Employee employee) {
-        try {
-            if (employee != null) {
-                if (employee.getId() != null) { // UPDATE
-                    update(employee);
-                } else { // CREATE
-                    create(employee);
-                }
+        if (employee != null) {
+            if (employee.getId() != null) { // UPDATE
+                update(employee);
+            } else { // CREATE
+                create(employee);
             }
+        }
+    }
+
+    @Override
+    public void create(Employee employee) {
+        try {
+            String sql;
+            sql = "INSERT INTO employees (login, password) VALUES (?, ?)";
+            PreparedStatement pStmt = connectDB.getConn().prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS);
+            pStmt.setString(1, employee.getLogin());
+            pStmt.setString(2, employee.getPassword());
+            pStmt.executeUpdate();
+            ResultSet rs = pStmt.getGeneratedKeys();
+
+            if (rs.next()) {
+                employee.setId(rs.getInt(1));         // set the generated ID
+            }
+
+            rs.close();
+            pStmt.close();
         } catch (SQLException ex) {
             Logger.getLogger(EmployeeDAO.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
     @Override
-    public void create(Employee employee) throws SQLException {
-        String sql;
-        sql = "INSERT INTO employees (login, password) VALUES (?, ?)";
-        PreparedStatement pStmt = connectDB.getConn().prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS);
-        pStmt.setString(1, employee.getLogin());
-        pStmt.setString(2, employee.getPassword());
-        pStmt.executeUpdate();
-        ResultSet rs = pStmt.getGeneratedKeys();
-
-        if (rs.next()) {
-            employee.setId(rs.getInt(1));         // set the generated ID
+    public void update(Employee employee) {
+        try {
+            String sql;
+            sql = "UPDATE employees SET " +
+                    "login = ?, " +
+                    "password = ? " +
+                    "WHERE id = ?";
+            PreparedStatement pStmt = connectDB.getConn().prepareStatement(sql);
+            pStmt.setString(1, employee.getLogin());
+            pStmt.setString(2, employee.getPassword());
+            pStmt.setInt(3, employee.getId());
+            pStmt.executeUpdate();
+            pStmt.close();
+        } catch (SQLException ex) {
+            Logger.getLogger(EmployeeDAO.class.getName()).log(Level.SEVERE, null, ex);
         }
-
-        rs.close();
-        pStmt.close();
-    }
-
-    @Override
-    public void update(Employee employee) throws SQLException {
-        String sql;
-        sql = "UPDATE employees SET " +
-                "login = ?, " +
-                "password = ? " +
-                "WHERE id = ?";
-        PreparedStatement pStmt = connectDB.getConn().prepareStatement(sql);
-        pStmt.setString(1, employee.getLogin());
-        pStmt.setString(2, employee.getPassword());
-        pStmt.setInt(3, employee.getId());
-        pStmt.executeUpdate();
-        pStmt.close();
     }
 
     @Override

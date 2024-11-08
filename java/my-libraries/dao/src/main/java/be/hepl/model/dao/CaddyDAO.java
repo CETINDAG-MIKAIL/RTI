@@ -168,52 +168,55 @@ public class CaddyDAO implements CRUD<Caddy, CaddySearchVM> {
 
     @Override
     public void save(Caddy caddy) {
+        if (caddy != null) {
+            if (caddy.getId() != null) { // UPDATE
+                update(caddy);
+            } else { // CREATE
+                create(caddy);
+            }
+        }
+    }
+
+    @Override
+    public void update(Caddy caddy) {
         try {
             String sql;
-            if (caddy != null) {
-                if (caddy.getId() != null) { // UPDATE
-                    update(caddy);
-                } else { // CREATE
-                    create(caddy);
-                }
-            }
+            sql = "UPDATE caddies SET " +
+                    "client_id = ?, " +
+                    "date = ?, " +
+                    "payed = ? " +
+                    "WHERE id = ?";
+            PreparedStatement pStmt = connectDB.getConn().prepareStatement(sql);
+            pStmt.setInt(1, caddy.getClient().getId());
+            pStmt.setDate(2, Date.valueOf(caddy.getDate()));
+            pStmt.setBoolean(3, caddy.getPayed());
+            pStmt.setInt(4, caddy.getId());
+            pStmt.executeUpdate();
+            pStmt.close();
         } catch (SQLException ex) {
             Logger.getLogger(CaddyDAO.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
     @Override
-    public void update(Caddy caddy) throws SQLException {
-        String sql;
-        sql = "UPDATE caddies SET " +
-                "client_id = ?, " +
-                "date = ?, " +
-                "payed = ? " +
-                "WHERE id = ?";
-        PreparedStatement pStmt = connectDB.getConn().prepareStatement(sql);
-        pStmt.setInt(1, caddy.getClient().getId());
-        pStmt.setDate(2, Date.valueOf(caddy.getDate()));
-        pStmt.setBoolean(3, caddy.getPayed());
-        pStmt.setInt(4, caddy.getId());
-        pStmt.executeUpdate();
-        pStmt.close();
-    }
-
-    @Override
-    public void create(Caddy caddy) throws SQLException {
-        String sql;
-        sql = "INSERT INTO caddies (client_id, date, payed) VALUES (?, ?, ?)";
-        PreparedStatement pStmt = connectDB.getConn().prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS);
-        pStmt.setInt(1, caddy.getClient().getId());
-        pStmt.setDate(2, Date.valueOf(caddy.getDate()));
-        pStmt.setBoolean(3, caddy.getPayed());
-        pStmt.executeUpdate();
-        ResultSet rs = pStmt.getGeneratedKeys();
-        if (rs.next()) {
-            caddy.setId(rs.getInt(1));         // set the generated ID
+    public void create(Caddy caddy) {
+        try {
+            String sql;
+            sql = "INSERT INTO caddies (client_id, date, payed) VALUES (?, ?, ?)";
+            PreparedStatement pStmt = connectDB.getConn().prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS);
+            pStmt.setInt(1, caddy.getClient().getId());
+            pStmt.setDate(2, Date.valueOf(caddy.getDate()));
+            pStmt.setBoolean(3, caddy.getPayed());
+            pStmt.executeUpdate();
+            ResultSet rs = pStmt.getGeneratedKeys();
+            if (rs.next()) {
+                caddy.setId(rs.getInt(1));         // set the generated ID
+            }
+            rs.close();
+            pStmt.close();
+        } catch (SQLException ex) {
+            Logger.getLogger(CaddyDAO.class.getName()).log(Level.SEVERE, null, ex);
         }
-        rs.close();
-        pStmt.close();
     }
 
     @Override
@@ -227,14 +230,14 @@ public class CaddyDAO implements CRUD<Caddy, CaddySearchVM> {
     public void delete(Integer id) {
         if(id != null) {
             try {
-                String sql = "DELETE FROM caddy_items WHERE caddy_id = ?";
-                PreparedStatement stmt = connectDB.getConn().prepareStatement(sql);
-                stmt.setInt(1, id);;
-                stmt.executeUpdate();
-                stmt.close();
+//                String sql = "DELETE FROM caddy_items WHERE caddy_id = ?";
+//                PreparedStatement stmt = connectDB.getConn().prepareStatement(sql);
+//                stmt.setInt(1, id);;
+//                stmt.executeUpdate();
+//                stmt.close();
 
-                sql = "DELETE FROM caddies WHERE id = ?";
-                stmt = connectDB.getConn().prepareStatement(sql);
+                String sql = "DELETE FROM caddies WHERE id = ?";
+                PreparedStatement stmt = connectDB.getConn().prepareStatement(sql);
                 stmt.setInt(1, id);;
                 stmt.executeUpdate();
                 stmt.close();
