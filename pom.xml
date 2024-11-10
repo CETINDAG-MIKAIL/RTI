@@ -10,13 +10,6 @@
     <packaging>pom</packaging>
     <modules>
         <module>java</module>
-        <module>java/client-encoder-java</module>
-        <module>java/serveur-achat</module>
-        <module>java/my-libraries</module>
-        <module>java/my-libraries</module>
-        <module>java/my-libraries/dao</module>
-        <module>java/my-libraries/file</module>
-        <module>java/client-achat-java</module>
     </modules>
 
     <properties>

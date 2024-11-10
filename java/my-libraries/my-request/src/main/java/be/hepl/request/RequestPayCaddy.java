@@ -1,0 +1,26 @@
+package src.main.java.be.hepl.request;
+
+public class RequestPayCaddy {
+    private int idClient;
+
+    public RequestPayCaddy() {}
+
+    public RequestPayCaddy(int idClient) {
+        this.idClient = idClient;
+    }
+
+    public int getIdClient() {
+        return idClient;
+    }
+
+    public void setIdClient(int idClient) {
+        this.idClient = idClient;
+    }
+
+    @Override
+    public String toString() {
+        return "RequestCancelCaddy{" +
+                "idClient=" + idClient +
+                '}';
+    }
+}

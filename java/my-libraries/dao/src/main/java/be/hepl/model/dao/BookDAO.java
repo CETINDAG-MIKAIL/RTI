@@ -41,7 +41,7 @@ public class BookDAO implements CRUD<Book, BookSearchVM> {
         try {
             if (book != null) {
                 if (book.getId() != null) { // UPDATE
-                   update(book);
+                    update(book);
                 } else { // CREATE
                     create(book);
                 }
