@@ -1,9 +1,11 @@
 package src.main.java.be.hepl.response;
 
-public class ResponseClient {
+public class ResponseClient implements Response {
     private Integer id;
 
-    ResponseClient(Integer id) {
+    public ResponseClient() {}
+
+    public ResponseClient(Integer id) {
         this.id = id;
     }
 

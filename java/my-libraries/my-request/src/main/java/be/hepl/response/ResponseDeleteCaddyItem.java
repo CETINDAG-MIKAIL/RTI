@@ -3,6 +3,12 @@ package src.main.java.be.hepl.response;
 public class ResponseDeleteCaddyItem implements Response {
     private boolean success;
 
+    public ResponseDeleteCaddyItem() {}
+
+    public ResponseDeleteCaddyItem(boolean success) {
+        this.success = success;
+    }
+
     public boolean isSuccess() {
         return success;
     }

@@ -1,7 +1,13 @@
 package src.main.java.be.hepl.response;
 
-public class ResponsePayCaddy {
+public class ResponsePayCaddy implements Response {
     private boolean success;
+
+    public ResponsePayCaddy() {}
+
+    public ResponsePayCaddy(boolean success) {
+        this.success = success;
+    }
 
     public boolean isSuccess() {
         return success;
