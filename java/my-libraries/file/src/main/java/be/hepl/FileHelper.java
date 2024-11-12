@@ -2,9 +2,29 @@ package be.hepl;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 
 public class FileHelper {
+    public static boolean writeToFile(String filename, String content) {
+        try (FileWriter writer = new FileWriter(filename, true)) {
+            writer.write(content + "\n");
+            return true;
+        } catch (IOException e) {
+            System.out.println("ERROR : cannot write to file " + filename + ": " + e.getMessage());
+            return false;
+        }
+    }
+
+    public static boolean clearFileContent(String filename) {
+        try (FileWriter writer = new FileWriter(filename)) {
+            return true;
+        } catch (IOException e) {
+            System.out.println("ERROR : cannot clear file " + filename + " content : " + e.getMessage());
+            return false;
+        }
+    }
+
     public static int getSettingInt(String nomFichier, String nomParam) {
         int setting = -1;
         String line;
@@ -18,7 +38,7 @@ public class FileHelper {
                 }
             }
         } catch (IOException e) {
-            System.err.println("Impossible d'ouvrir le fichier : " + e.getMessage());
+            System.err.println("ERROR : cannot open filer : " + e.getMessage());
             return -1;
         }
 
@@ -38,7 +58,7 @@ public class FileHelper {
                 }
             }
         } catch (IOException e) {
-            System.err.println("Impossible d'ouvrir le fichier : " + e.getMessage());
+            System.err.println("ERROR : cannot open filer : " + e.getMessage());
             return "";
         }
 
@@ -56,7 +76,7 @@ public class FileHelper {
         int nbThreadsPool = getSettingInt(nomFichier, "NUM_THREADS");
         String ipServeur = getSettingString(nomFichier, "IP_ENCODING");
 
-        System.out.println("portServeur = " + portServeur);
+        System.out.println("portServer = " + portServeur);
         System.out.println("nbThreadsPool = " + nbThreadsPool);
         System.out.println("ipServeur = " + ipServeur);
     }

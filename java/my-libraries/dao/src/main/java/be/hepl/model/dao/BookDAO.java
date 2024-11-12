@@ -38,38 +38,38 @@ public class BookDAO implements CRUD<Book, BookSearchVM> {
 
     @Override
     public void save(Book book) {
-        try {
-            if (book != null) {
-                if (book.getId() != null) { // UPDATE
-                    update(book);
-                } else { // CREATE
-                    create(book);
-                }
+        if (book != null) {
+            if (book.getId() != null) { // UPDATE
+                update(book);
+            } else { // CREATE
+                create(book);
             }
-        } catch (SQLException ex) {
-            Logger.getLogger(BookDAO.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
    @Override
-    public void create(Book book) throws SQLException {
-       String sql = "INSERT INTO books (author_id, subject_id, title, isbn, page_count, stock_quantity, publish_year, price) "
-               + "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
-       PreparedStatement pStmt = connectDB.getConn().prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS);
-       pStmt.setInt(1, book.getAuthor().getId());
-       pStmt.setInt(2, book.getSubject().getId());
-       pStmt.setString(3, book.getTitle());
-       pStmt.setString(4, book.getIsbn());
-       pStmt.setInt(5, book.getPageCount());
-       pStmt.setInt(6, book.getStockQuantity());
-       pStmt.setInt(7, book.getPublishYear());
-       pStmt.setFloat(8, book.getPrice());
-       pStmt.executeUpdate();
-       ResultSet rs = pStmt.getGeneratedKeys();
-       rs.next();
-       book.setId((int) rs.getLong(1));
-       rs.close();
-       pStmt.close();
+    public void create(Book book) {
+        try {
+            String sql = "INSERT INTO books (author_id, subject_id, title, isbn, page_count, stock_quantity, publish_year, price) "
+                    + "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+            PreparedStatement pStmt = connectDB.getConn().prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS);
+            pStmt.setInt(1, book.getAuthor().getId());
+            pStmt.setInt(2, book.getSubject().getId());
+            pStmt.setString(3, book.getTitle());
+            pStmt.setString(4, book.getIsbn());
+            pStmt.setInt(5, book.getPageCount());
+            pStmt.setInt(6, book.getStockQuantity());
+            pStmt.setInt(7, book.getPublishYear());
+            pStmt.setFloat(8, book.getPrice());
+            pStmt.executeUpdate();
+            ResultSet rs = pStmt.getGeneratedKeys();
+            rs.next();
+            book.setId((int) rs.getLong(1));
+            rs.close();
+            pStmt.close();
+        } catch (SQLException ex) {
+            Logger.getLogger(BookDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     @Override
@@ -222,29 +222,33 @@ public class BookDAO implements CRUD<Book, BookSearchVM> {
     }
 
     @Override
-    public void update(Book book) throws SQLException {
-        String sql = "UPDATE books SET "
-                + " author_id = ?, "
-                + " subject_id = ?, "
-                + " title = ?, "
-                + " isbn = ?, "
-                + " page_count = ?, "
-                + " stock_quantity = ?, "
-                + " publish_year = ?, "
-                + " price = ? "
-                + " WHERE id = ?";
-        PreparedStatement pStmt = connectDB.getConn().prepareStatement(sql);
-        pStmt.setInt(1, book.getAuthor().getId());
-        pStmt.setInt(2, book.getSubject().getId());
-        pStmt.setString(3, book.getTitle());
-        pStmt.setString(4, book.getIsbn());
-        pStmt.setInt(5, book.getPageCount());
-        pStmt.setInt(6, book.getStockQuantity());
-        pStmt.setInt(7, book.getPublishYear());
-        pStmt.setFloat(8, book.getPrice());
-        pStmt.setInt(9, book.getId());
-        pStmt.executeUpdate();
-        pStmt.close();
+    public void update(Book book) {
+        try {
+            String sql = "UPDATE books SET "
+                    + " author_id = ?, "
+                    + " subject_id = ?, "
+                    + " title = ?, "
+                    + " isbn = ?, "
+                    + " page_count = ?, "
+                    + " stock_quantity = ?, "
+                    + " publish_year = ?, "
+                    + " price = ? "
+                    + " WHERE id = ?";
+            PreparedStatement pStmt = connectDB.getConn().prepareStatement(sql);
+            pStmt.setInt(1, book.getAuthor().getId());
+            pStmt.setInt(2, book.getSubject().getId());
+            pStmt.setString(3, book.getTitle());
+            pStmt.setString(4, book.getIsbn());
+            pStmt.setInt(5, book.getPageCount());
+            pStmt.setInt(6, book.getStockQuantity());
+            pStmt.setInt(7, book.getPublishYear());
+            pStmt.setFloat(8, book.getPrice());
+            pStmt.setInt(9, book.getId());
+            pStmt.executeUpdate();
+            pStmt.close();
+        } catch (SQLException ex) {
+            Logger.getLogger(BookDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     @Override

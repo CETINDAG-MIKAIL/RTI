@@ -4,16 +4,14 @@ import be.hepl.model.dao.*;
 import be.hepl.model.entity.*;
 import be.hepl.model.viewmodel.*;
 import be.hepl.myException.EndConnexionException;
-import be.hepl.request.*;
-import be.hepl.response.*;
-import be.hepl.thread.Logger;
+import be.hepl.trace.Logger;
+import src.main.java.be.hepl.request.*;
+import src.main.java.be.hepl.response.*;
 
 import java.net.Socket;
-import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
-
 
 public class ProtocolBSPP implements Protocol {
     private HashMap<Socket, Integer> connectedClients;
@@ -24,7 +22,8 @@ public class ProtocolBSPP implements Protocol {
         return "ProtocolBSPP";
     }
 
-    public synchronized Response ProcessingRequest(Request request, Socket socket) throws EndConnexionException, SQLException {
+    @Override
+    public synchronized Response processingRequest(Request request, Socket socket) throws EndConnexionException {
         if(request instanceof RequestEmployee) {
             return ProcessingEmployee((RequestEmployee) request);
         }
@@ -40,20 +39,20 @@ public class ProtocolBSPP implements Protocol {
         if(request instanceof RequestAddCaddyItem) {
             return ProcessingAddCaddyItem((RequestAddCaddyItem) request, idClient);
         }
-    /*    if(request instanceof RequestDeleteCaddyItem) {
+        if(request instanceof RequestDeleteCaddyItem) {
             return ProcessingDeleteCaddyItem((RequestDeleteCaddyItem) request);
         }
         if(request instanceof RequestCancelCaddy) {
             return ProcessingCancelCaddy((RequestCancelCaddy) request);
-        }*/
+        }
         if(request instanceof RequestPayCaddy) {
             return ProcessingPayCaddy((RequestPayCaddy) request);
         }
         return null;
     }
 
-    private synchronized Response ProcessingEmployee(RequestEmployee request) throws EndConnexionException, SQLException {
-        logger.Trace("RequestEmployee received, login = " + request.getLogin());
+    private synchronized Response ProcessingEmployee(RequestEmployee request) throws EndConnexionException {
+        logger.trace("RequestEmployee received, login = " + request.getLogin());
 
         EmployeeSearchVM vm = new EmployeeSearchVM();
         vm.setLogin(request.getLogin());
@@ -69,7 +68,7 @@ public class ProtocolBSPP implements Protocol {
     }
 
     private synchronized ResponseClient ProcessingClient(RequestClient request, Socket socket) throws EndConnexionException {
-        logger.Trace("RequestClient received from " + request.getFirstName() + " " + request.getLastName());
+        logger.trace("RequestClient received from " + request.getFirstName() + " " + request.getLastName());
         ClientDAO dao = new ClientDAO();
 
         if(request.isNewClient()) {
@@ -99,7 +98,7 @@ public class ProtocolBSPP implements Protocol {
     }
 
     private synchronized ResponseSelectBook ProcessingSelectBook(RequestSelectBook request) throws EndConnexionException {
-        logger.Trace("RequestSelectBook received");
+        logger.trace("RequestSelectBook received");
 
         BookDAO dao = new BookDAO();
         ArrayList<Book> books = dao.read(request.getSearchFilters());
@@ -107,8 +106,8 @@ public class ProtocolBSPP implements Protocol {
         return new ResponseSelectBook(books);
     }
 
-    private synchronized ResponseAddCaddyItem ProcessingAddCaddyItem(RequestAddCaddyItem request, Integer clientId) throws EndConnexionException, SQLException {
-        logger.Trace("RequestAddCaddyItem received");
+    private synchronized ResponseAddCaddyItem ProcessingAddCaddyItem(RequestAddCaddyItem request, Integer clientId) throws EndConnexionException {
+        logger.trace("RequestAddCaddyItem received");
 
         BookSearchVM bvm = new BookSearchVM();
         bvm.setId(request.getIdBook());
@@ -157,19 +156,43 @@ public class ProtocolBSPP implements Protocol {
         return new ResponseAddCaddyItem(false);
     }
 
-    /*private synchronized ResponseDeleteCaddyItem ProcessingDeleteCaddyItem(RequestDeleteCaddyItem request) throws EndConnexionException {
-        logger.Trace("RequestDeleteCaddyItem received");
+    private synchronized ResponseDeleteCaddyItem ProcessingDeleteCaddyItem(RequestDeleteCaddyItem request) throws EndConnexionException {
+        logger.trace("RequestDeleteCaddyItem received");
 
+
+        CaddyItemSearchVM cvm = new CaddyItemSearchVM();
+        cvm.setBookId(request.getIdBook());
         CaddyItemDAO dao = new CaddyItemDAO();
-        //dao.update();
-    }*/
+        ArrayList<CaddyItem> caddyItems = dao.read(cvm);
 
-    /*private synchronized ResponseCancelCaddy ProcessingCancelCaddy(RequestCancelCaddy request) throws EndConnexionException {
-        logger.Trace("RequestCancelCaddy received");
-    }*/
+        if(caddyItems.isEmpty()) {
+            return new ResponseDeleteCaddyItem(false);
+        }
 
-    private synchronized ResponsePayCaddy ProcessingPayCaddy(RequestPayCaddy request) throws EndConnexionException, SQLException {
-        logger.Trace("RequestPayCaddy received");
+        for(CaddyItem caddyItem : caddyItems) {
+            dao.delete(caddyItem.getId());
+        }
+        
+        return new ResponseDeleteCaddyItem(true);
+    }
+
+    private synchronized ResponseCancelCaddy ProcessingCancelCaddy(RequestCancelCaddy request) throws EndConnexionException {
+        logger.trace("RequestCancelCaddy received");
+
+        CaddySearchVM cvm = new CaddySearchVM();
+        cvm.setClientId(request.getIdClient());
+        CaddyDAO dao = new CaddyDAO();
+        ArrayList<Caddy> caddies = dao.read(cvm);
+
+        if(caddies.isEmpty()) {
+            return new ResponseCancelCaddy(false);
+        }
+        dao.delete(caddies.getFirst().getId());
+        return new ResponseCancelCaddy(true);
+    }
+
+    private synchronized ResponsePayCaddy ProcessingPayCaddy(RequestPayCaddy request) throws EndConnexionException {
+        logger.trace("RequestPayCaddy received");
 
         CaddyDAO dao = new CaddyDAO();
         Caddy caddy = dao.getById(request.getIdClient());

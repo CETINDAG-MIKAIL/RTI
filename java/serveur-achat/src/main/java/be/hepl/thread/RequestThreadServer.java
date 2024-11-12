@@ -1,13 +1,14 @@
 package be.hepl.thread;
 
 import be.hepl.protocol.Protocol;
+import be.hepl.trace.Logger;
 
 import java.io.IOException;
 import java.net.Socket;
 import java.net.SocketTimeoutException;
 
 public class RequestThreadServer extends ThreadServer {
-    public RequestThreadServer(int port, Protocol protocol, Logger logger) throws IOException
+    public RequestThreadServer(int port, Protocol protocol, Logger logger)
     {
         super(port, protocol, logger);
     }
@@ -15,7 +16,8 @@ public class RequestThreadServer extends ThreadServer {
     @Override
     public void run()
     {
-        logger.Trace("Démarrage du TH Serveur (Demande)...");
+        logger.trace("Starting TH Server (RequestThreadServer)...");
+
         while(!this.isInterrupted())
         {
             Socket csocket;
@@ -23,21 +25,30 @@ public class RequestThreadServer extends ThreadServer {
             {
                 ssocket.setSoTimeout(2000);
                 csocket = ssocket.accept();
-                logger.Trace("Connexion acceptée, création TH Client");
+                logger.trace("Connection accepted, creation TH Client");
                 Thread th = new RequestThreadClient(protocol, csocket, logger);
                 th.start();
             }
             catch (SocketTimeoutException ex)
             {
-                // Pour vérifier si le thread a été interrompu
+                if(this.isInterrupted()) {
+                    break;
+                } else {
+                    logger.trace("Connection timed out, time out reset on " + "2000" + " ms.");
+                }
             }
             catch (IOException ex)
             {
-                logger.Trace("Erreur I/O");
+                logger.trace("Erreur I/O");
             }
         }
-        logger.Trace("TH Serveur (Demande) interrompu.");
-        try { ssocket.close(); }
-        catch (IOException ex) { logger.Trace("Erreur I/O"); }
+
+        logger.trace("TH  (RequestThreadServer) interrupted.");
+
+        try {
+            ssocket.close();
+        } catch (IOException ex) {
+            logger.trace("Erreur I/O");
+        }
     }
 }

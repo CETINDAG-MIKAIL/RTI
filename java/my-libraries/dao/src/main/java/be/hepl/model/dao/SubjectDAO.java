@@ -39,31 +39,30 @@ public class SubjectDAO implements CRUD<Subject, SubjectSearchVM> {
 
     @Override
     public void save(Subject subject) {
-        try {
-            String sql;
-            if (subject != null) {
-                if (subject.getId() != null) { // UPDATE
-                  update(subject);
-                } else { // CREATE
-                 create(subject);
-                }
+        if (subject != null) {
+            if (subject.getId() != null) { // UPDATE
+              update(subject);
+            } else { // CREATE
+             create(subject);
             }
-        } catch (SQLException ex) {
-            Logger.getLogger(SubjectDAO.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
     @Override
-    public void create(Subject subject) throws SQLException {
-        String sql = "INSERT INTO subjects (name) VALUES (?)";
-        PreparedStatement pStmt = connectDB.getConn().prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS);
-        pStmt.setString(1, subject.getName());
-        pStmt.executeUpdate();
-        ResultSet rs = pStmt.getGeneratedKeys();
-        rs.next();
-        subject.setId((int) rs.getLong(1));
-        rs.close();
-        pStmt.close();
+    public void create(Subject subject) {
+        try {
+            String sql = "INSERT INTO subjects (name) VALUES (?)";
+            PreparedStatement pStmt = connectDB.getConn().prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS);
+            pStmt.setString(1, subject.getName());
+            pStmt.executeUpdate();
+            ResultSet rs = pStmt.getGeneratedKeys();
+            rs.next();
+            subject.setId((int) rs.getLong(1));
+            rs.close();
+            pStmt.close();
+        } catch (SQLException ex) {
+            Logger.getLogger(SubjectDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     @Override
@@ -122,24 +121,28 @@ public class SubjectDAO implements CRUD<Subject, SubjectSearchVM> {
     }
 
     @Override
-    public void update(Subject subject) throws SQLException {
-        String sql = "UPDATE subjects SET name = ? WHERE id = ?";
-        PreparedStatement pStmt = connectDB.getConn().prepareStatement(sql);
-        pStmt.setString(1, subject.getName());
-        pStmt.setInt(2, subject.getId());
-        pStmt.executeUpdate();
-        pStmt.close();
+    public void update(Subject subject) {
+        try {
+            String sql = "UPDATE subjects SET name = ? WHERE id = ?";
+            PreparedStatement pStmt = connectDB.getConn().prepareStatement(sql);
+            pStmt.setString(1, subject.getName());
+            pStmt.setInt(2, subject.getId());
+            pStmt.executeUpdate();
+            pStmt.close();
+        } catch (SQLException ex) {
+            Logger.getLogger(SubjectDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     @Override
     public void delete(Integer id) {
         if (id != null) {
             try {
-                String deleteBooksSQL = "DELETE FROM books WHERE subject_id = ?";
-                PreparedStatement stmtBooks = connectDB.getConn().prepareStatement(deleteBooksSQL);
-                stmtBooks.setInt(1, id);
-                stmtBooks.executeUpdate();
-                stmtBooks.close();
+//                String deleteBooksSQL = "DELETE FROM books WHERE subject_id = ?";
+//                PreparedStatement stmtBooks = connectDB.getConn().prepareStatement(deleteBooksSQL);
+//                stmtBooks.setInt(1, id);
+//                stmtBooks.executeUpdate();
+//                stmtBooks.close();
 
                 String sql = "DELETE FROM subjects WHERE id = ?";
                 PreparedStatement stmt = connectDB.getConn().prepareStatement(sql);

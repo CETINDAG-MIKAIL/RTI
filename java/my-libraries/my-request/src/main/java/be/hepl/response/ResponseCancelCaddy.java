@@ -3,6 +3,12 @@ package be.hepl.response;
 public class ResponseCancelCaddy implements Response {
     private boolean success;
 
+    public ResponseCancelCaddy() {}
+
+    public ResponseCancelCaddy(boolean success) {
+        this.success = success;
+    }
+
     public boolean isSuccess() {
         return success;
     }
