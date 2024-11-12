@@ -265,56 +265,55 @@ int main(int argc,char *argv[])
   }
   // ---------------------------------------------------
 
+// Créer le trigger après suppression dans caddy_items pour mettre à jour le stock
+printf("Creation du trigger after_delete_caddy_item...\n");
+if (mysql_query(connexion,
+    "CREATE TRIGGER after_delete_caddy_item "
+    "AFTER DELETE ON caddy_items "
+    "FOR EACH ROW "
+    "BEGIN "
+    "   UPDATE books "
+    "   SET stock_quantity = stock_quantity + OLD.quantity "
+    "   WHERE id = OLD.book_id; "
+    "END;")) {
+  finish_with_error(connexion);
+}
 
-  // Créer le trigger après suppression dans caddy_items pour mettre à jour le stock
-  printf("Creation du trigger after_delete_caddy_item...\n");
-  if (mysql_query(connexion,
-      "CREATE TRIGGER after_delete_caddy_item "
-      "AFTER DELETE ON caddy_items "
-      "FOR EACH ROW "
-      "BEGIN "
-      "   UPDATE books "
-      "   SET stock_quantity = stock_quantity + OLD.quantity "
-      "   WHERE id = OLD.book_id; "
-      "END;")) {
-    finish_with_error(connexion);
-  }
+// Créer le trigger après suppression dans caddies pour supprimer les caddy_items associés
+printf("Creation du trigger after_delete_caddy...\n");
+if (mysql_query(connexion,
+    "CREATE TRIGGER after_delete_caddy "
+    "AFTER DELETE ON caddies "
+    "FOR EACH ROW "
+    "BEGIN "
+    "   DELETE FROM caddy_items WHERE caddy_id = OLD.id; "
+    "END;")) {
+  finish_with_error(connexion);
+}
 
-  // Créer le trigger après suppression dans caddies pour supprimer les caddy_items associés
-  printf("Creation du trigger after_delete_caddy...\n");
-  if (mysql_query(connexion,
-      "CREATE TRIGGER after_delete_caddy "
-      "AFTER DELETE ON caddies "
-      "FOR EACH ROW "
-      "BEGIN "
-      "   DELETE FROM caddy_items WHERE caddy_id = OLD.id; "
-      "END;")) {
-    finish_with_error(connexion);
-  }
+// Créer le trigger après suppression dans authors pour supprimer les books associés
+printf("Creation du trigger after_delete_author...\n");
+if (mysql_query(connexion,
+    "CREATE TRIGGER after_delete_author "
+    "AFTER DELETE ON authors "
+    "FOR EACH ROW "
+    "BEGIN "
+    "   DELETE FROM books WHERE author_id = OLD.id; "
+    "END;")) {
+  finish_with_error(connexion);
+}
 
-    // Créer le trigger après suppression dans authors pour supprimer les books associés
-    printf("Creation du trigger after_delete_author...\n");
-    if (mysql_query(connexion,
-        "CREATE TRIGGER after_delete_author "
-        "AFTER DELETE ON authors "
-        "FOR EACH ROW "
-        "BEGIN "
-        "   DELETE FROM books WHERE author_id = OLD.id; "
-        "END;")) {
-      finish_with_error(connexion);
-    }
-
-    // Créer le trigger après suppression dans authors pour supprimer les books associés
-    printf("Creation du trigger after_delete_subject...\n");
-    if (mysql_query(connexion,
-      "CREATE TRIGGER after_delete_subject "
-      "AFTER DELETE ON subjects "
-      "FOR EACH ROW "
-      "BEGIN "
-      "   DELETE FROM books WHERE subject_id = OLD.id; "
-      "END;")) {
-    finish_with_error(connexion);
-    }
+// Créer le trigger après suppression dans subjects pour supprimer les books associés
+printf("Creation du trigger after_delete_subject...\n");
+if (mysql_query(connexion,
+    "CREATE TRIGGER after_delete_subject "
+    "AFTER DELETE ON subjects "
+    "FOR EACH ROW "
+    "BEGIN "
+    "   DELETE FROM books WHERE subject_id = OLD.id; "
+    "END;")) {
+  finish_with_error(connexion);
+}
 
 
 
