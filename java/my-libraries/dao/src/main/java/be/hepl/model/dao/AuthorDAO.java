@@ -20,7 +20,7 @@ public class AuthorDAO implements CRUD<Author, AuthorSearchVM> {
     private ArrayList<Author> authors;
 
     public AuthorDAO() {
-        connectDB = new ConnectDB();
+        connectDB = ConnectDB.getInstance();
         authors = new ArrayList<>();
     }
 

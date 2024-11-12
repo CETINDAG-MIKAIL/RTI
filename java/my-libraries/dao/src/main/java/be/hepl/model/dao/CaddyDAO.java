@@ -20,7 +20,7 @@ public class CaddyDAO implements CRUD<Caddy, CaddySearchVM> {
     private ArrayList<Caddy> caddies;
 
     public CaddyDAO() {
-        connectDB = new ConnectDB();
+        connectDB = ConnectDB.getInstance();
         caddies = new ArrayList<>();
     }
 

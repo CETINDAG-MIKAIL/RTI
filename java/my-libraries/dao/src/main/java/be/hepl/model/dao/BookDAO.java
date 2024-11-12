@@ -17,7 +17,7 @@ public class BookDAO implements CRUD<Book, BookSearchVM> {
     private ArrayList<Book> books;
 
     public BookDAO() {
-        connectDB = new ConnectDB();
+        connectDB = ConnectDB.getInstance();
         books = new ArrayList<>();
     }
 

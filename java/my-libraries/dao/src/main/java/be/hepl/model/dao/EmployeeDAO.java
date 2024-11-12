@@ -16,7 +16,7 @@ public class EmployeeDAO implements CRUD<Employee, EmployeeSearchVM> {
     private ArrayList<Employee> employees;
 
     public EmployeeDAO() {
-        connectDB = new ConnectDB();
+        connectDB = ConnectDB.getInstance();
         employees = new ArrayList<>();
     }
 

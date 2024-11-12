@@ -10,6 +10,7 @@ import static be.hepl.FileHelper.getSettingString;
 
 public class ConnectDB {
     private static Connection conn = null;
+    private static ConnectDB instance = null;
 
     private static String fileName = "./java/settingsDB.txt";
     private static String sCon;
@@ -17,12 +18,12 @@ public class ConnectDB {
     private static String sPwd;
     private static String forName;
 
-    public ConnectDB() {
-        if(ConnectDB.sCon == null || ConnectDB.sUser == null || ConnectDB.sPwd == null || ConnectDB.forName == null) {
-            ConnectDB.sCon = getSettingString(fileName, "DB_S_CON");
-            ConnectDB.sUser = getSettingString(fileName, "DB_S_USER");
-            ConnectDB.sPwd = getSettingString(fileName, "DB_S_PWD");
-            ConnectDB.forName = getSettingString(fileName, "DB_S_FOR_NAME");
+    private ConnectDB() {
+        if (sCon == null || sUser == null || sPwd == null || forName == null) {
+            sCon = getSettingString(fileName, "DB_S_CON");
+            sUser = getSettingString(fileName, "DB_S_USER");
+            sPwd = getSettingString(fileName, "DB_S_PWD");
+            forName = getSettingString(fileName, "DB_S_FOR_NAME");
         }
 
         try {
@@ -30,20 +31,27 @@ public class ConnectDB {
             if (conn == null || conn.isClosed()) {
                 conn = DriverManager.getConnection(sCon, sUser, sPwd);
             }
-        }
-        catch (SQLException ex) {
+        } catch (SQLException ex) {
             Logger.getLogger(ConnectDB.class.getName()).log(Level.SEVERE, null, ex);
         } catch (ClassNotFoundException e) {
             throw new RuntimeException(e);
         }
     }
 
+    public static synchronized ConnectDB getInstance() {
+        if (instance == null) {
+            instance = new ConnectDB();
+        }
+        return instance;
+    }
+
     public static void close() {
         try {
-            conn.close();
-            System.out.println("Closing DB connection");
-        }
-        catch (SQLException ex) {
+            if (conn != null && !conn.isClosed()) {
+                conn.close();
+                System.out.println("Closing DB connection");
+            }
+        } catch (SQLException ex) {
             Logger.getLogger(ConnectDB.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
@@ -51,5 +59,4 @@ public class ConnectDB {
     public Connection getConn() {
         return conn;
     }
-
 }

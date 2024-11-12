@@ -16,7 +16,7 @@ public class CaddyItemDAO implements CRUD<CaddyItem, CaddyItemSearchVM> {
     private ArrayList<CaddyItem> caddyItems;
 
     public CaddyItemDAO() {
-        connectDB = new ConnectDB();
+        connectDB = ConnectDB.getInstance();
         caddyItems = new ArrayList<>();
     }
 

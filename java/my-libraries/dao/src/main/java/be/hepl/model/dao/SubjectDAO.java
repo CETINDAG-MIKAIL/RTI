@@ -18,7 +18,7 @@ public class SubjectDAO implements CRUD<Subject, SubjectSearchVM> {
     private ArrayList<Subject> subjects;
 
     public SubjectDAO() {
-        connectDB = new ConnectDB();
+        connectDB = ConnectDB.getInstance();
         subjects = new ArrayList<>();
     }
 

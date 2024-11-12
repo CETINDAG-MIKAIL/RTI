@@ -19,7 +19,7 @@ public class ClientDAO implements CRUD<Client, ClientSearchVM> {
     private ArrayList<Client> clients;
 
     public ClientDAO() {
-        connectDB = new ConnectDB();
+        connectDB = ConnectDB.getInstance();
         clients = new ArrayList<>();
     }
 
