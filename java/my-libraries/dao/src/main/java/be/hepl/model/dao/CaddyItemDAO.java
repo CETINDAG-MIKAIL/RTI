@@ -176,53 +176,57 @@ public class CaddyItemDAO implements CRUD<CaddyItem, CaddyItemSearchVM> {
 
     @Override
     public void save(CaddyItem caddyItem) {
-        try {
-            if (caddyItem != null) {
-                if (caddyItem.getId() != null) { // UPDATE
-                    update(caddyItem);
-                } else { // CREATE
-                    create(caddyItem);
-                }
+        if (caddyItem != null) {
+            if (caddyItem.getId() != null) { // UPDATE
+                update(caddyItem);
+            } else { // CREATE
+                create(caddyItem);
             }
-        } catch (SQLException ex) {
-            Logger.getLogger(ClientDAO.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
 
     @Override
-    public void create(CaddyItem caddyItem) throws SQLException {
-        String sql;
-        sql = "INSERT INTO caddy_items (caddy_id, book_id, quantity) VALUES (?, ?, ?)";
-        PreparedStatement pStmt = connectDB.getConn().prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS);
-        pStmt.setInt(1, caddyItem.getCaddy().getId());
-        pStmt.setInt(2, caddyItem.getBook().getId());
-        pStmt.setInt(3, caddyItem.getQuantity());
-        pStmt.executeUpdate();
-        ResultSet rs = pStmt.getGeneratedKeys();
-
-        if (rs.next()) {
-            caddyItem.setId(rs.getInt(1)); // set the generated ID
-        }
-        rs.close();
-        pStmt.close();
-    }
-
-    @Override
-    public void update(CaddyItem caddyItem) throws SQLException {
-        String sql;
-        if (caddyItem.getId() != null) { // UPDATE
-            sql = "UPDATE caddy_items SET " +
-                    "caddy_id = ?, " +
-                    "book_id = ?, " +
-                    "quantity = ? " +
-                    "WHERE id = ?";
-            PreparedStatement pStmt = connectDB.getConn().prepareStatement(sql);
+    public void create(CaddyItem caddyItem) {
+        try {
+            String sql;
+            sql = "INSERT INTO caddy_items (caddy_id, book_id, quantity) VALUES (?, ?, ?)";
+            PreparedStatement pStmt = connectDB.getConn().prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS);
             pStmt.setInt(1, caddyItem.getCaddy().getId());
             pStmt.setInt(2, caddyItem.getBook().getId());
             pStmt.setInt(3, caddyItem.getQuantity());
-            pStmt.setInt(4, caddyItem.getId());
             pStmt.executeUpdate();
+            ResultSet rs = pStmt.getGeneratedKeys();
+
+            if (rs.next()) {
+                caddyItem.setId(rs.getInt(1)); // set the generated ID
+            }
+            rs.close();
+            pStmt.close();
+        } catch (SQLException ex) {
+            Logger.getLogger(CaddyItem.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    @Override
+    public void update(CaddyItem caddyItem) {
+        try {
+            String sql;
+            if (caddyItem.getId() != null) { // UPDATE
+                sql = "UPDATE caddy_items SET " +
+                        "caddy_id = ?, " +
+                        "book_id = ?, " +
+                        "quantity = ? " +
+                        "WHERE id = ?";
+                PreparedStatement pStmt = connectDB.getConn().prepareStatement(sql);
+                pStmt.setInt(1, caddyItem.getCaddy().getId());
+                pStmt.setInt(2, caddyItem.getBook().getId());
+                pStmt.setInt(3, caddyItem.getQuantity());
+                pStmt.setInt(4, caddyItem.getId());
+                pStmt.executeUpdate();
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(CaddyItem.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
