@@ -1,4 +1,4 @@
-package src.main.java.be.hepl.request;
+package be.hepl.request;
 
 public class RequestCancelCaddy implements Request {
     private int idClient;

@@ -14,7 +14,7 @@
     <modules>
         <module>dao</module>
         <module>file</module>
-        <module>my-requestClient</module>
+        <module>my-request</module>
     </modules>
 
     <artifactId>my-libraries</artifactId>

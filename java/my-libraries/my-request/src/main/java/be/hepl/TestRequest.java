@@ -1,6 +1,6 @@
-package src.main.java.be.hepl;
+package be.hepl;
 
-import src.main.java.be.hepl.request.RequestClient;
+//import src.main.java.be.hepl.request.RequestClient;
 
 public class TestRequest {
     public static void main(String[] args) {

@@ -5,8 +5,8 @@ import be.hepl.model.entity.*;
 import be.hepl.model.viewmodel.*;
 import be.hepl.myException.EndConnexionException;
 import be.hepl.trace.Logger;
-import src.main.java.be.hepl.request.*;
-import src.main.java.be.hepl.response.*;
+import be.hepl.request.*;
+import be.hepl.response.*;
 
 import java.net.Socket;
 import java.time.LocalDate;

@@ -1,8 +1,8 @@
 package be.hepl.protocol;
 
 import be.hepl.myException.EndConnexionException;
-import src.main.java.be.hepl.request.Request;
-import src.main.java.be.hepl.response.Response;
+import be.hepl.request.Request;
+import be.hepl.response.Response;
 
 import java.net.Socket;
 

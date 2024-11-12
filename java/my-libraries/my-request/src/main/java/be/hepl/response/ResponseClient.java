@@ -1,4 +1,4 @@
-package src.main.java.be.hepl.response;
+package be.hepl.response;
 
 public class ResponseClient implements Response {
     private Integer id;
@@ -12,7 +12,9 @@ public class ResponseClient implements Response {
     public Integer getId() {
         return id;
     }
-
+    public boolean isValide() {
+        return id != null && id > 0;
+    }
     public void setId(Integer id) {
         this.id = id;
     }

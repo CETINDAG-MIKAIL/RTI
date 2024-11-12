@@ -105,6 +105,14 @@ public class BookDAO implements CRUD<Book, BookSearchVM> {
                 if (search.getAuthor() != null && search.getAuthor().getId() != null) {
                     sql.append(" AND authors.id = ?");
                 }
+                if (search.getAuthor() != null) {
+                    if (search.getAuthor().getFirstName() != null && !search.getAuthor().getFirstName().isEmpty()) {
+                        sql.append(" AND authors.first_name LIKE ?");
+                    }
+                    if (search.getAuthor().getLastName() != null && !search.getAuthor().getLastName().isEmpty()) {
+                        sql.append(" AND authors.last_name LIKE ?");
+                    }
+                }
                 if (search.getSubject() != null && search.getSubject().getId() != null) {
                     sql.append(" AND subjects.id = ?");
                 }
@@ -150,8 +158,14 @@ public class BookDAO implements CRUD<Book, BookSearchVM> {
                 if (search.getId() != null) {
                     stmt.setInt(++paramNumber, search.getId());
                 }
-                if (search.getAuthor() != null && search.getAuthor().getId() != null) {
-                    stmt.setInt(++paramNumber, search.getAuthor().getId());
+                if (search.getAuthor() != null) {
+                    // Ajout des paramètres pour prénom et nom de l'auteur (modification ici)
+                    if (search.getAuthor().getFirstName() != null && !search.getAuthor().getFirstName().isEmpty()) {
+                        stmt.setString(++paramNumber, "%" + search.getAuthor().getFirstName() + "%");
+                    }
+                    if (search.getAuthor().getLastName() != null && !search.getAuthor().getLastName().isEmpty()) {
+                        stmt.setString(++paramNumber, "%" + search.getAuthor().getLastName() + "%");
+                    }
                 }
                 if (search.getSubject() != null && search.getSubject().getId() != null) {
                     stmt.setInt(++paramNumber, search.getSubject().getId());
