@@ -1,5 +1,6 @@
 package Window;
 
+import be.hepl.FileHelper;
 import be.hepl.request.RequestClient;
 import be.hepl.request.RequestEmployee;
 import be.hepl.response.ResponseClient;
@@ -53,27 +54,30 @@ public class ConnectEmploye extends JDialog{
 
         try
         {
-            socket = new Socket("192.168.68.51",50000);
-            RequestEmployee requete = new RequestEmployee(loginEmployee,passwordfield);
-            oos = new ObjectOutputStream(socket.getOutputStream());
-            ois = new ObjectInputStream(socket.getInputStream());
-            oos.writeObject(requete);
-            ResponseEmployee response = (ResponseEmployee) ois.readObject();
-            if (response.isSuccess())
-            {
-                buttonOK.setEnabled(false);
-                buttonCancel.setEnabled(true);
-                this.login = loginEmployee;
-                dispose();
-                ConnectClient connectClientDialog =  new ConnectClient();
-                connectClientDialog.setVisible(true);
+            System.out.println("Tentative de connexion avec l'employé : " + loginEmployee);
+            System.out.println("Mot de passe : " + passwordfield); // Ne jamais afficher le mot de passe en production
+            // Simuler une réponse en créant un objet ResponseEmployee fictif
+            // Pour l'exemple, on suppose que la connexion est réussie
+            ResponseEmployee response = new ResponseEmployee();
+            //response.setSuccess(true);  // Simuler une réponse réussie
+
+            // Vérifier la réponse
+            try {
+                if (response.isSuccess()) {
+                    buttonOK.setEnabled(false);
+                    buttonCancel.setEnabled(true);
+                    System.out.println("Connexion réussie pour l'employé : " + loginEmployee);
+                    // Vous pouvez appeler ici une autre fenêtre si nécessaire, par exemple :
+                    // ConnectClient connectClientDialog = new ConnectClient();
+                    // connectClientDialog.setVisible(true);
+                }
             }
-            else
+            catch (Exception e)
             {
-                JOptionPane.showMessageDialog(this,"Erreur de login !","Erreur...",JOptionPane.ERROR_MESSAGE);
-                socket.close();
+                e.printStackTrace();
+                JOptionPane.showMessageDialog(this, "Erreur de login !", "Erreur...", JOptionPane.ERROR_MESSAGE);
             }
-        }catch (IOException | ClassNotFoundException ex)
+        }catch (Exception ex)
         {
             ex.printStackTrace();
             JOptionPane.showMessageDialog(this,"Problème de connexion !","Erreur...",JOptionPane.ERROR_MESSAGE);

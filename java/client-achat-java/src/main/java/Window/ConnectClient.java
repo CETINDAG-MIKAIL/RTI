@@ -1,5 +1,6 @@
 package Window;
 
+import be.hepl.FileHelper;
 import be.hepl.request.RequestClient;
 import be.hepl.response.ResponseClient;
 
@@ -71,7 +72,9 @@ public class ConnectClient extends JDialog {
 
         try
         {
-            socket = new Socket("192.168.68.51",50000);
+            String ipServeur = FileHelper.getSettingString("./config.txt", "IP_SERVER");
+            int portServeur = FileHelper.getSettingInt("./config.txt", "PORT_PURCHASE");
+            socket = new Socket(ipServeur, portServeur);
             RequestClient requete = new RequestClient(loginLastName,loginFirstName,newClient );
             oos = new ObjectOutputStream(socket.getOutputStream());
             ois = new ObjectInputStream(socket.getInputStream());
@@ -92,6 +95,7 @@ public class ConnectClient extends JDialog {
             }
         }catch (IOException | ClassNotFoundException ex)
         {
+            ex.printStackTrace();
             JOptionPane.showMessageDialog(this,"Problème de connexion !","Erreur...",JOptionPane.ERROR_MESSAGE);
         }
 
