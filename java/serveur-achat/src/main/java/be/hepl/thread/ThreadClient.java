@@ -7,7 +7,6 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
-import java.util.logging.Logger;
 
 public abstract class ThreadClient extends Thread {
     protected Protocol protocol;
@@ -44,23 +43,14 @@ public abstract class ThreadClient extends Thread {
             ObjectOutputStream oos = null;
             ObjectInputStream ois = null;
 
-            try
-            {
-                ois = new ObjectInputStream(csocket.getInputStream());
-                oos = new ObjectOutputStream(csocket.getOutputStream());
+            ois = new ObjectInputStream(csocket.getInputStream());
+            oos = new ObjectOutputStream(csocket.getOutputStream());
 
-                while (true)
-                {
-                    Requete requete = (Requete) ois.readObject();
-                    Reponse reponse = protocol.TraiteRequete(requete,csocket);
-                    oos.writeObject(reponse);
-                }
-            }
-            catch (EndConnexionException ex)
+            while (true)
             {
-                logger.Trace("Fin connexion demandée par protocole");
-                if (oos != null && ex.getReponse() != null)
-                    oos.writeObject(ex.getReponse());
+                RequestThreadClient requete = (RequestThreadClient) ois.readObject();
+                //RequestThreadServer reponse = protocol.TraiteRequete(requete,csocket);
+                //oos.writeObject(reponse);
             }
         }
         catch (IOException ex) { logger.Trace("Erreur I/O"); }

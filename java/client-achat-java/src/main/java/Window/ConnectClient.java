@@ -1,15 +1,29 @@
 package Window;
 
+import be.hepl.request.RequestClient;
+import be.hepl.response.ResponseClient;
+
 import javax.swing.*;
-import java.awt.*;
 import java.awt.event.*;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.net.Socket;
+import java.net.UnknownHostException;
+
 
 public class ConnectClient extends JDialog {
+    private ObjectOutputStream oos;
+    private ObjectInputStream ois;
+    private Socket socket;
+    private String login;
+
+
     private JPanel contentPane;
     private JButton buttonOK;
     private JButton buttonCancel;
-    private JTextField textField1;
-    private JTextField textField2;
+    private JTextField textFieldLastNameClient;
+    private JTextField textFieldFirstNameClient;
     private JCheckBox nouveauClientCheckBox;
 
     public ConnectClient() {
@@ -48,10 +62,41 @@ public class ConnectClient extends JDialog {
     }
 
     private void onOK() {
-        dispose();
-        new MainWindow();
+        //String ipServeur = jTextFieldIP.getText();
+        //int portServeur = Integer.parseInt(jTextFieldPort.getText());
+        String loginLastName = textFieldLastNameClient.getText();
+        String loginFirstName = textFieldFirstNameClient.getText();
+        boolean newClient = nouveauClientCheckBox.isSelected();
+
+
+        try
+        {
+            socket = new Socket("192.168.68.51",50000);
+            RequestClient requete = new RequestClient(loginLastName,loginFirstName,newClient );
+            oos = new ObjectOutputStream(socket.getOutputStream());
+            ois = new ObjectInputStream(socket.getInputStream());
+            oos.writeObject(requete);
+            ResponseClient response = (ResponseClient) ois.readObject();
+            if (response.isValide())
+            {
+                buttonOK.setEnabled(false);
+                buttonCancel.setEnabled(true);
+                this.login = login;
+                dispose();
+                new MainWindow();
+            }
+            else
+            {
+                JOptionPane.showMessageDialog(this,"Erreur de login !","Erreur...",JOptionPane.ERROR_MESSAGE);
+                socket.close();
+            }
+        }catch (IOException | ClassNotFoundException ex)
+        {
+            JOptionPane.showMessageDialog(this,"Problème de connexion !","Erreur...",JOptionPane.ERROR_MESSAGE);
+        }
 
     }
+
 
     private void onCancel() {
         dispose();

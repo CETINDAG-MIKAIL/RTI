@@ -1,4 +1,4 @@
-package src.main.java.be.hepl.response;
+package be.hepl.response;
 
 import java.io.Serializable;
 

@@ -1,5 +1,7 @@
 package be.hepl.myException;
 
+import be.hepl.response.Response;
+
 public class EndConnexionException extends Exception {
     private Response response;
 

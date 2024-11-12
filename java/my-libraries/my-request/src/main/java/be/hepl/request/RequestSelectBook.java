@@ -1,4 +1,4 @@
-package src.main.java.be.hepl.request;
+package be.hepl.request;
 
 import be.hepl.model.viewmodel.BookSearchVM;
 

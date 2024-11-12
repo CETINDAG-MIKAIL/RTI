@@ -2,21 +2,18 @@ package be.hepl.protocol;
 
 import be.hepl.model.dao.*;
 import be.hepl.model.entity.*;
-import be.hepl.model.viewmodel.BookSearchVM;
-import be.hepl.model.viewmodel.CaddySearchVM;
-import be.hepl.model.viewmodel.ClientSearchVM;
-import be.hepl.model.viewmodel.EmployeeSearchVM;
+import be.hepl.model.viewmodel.*;
 import be.hepl.myException.EndConnexionException;
+import be.hepl.request.*;
+import be.hepl.response.*;
 import be.hepl.thread.Logger;
-import com.sun.net.httpserver.Request;
-import src.main.java.be.hepl.request.*;
-import src.main.java.be.hepl.response.*;
 
 import java.net.Socket;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
+
 
 public class ProtocolBSPP implements Protocol {
     private HashMap<Socket, Integer> connectedClients;
@@ -43,12 +40,12 @@ public class ProtocolBSPP implements Protocol {
         if(request instanceof RequestAddCaddyItem) {
             return ProcessingAddCaddyItem((RequestAddCaddyItem) request, idClient);
         }
-        if(request instanceof RequestDeleteCaddyItem) {
+    /*    if(request instanceof RequestDeleteCaddyItem) {
             return ProcessingDeleteCaddyItem((RequestDeleteCaddyItem) request);
         }
         if(request instanceof RequestCancelCaddy) {
             return ProcessingCancelCaddy((RequestCancelCaddy) request);
-        }
+        }*/
         if(request instanceof RequestPayCaddy) {
             return ProcessingPayCaddy((RequestPayCaddy) request);
         }
@@ -160,16 +157,16 @@ public class ProtocolBSPP implements Protocol {
         return new ResponseAddCaddyItem(false);
     }
 
-    private synchronized ResponseDeleteCaddyItem ProcessingDeleteCaddyItem(RequestDeleteCaddyItem request) throws EndConnexionException {
+    /*private synchronized ResponseDeleteCaddyItem ProcessingDeleteCaddyItem(RequestDeleteCaddyItem request) throws EndConnexionException {
         logger.Trace("RequestDeleteCaddyItem received");
 
         CaddyItemDAO dao = new CaddyItemDAO();
         //dao.update();
-    }
+    }*/
 
-    private synchronized ResponseCancelCaddy ProcessingCancelCaddy(RequestCancelCaddy request) throws EndConnexionException {
+    /*private synchronized ResponseCancelCaddy ProcessingCancelCaddy(RequestCancelCaddy request) throws EndConnexionException {
         logger.Trace("RequestCancelCaddy received");
-    }
+    }*/
 
     private synchronized ResponsePayCaddy ProcessingPayCaddy(RequestPayCaddy request) throws EndConnexionException, SQLException {
         logger.Trace("RequestPayCaddy received");

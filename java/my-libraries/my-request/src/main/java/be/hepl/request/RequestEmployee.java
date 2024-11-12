@@ -1,4 +1,4 @@
-package src.main.java.be.hepl.request;
+package be.hepl.request;
 
 public class RequestEmployee implements Request {
     private String login;
