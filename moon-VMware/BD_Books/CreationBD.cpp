@@ -103,6 +103,36 @@ EMPLOYEES employees[] = {
   {-1,"bb", "cc"}                         // id = 3
 };
 int nbEmployees = 3;
+
+
+CLIENTS clients[] = {
+    {-1, "Martin", "Dupont", 101, "123 Rue de Paris, Paris, France"},   // id = 1
+    {-1, "Julie", "Durand", 102, "456 Avenue de Lyon, Lyon, France"},   // id = 2
+    {-1, "Luc", "Bernard", 103, "789 Boulevard de Nice, Nice, France"}  // id = 3
+};
+int nbClients = 3;
+
+CADDIES caddies[] = {
+    {-1, 1, "2023-10-10", true},     // id = 1, clientId = 1
+    {-1, 2, "2023-11-05", false},    // id = 2, clientId = 2
+    {-1, 3, "2023-12-01", true}      // id = 3, clientId = 3
+};
+int nbCaddies = 3;
+
+CADDY_ITEMS caddy_items[] = {
+    {-1, 1, 1, 2},  // caddyId = 1, bookId = 1 ("Les Thanatonautes"), quantité = 2
+    {-1, 1, 2, 1},  // caddyId = 1, bookId = 2 ("Les Fourmis"), quantité = 1
+    {-1, 1, 4, 1},  // caddyId = 1, bookId = 4 ("Da Vinci Code"), quantité = 1
+
+    {-1, 2, 5, 3},  // caddyId = 2, bookId = 5 ("Anges et demons"), quantité = 3
+    {-1, 2, 6, 1},  // caddyId = 2, bookId = 6 ("Dune"), quantité = 1
+    {-1, 2, 8, 2},  // caddyId = 2, bookId = 8 ("Programmer en C++ moderne"), quantité = 2
+
+    {-1, 3, 10, 1}, // caddyId = 3, bookId = 10 ("Quand la machine apprend"), quantité = 1
+    {-1, 3, 11, 4}, // caddyId = 3, bookId = 11 ("Vingt mille lieues sous les mers"), quantité = 4
+    {-1, 3, 12, 2}  // caddyId = 3, bookId = 12 ("Les heretiques de Dune"), quantité = 2
+};
+int nbCaddyItems = 4;
 // ---------------------------------------------------
 
 void finish_with_error(MYSQL *con);
@@ -322,14 +352,44 @@ int main(int argc,char *argv[])
   }
 
 // Ajouté : ------------------------------------------
-  // Ajout de tuples dans la table employees
-  printf("Ajout de %d employes la table employees...\n", nbEmployees);
-  for (int i=0 ; i < nbEmployees ; i++) {
-    sprintf(request,"insert into employees values (NULL,'%s', '%s');",employees[i].login, employees[i].password);
-    if (mysql_query(connexion,request)) {
-      finish_with_error(connexion);   
+    // Ajout de tuples dans la table employees
+    printf("Ajout de %d employes la table employees...\n", nbEmployees);
+    for (int i=0 ; i < nbEmployees ; i++) {
+        sprintf(request,"insert into employees values (NULL,'%s', '%s');",employees[i].login, employees[i].password);
+        if (mysql_query(connexion,request)) {
+          finish_with_error(connexion);
+        }
     }
-  }
+
+    // Ajout de tuples dans la table CLIENTS
+    printf("Ajout de %d clients dans la table clients...\n", nbClients);
+    for (int i = 0; i < nbClients; i++) {
+        sprintf(request, "INSERT INTO clients VALUES (NULL, '%s', '%s', %d, '%s');",
+                clients[i].nom, clients[i].prenom, clients[i].numClient, clients[i].adresse);
+        if (mysql_query(connexion, request)) {
+            finish_with_error(connexion);
+        }
+    }
+
+    // Ajout de tuples dans la table CADDIES
+    printf("Ajout de %d caddies dans la table caddies...\n", nbCaddies);
+    for (int i = 0; i < nbCaddies; i++) {
+        sprintf(request, "INSERT INTO caddies VALUES (NULL, %d, '%s', %d);",
+                caddies[i].clientId, caddies[i].date, caddies[i].payed);
+        if (mysql_query(connexion, request)) {
+            finish_with_error(connexion);
+        }
+    }
+
+    // Ajout de tuples dans la table CADDY_ITEMS
+    printf("Ajout de %d items dans la table caddy_items...\n", nbCaddyItems);
+    for (int i = 0; i < nbCaddyItems; i++) {
+        sprintf(request, "INSERT INTO caddy_items VALUES (NULL, %d, %d, %d);",
+                caddy_items[i].caddyId, caddy_items[i].bookId, caddy_items[i].quantity);
+        if (mysql_query(connexion, request)) {
+            finish_with_error(connexion);
+        }
+    }
 // ---------------------------------------------------
 
   // Deconnection de la BD

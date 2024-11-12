@@ -40,17 +40,10 @@ public abstract class ThreadClient extends Thread {
             ois = new ObjectInputStream(csocket.getInputStream());
             oos = new ObjectOutputStream(csocket.getOutputStream());
 
-
             while (true) {
-                RequestThreadClient requete = (RequestThreadClient) ois.readObject();
-                //RequestThreadServer reponse = protocol.TraiteRequete(requete,csocket);
-                //oos.writeObject(reponse);
-
-                while (true) {
-                    Request request = (Request) ois.readObject();
-                    Response response = protocol.processingRequest(request, csocket);
-                    oos.writeObject(response);
-                }
+                Request request = (Request) ois.readObject();
+                Response response = protocol.processingRequest(request, csocket);
+                oos.writeObject(response);
             }
         }
         catch (IOException ex) {

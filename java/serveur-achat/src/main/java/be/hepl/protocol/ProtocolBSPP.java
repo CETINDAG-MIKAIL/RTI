@@ -7,6 +7,7 @@ import be.hepl.myException.EndConnexionException;
 import be.hepl.trace.Logger;
 import be.hepl.request.*;
 import be.hepl.response.*;
+import be.hepl.trace.MyLogger;
 
 import java.net.Socket;
 import java.time.LocalDate;
@@ -14,7 +15,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class ProtocolBSPP implements Protocol {
-    private HashMap<Socket, Integer> connectedClients;
+    private final HashMap<Socket, Integer> connectedClients = new HashMap<>();
     private Logger logger;
 
     @Override
@@ -24,6 +25,8 @@ public class ProtocolBSPP implements Protocol {
 
     @Override
     public synchronized Response processingRequest(Request request, Socket socket) throws EndConnexionException {
+        logger = MyLogger.getInstance();
+
         if(request instanceof RequestEmployee) {
             return ProcessingEmployee((RequestEmployee) request);
         }

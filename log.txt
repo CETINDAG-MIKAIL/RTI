@@ -16,6 +16,16 @@ Connection timed out, time out reset on 2000 ms.
 Connection timed out, time out reset on 2000 ms.
 Connection accepted, creation TH Client
 TH Client (Request) starts...
+RequestClient received from Claud Vilvens
+Connection timed out, time out reset on 2000 ms.
+Connection timed out, time out reset on 2000 ms.
+Connection timed out, time out reset on 2000 ms.
+Erreur I/O
+TH Client (Request) ends.
+Connection timed out, time out reset on 2000 ms.
+Connection accepted, creation TH Client
+TH Client (Request) starts...
+RequestClient received from Claude Vilvens
 Connection timed out, time out reset on 2000 ms.
 Connection timed out, time out reset on 2000 ms.
 Connection timed out, time out reset on 2000 ms.
@@ -31,6 +41,10 @@ Connection timed out, time out reset on 2000 ms.
 Connection timed out, time out reset on 2000 ms.
 Connection timed out, time out reset on 2000 ms.
 Connection timed out, time out reset on 2000 ms.
+Connection accepted, creation TH Client
+TH Client (Request) starts...
+Erreur I/O
+TH Client (Request) ends.
 Connection timed out, time out reset on 2000 ms.
 Connection timed out, time out reset on 2000 ms.
 Connection timed out, time out reset on 2000 ms.
@@ -39,36 +53,8 @@ Connection timed out, time out reset on 2000 ms.
 Connection timed out, time out reset on 2000 ms.
 Connection timed out, time out reset on 2000 ms.
 Connection timed out, time out reset on 2000 ms.
-Connection timed out, time out reset on 2000 ms.
-Connection timed out, time out reset on 2000 ms.
-Connection timed out, time out reset on 2000 ms.
-Connection timed out, time out reset on 2000 ms.
-Connection timed out, time out reset on 2000 ms.
-Connection timed out, time out reset on 2000 ms.
-Connection timed out, time out reset on 2000 ms.
-Connection timed out, time out reset on 2000 ms.
-Connection timed out, time out reset on 2000 ms.
-Connection timed out, time out reset on 2000 ms.
-Connection timed out, time out reset on 2000 ms.
-Connection timed out, time out reset on 2000 ms.
-Connection timed out, time out reset on 2000 ms.
-Connection timed out, time out reset on 2000 ms.
-Connection timed out, time out reset on 2000 ms.
-Connection timed out, time out reset on 2000 ms.
-Connection timed out, time out reset on 2000 ms.
-Connection timed out, time out reset on 2000 ms.
-Connection timed out, time out reset on 2000 ms.
-Connection timed out, time out reset on 2000 ms.
-Connection timed out, time out reset on 2000 ms.
-Connection timed out, time out reset on 2000 ms.
-Connection timed out, time out reset on 2000 ms.
-Connection timed out, time out reset on 2000 ms.
-Connection timed out, time out reset on 2000 ms.
-Connection timed out, time out reset on 2000 ms.
-Connection timed out, time out reset on 2000 ms.
-Connection timed out, time out reset on 2000 ms.
-Connection timed out, time out reset on 2000 ms.
-Connection timed out, time out reset on 2000 ms.
+Erreur I/O
+TH Client (Request) ends.
 Connection timed out, time out reset on 2000 ms.
 Connection timed out, time out reset on 2000 ms.
 Connection timed out, time out reset on 2000 ms.
