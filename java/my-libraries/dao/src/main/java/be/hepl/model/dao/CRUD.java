@@ -14,12 +14,12 @@ public interface CRUD<T, S>{
     T getById(int id);
     void save(T t);
 
-    void create(T entity) throws SQLException;
+    void create(T entity);
 
     ArrayList<T> read();
     ArrayList<T> read(S search);
 
-    void update(T entity) throws SQLException;
+    void update(T entity);
 
     void delete(Integer id);
     void delete(T entity);

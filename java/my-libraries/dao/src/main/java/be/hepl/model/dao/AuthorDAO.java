@@ -42,32 +42,31 @@ public class AuthorDAO implements CRUD<Author, AuthorSearchVM> {
 
     @Override
     public void save(Author author) {
-        try {
-            String sql;
-            if (author != null) {
-                if (author.getId() != null) { // UPDATE
-                   update(author);
-                } else { // CREATE
-                   create(author);
-                }
+        if (author != null) {
+            if (author.getId() != null) { // UPDATE
+               update(author);
+            } else { // CREATE
+               create(author);
             }
-        } catch (SQLException ex) {
-            Logger.getLogger(AuthorDAO.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
     @Override
-    public void create(Author author) throws SQLException {
-        String sql = "INSERT INTO authors (last_name, first_name, birth_date) VALUES (?, ?, ?)";
-        PreparedStatement pStmt = connectDB.getConn().prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS);
-        pStmt.setString(1, author.getLastName());
-        pStmt.setString(2, author.getFirstName());
-        pStmt.setString(3, author.getBirthDate());
-        pStmt.executeUpdate();
-        ResultSet rs = pStmt.getGeneratedKeys();
-        rs.next();
-        author.setId((int) rs.getLong(1));
-        rs.close();
-        pStmt.close();
+    public void create(Author author) {
+        try {
+            String sql = "INSERT INTO authors (last_name, first_name, birth_date) VALUES (?, ?, ?)";
+            PreparedStatement pStmt = connectDB.getConn().prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS);
+            pStmt.setString(1, author.getLastName());
+            pStmt.setString(2, author.getFirstName());
+            pStmt.setString(3, author.getBirthDate());
+            pStmt.executeUpdate();
+            ResultSet rs = pStmt.getGeneratedKeys();
+            rs.next();
+            author.setId((int) rs.getLong(1));
+            rs.close();
+            pStmt.close();
+        } catch (SQLException ex) {
+            Logger.getLogger(AuthorDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     @Override
@@ -142,19 +141,23 @@ public class AuthorDAO implements CRUD<Author, AuthorSearchVM> {
     }
 
     @Override
-    public void update(Author author) throws SQLException {
-        String sql = "UPDATE authors SET "
-                + " last_name = ?, "
-                + " first_name = ?, "
-                + " birth_date = ? "
-                + " WHERE id = ?";
-        PreparedStatement pStmt = connectDB.getConn().prepareStatement(sql);
-        pStmt.setString(1, author.getLastName());
-        pStmt.setString(2, author.getFirstName());
-        pStmt.setString(3, author.getBirthDate());
-        pStmt.setInt(4, author.getId());
-        pStmt.executeUpdate();
-        pStmt.close();
+    public void update(Author author) {
+        try {
+            String sql = "UPDATE authors SET "
+                    + " last_name = ?, "
+                    + " first_name = ?, "
+                    + " birth_date = ? "
+                    + " WHERE id = ?";
+            PreparedStatement pStmt = connectDB.getConn().prepareStatement(sql);
+            pStmt.setString(1, author.getLastName());
+            pStmt.setString(2, author.getFirstName());
+            pStmt.setString(3, author.getBirthDate());
+            pStmt.setInt(4, author.getId());
+            pStmt.executeUpdate();
+            pStmt.close();
+        } catch (SQLException ex) {
+            Logger.getLogger(AuthorDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
 
@@ -164,11 +167,11 @@ public class AuthorDAO implements CRUD<Author, AuthorSearchVM> {
             if (id != null) {
                 try {
                     // Supprimer les livres associés à cet auteur
-                    String deleteBooksSQL = "DELETE FROM books WHERE author_id = ?";
-                    PreparedStatement stmtBooks = connectDB.getConn().prepareStatement(deleteBooksSQL);
-                    stmtBooks.setInt(1, id);
-                    stmtBooks.executeUpdate();
-                    stmtBooks.close();
+//                    String deleteBooksSQL = "DELETE FROM books WHERE author_id = ?";
+//                    PreparedStatement stmtBooks = connectDB.getConn().prepareStatement(deleteBooksSQL);
+//                    stmtBooks.setInt(1, id);
+//                    stmtBooks.executeUpdate();
+//                    stmtBooks.close();
 
                     // Supprimer l'auteur
                     String sql = "DELETE FROM authors WHERE id = ?";
