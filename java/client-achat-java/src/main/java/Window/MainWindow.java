@@ -12,12 +12,14 @@ import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.ArrayList;
 
+import Window.table.BookColumnModelAchatClient;
+import Window.table.BookModelAchatClient;
 import be.hepl.FileHelper;
-import be.hepl.model.dao.BookDAO;
+import be.hepl.model.entity.Author;
+import be.hepl.model.entity.Subject;
+
 import be.hepl.model.entity.Book;
-import be.hepl.model.entity.*;
 import be.hepl.model.viewmodel.BookSearchVM;
-import be.hepl.request.RequestClient;
 import be.hepl.request.RequestSelectBook;
 import be.hepl.response.ResponseSelectBook;
 import com.formdev.flatlaf.FlatDarkLaf;
@@ -33,19 +35,23 @@ public class MainWindow extends JFrame{
     private ObjectInputStream ois;
 
 
-    private JTable table1;
-    private JTable table2;
+    private JTable tableStock;
+    private JTable tableBasket;
+
     private JButton ajouterButton;
     private JButton viderLePanierButton;
     private JButton supprimerButton;
     private JButton payerButton;
     private JButton annulerButton;
+
     private JTextField textFieldTitle;
     private JTextField textFieldSubject;
     private JTextField textFieldLastNameAuthor;
     private JTextField textFieldFirstNameAuthor;
+
     private JSpinner spinnerMaxPrice;
     private JSpinner spinnerMaxPageCount;
+
     private JButton rechercheButton;
     private JButton xButtonTitle;
     private JButton xButtonLastName;
@@ -53,6 +59,7 @@ public class MainWindow extends JFrame{
     private JButton xButtonSubject;
     private JButton xButtonFirstName;
     private JButton xButtonMaxPageCount;
+
     private JPanel MainPanel;
     private JLabel labelTitle;
     private JLabel labelLastName;
@@ -60,10 +67,10 @@ public class MainWindow extends JFrame{
     private JLabel labelFirstName;
     private JLabel labelPageCount;
     private JLabel labelMaxPrice;
+
     public MainWindow() {
         oos = null;
         ois = null;
-
         setContentPane(MainPanel);
         setTitle("MainWindow");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -76,6 +83,27 @@ public class MainWindow extends JFrame{
         initClearButtonForSpinner(xButtonMaxPrice, spinnerMaxPrice, labelMaxPrice);
         initClearButtonForSpinner(xButtonMaxPageCount, spinnerMaxPageCount, labelPageCount);
         buttonSearch(rechercheButton);
+        clearBooksTable( tableStock );
+        clearBooksTable( tableBasket );
+        tableStock.setFillsViewportHeight(true);
+
+        ajouterButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int selectedRow = tableStock.getSelectedRow();
+
+                // Vérifie si une ligne est bien sélectionnée dans tableStock
+                if (selectedRow != -1) {
+                    // Récupère le livre de la ligne sélectionnée
+                    Book selectedBook = ((BookModelAchatClient) tableStock.getModel()).getBook(selectedRow);
+                    // Ajoute le livre au panier
+                    addBookToBasket(selectedBook);
+                } else {
+                    JOptionPane.showMessageDialog(null, "Veuillez sélectionner un livre à ajouter au panier.",
+                            "Aucune sélection", JOptionPane.WARNING_MESSAGE);
+                }
+            }
+        });
 
         setVisible(true);
     }
@@ -154,10 +182,12 @@ public class MainWindow extends JFrame{
 
                     // Vérifier si la réponse est valide
                     if (response != null && response.getBooks() != null && !response.getBooks().isEmpty()) {
-                        System.out.println("Livres reçus : ");
-                        for (Book book : response.getBooks()) {
-                            System.out.println(book);
-                        }
+//                        System.out.println("Livres reçus : ");
+//                        for (Book book : response.getBooks()) {
+//                            System.out.println(book);
+//                        }
+                        UpdateSearch(tableStock, response);
+
                     } else {
                         System.out.println("Aucun livre trouvé ou erreur de serveur.");
                     }
@@ -171,6 +201,13 @@ public class MainWindow extends JFrame{
             }
         });
     }
+    private void addBookToBasket(Book book) {
+        // Ajoutez le livre au modèle de données de tableBasket
+        BookModelAchatClient basketModel = (BookModelAchatClient) tableBasket.getModel();
+        basketModel.addRow(book);
+    }
+
+
 
     private void initClearButtonForSpinner(JButton button, JSpinner spinner, JLabel label) {
         button.setEnabled(false);
@@ -180,6 +217,23 @@ public class MainWindow extends JFrame{
             spinner.setValue(0);
             buttonVisibility();
         });
+    }
+    private void UpdateSearch(JTable tableStock, ResponseSelectBook response) {
+        BookModelAchatClient model = (BookModelAchatClient) tableStock.getModel();
+        for (be.hepl.model.entity.Book book : response.getBooks()) {
+            model.addRow(book);
+        }
+
+    }
+
+    public void clearBooksTable( JTable tableStock ) {
+        BookModelAchatClient model = new BookModelAchatClient(new ArrayList<>());
+        tableStock.setModel(model);
+        tableStock.setColumnModel(new BookColumnModelAchatClient());
+    }
+    public void addBookTable(Book book) {
+        BookModelAchatClient model = (BookModelAchatClient) tableStock.getModel();
+        model.addRow(book);
     }
 
     private void addFilterListener(JTextField textField, JButton button, JLabel label) {
