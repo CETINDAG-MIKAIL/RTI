@@ -1,6 +1,8 @@
 package be.hepl.model.entity;
 
-public class Book implements Entity{
+import java.io.Serializable;
+
+public class Book implements Entity, Serializable {
 
 
     private Integer id;

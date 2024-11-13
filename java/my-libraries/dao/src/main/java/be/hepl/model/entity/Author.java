@@ -1,4 +1,7 @@
 package be.hepl.model.entity;
+
+import java.io.Serializable;
+
 /*
     typedef struct {
         int  id;
@@ -7,7 +10,7 @@ package be.hepl.model.entity;
         char birth_date[20];
     } AUTHOR;
 */
-public class Author implements Entity{
+public class Author implements Entity, Serializable {
     private Integer id;
     private String lastName;
     private String firstName;

@@ -1,6 +1,8 @@
 package be.hepl.model.entity;
 
-public class Subject implements Entity {
+import java.io.Serializable;
+
+public class Subject implements Entity, Serializable {
     private Integer id;
     private String name;
 

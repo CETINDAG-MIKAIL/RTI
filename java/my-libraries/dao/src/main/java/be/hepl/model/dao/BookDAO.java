@@ -47,7 +47,7 @@ public class BookDAO implements CRUD<Book, BookSearchVM> {
         }
     }
 
-   @Override
+    @Override
     public void create(Book book) {
         try {
             String sql = "INSERT INTO books (author_id, subject_id, title, isbn, page_count, stock_quantity, publish_year, price) "
@@ -113,9 +113,14 @@ public class BookDAO implements CRUD<Book, BookSearchVM> {
                         sql.append(" AND authors.last_name LIKE ?");
                     }
                 }
-                if (search.getSubject() != null && search.getSubject().getId() != null) {
-                    sql.append(" AND subjects.id = ?");
+                if (search.getSubject() != null) {
+                    if(search.getSubject().getId() != null)
+                        sql.append(" AND subjects.id = ?");
+                    if (search.getSubject().getName() != null && !search.getSubject().getName().isEmpty()) {
+                        sql.append(" AND subjects.name LIKE ?");
+                    }
                 }
+
                 if (search.getId() != null) {
                     sql.append(" AND books.id = ?");
                 }
@@ -158,6 +163,9 @@ public class BookDAO implements CRUD<Book, BookSearchVM> {
                 if (search.getId() != null) {
                     stmt.setInt(++paramNumber, search.getId());
                 }
+                if (search.getAuthor() != null && search.getAuthor().getId() != null) {
+                    stmt.setInt(++paramNumber, search.getAuthor().getId());
+                }
                 if (search.getAuthor() != null) {
                     // Ajout des paramètres pour prénom et nom de l'auteur (modification ici)
                     if (search.getAuthor().getFirstName() != null && !search.getAuthor().getFirstName().isEmpty()) {
@@ -167,8 +175,11 @@ public class BookDAO implements CRUD<Book, BookSearchVM> {
                         stmt.setString(++paramNumber, "%" + search.getAuthor().getLastName() + "%");
                     }
                 }
-                if (search.getSubject() != null && search.getSubject().getId() != null) {
-                    stmt.setInt(++paramNumber, search.getSubject().getId());
+                if (search.getSubject() != null) {
+                     if(search.getSubject().getId() != null)
+                        stmt.setInt(++paramNumber, search.getSubject().getId());
+                     if(search.getSubject().getName() != null && !search.getSubject().getName().isEmpty())
+                         stmt.setString(++paramNumber, "%" + search.getSubject().getName() + "%");
                 }
                 if (search.getTitle() != null && !search.getTitle().isEmpty()) {
                     stmt.setString(++paramNumber, "%" + search.getTitle() + "%");

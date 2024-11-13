@@ -3,7 +3,9 @@ package be.hepl.model.viewmodel;
 import be.hepl.model.entity.Author;
 import be.hepl.model.entity.Subject;
 
-public class BookSearchVM {
+import java.io.Serializable;
+
+public class BookSearchVM implements Serializable {
 
     public BookSearchVM() {}
     private Integer id;

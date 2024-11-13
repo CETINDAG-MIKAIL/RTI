@@ -1,6 +1,8 @@
 package be.hepl.model.entity;
 
-public class Client implements Entity {
+import java.io.Serializable;
+
+public class Client implements Entity, Serializable {
     private Integer id;
     private String lastName;
     private String firstName;

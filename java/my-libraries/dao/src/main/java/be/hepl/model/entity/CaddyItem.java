@@ -1,6 +1,8 @@
 package be.hepl.model.entity;
 
-public class CaddyItem implements Entity {
+import java.io.Serializable;
+
+public class CaddyItem implements Entity, Serializable {
     private Integer id;
     private Caddy caddy;
     private Book book;

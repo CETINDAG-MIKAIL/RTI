@@ -14,16 +14,17 @@ public class TestBooks {
         BookDAO dao = new BookDAO();
       BookSearchVM vm = new BookSearchVM();
         Author author = new Author();
-        author.setId(10);
-        author.setFirstName("mikail");
-        author.setLastName("Lebo");
-        author.setBirthDate("1950-10-15");
+        author.setId(1);
+        author.setFirstName("Bernard"); // 1,Werber,Bernard,1961-09-18
+        author.setLastName("Werber");
+        author.setBirthDate("1961-09-18");
 
-        int authorId = author.getId();
+
+        Integer authorId = author.getId();
         System.out.println("authorID" + authorId);
 
         Subject subject = new Subject();
-        subject.setId(10);
+        subject.setId(1);
         subject.setName("Science-Fiction");
 
         //subject [id=1, name=Science-Fiction]
@@ -43,7 +44,7 @@ public class TestBooks {
         book.setPublishYear(2003);
 
         dao.save(book);
-        int id = book.getId();
+        Integer id = book.getId();
         System.out.println("Ajout réussi : id = " + id);
 
         System.out.println("--- SELECT * ---");

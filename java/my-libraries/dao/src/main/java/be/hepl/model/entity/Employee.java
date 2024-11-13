@@ -1,6 +1,8 @@
 package be.hepl.model.entity;
 
-public class Employee implements Entity {
+import java.io.Serializable;
+
+public class Employee implements Entity , Serializable {
     private Integer id;
     private String login;
     private String password;

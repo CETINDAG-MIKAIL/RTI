@@ -1,8 +1,9 @@
 package be.hepl.model.entity;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 
-public class Caddy implements Entity {
+public class Caddy implements Entity, Serializable {
     private Integer id;
     private Client client;
     private LocalDate date;
