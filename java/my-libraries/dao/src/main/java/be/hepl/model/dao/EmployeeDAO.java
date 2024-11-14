@@ -26,7 +26,7 @@ public class EmployeeDAO implements CRUD<Employee, EmployeeSearchVM> {
     }
 
     @Override
-    public Employee getById(int id) {
+    public Employee getById(Integer id) {
         for (Employee employee : employees) {
             if (employee.getId() == id) {
                 return employee;

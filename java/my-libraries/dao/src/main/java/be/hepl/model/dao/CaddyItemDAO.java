@@ -26,7 +26,7 @@ public class CaddyItemDAO implements CRUD<CaddyItem, CaddyItemSearchVM> {
     }
 
     @Override
-    public CaddyItem getById(int id) {
+    public CaddyItem getById(Integer id) {
         for (CaddyItem caddyItem : caddyItems) {
             if (caddyItem.getId() == id) {
                 return caddyItem;

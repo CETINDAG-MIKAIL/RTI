@@ -27,7 +27,7 @@ public class BookDAO implements CRUD<Book, BookSearchVM> {
     }
 
     @Override
-    public Book getById(int id) {
+    public Book getById(Integer id) {
         for (Book book : books) {
             if (book.getId() == id) {
                 return book;

@@ -30,7 +30,7 @@ public class AuthorDAO implements CRUD<Author, AuthorSearchVM> {
     }
 
     @Override
-    public Author getById(int id) {
+    public Author getById(Integer id) {
         for (Author author : authors) {
             if (author.getId() == id) {
                 System.out.println("getById : parametre id :" + id);

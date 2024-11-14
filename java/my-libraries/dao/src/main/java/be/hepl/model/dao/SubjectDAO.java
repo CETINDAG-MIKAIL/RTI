@@ -28,7 +28,7 @@ public class SubjectDAO implements CRUD<Subject, SubjectSearchVM> {
     }
 
     @Override
-    public Subject getById(int id) {
+    public Subject getById(Integer id) {
         for (Subject subject : subjects) {
             if (subject.getId() == id) {
                 return subject;

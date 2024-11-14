@@ -11,7 +11,7 @@ import java.util.Objects;
 
 public interface CRUD<T, S>{
     ArrayList<T> getList();
-    T getById(int id);
+    T getById(Integer id);
     void save(T t);
 
     void create(T entity);

@@ -29,7 +29,7 @@ public class ClientDAO implements CRUD<Client, ClientSearchVM> {
     }
 
     @Override
-    public Client getById(int id) {
+    public Client getById(Integer id) {
         for (Client client : clients) {
             if (client.getId() == id) {
                 return client;

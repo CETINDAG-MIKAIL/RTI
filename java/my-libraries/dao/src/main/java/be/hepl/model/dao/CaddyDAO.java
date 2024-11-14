@@ -30,7 +30,7 @@ public class CaddyDAO implements CRUD<Caddy, CaddySearchVM> {
     }
 
     @Override
-    public Caddy getById(int id) {
+    public Caddy getById(Integer id) {
         for (Caddy caddy : caddies) {
             if (caddy.getId() == id) {
                 return caddy;
