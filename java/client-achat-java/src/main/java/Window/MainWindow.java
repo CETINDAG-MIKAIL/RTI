@@ -129,6 +129,27 @@ public class MainWindow extends JFrame{
                 }
             }
         });
+        payerButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+                try {
+                    // Envoyer une requête au serveur pour restaurer le stock
+                    RequestPayCaddy request = new RequestPayCaddy(client.getId());
+                    oos.writeObject(request);
+
+                    // Recevoir la réponse du serveur
+                    RequestPayCaddy response = (RequestPayCaddy) ois.readObject();
+                    return response.isSuccess(); // isSuccess() retourne true si la restauration a réussi
+
+                } catch (IOException | ClassNotFoundException ex) {
+                    ex.printStackTrace();
+                    JOptionPane.showMessageDialog(null, "Erreur lors de la restauration du stock : " + ex.getMessage(),
+                            "Erreur", JOptionPane.ERROR_MESSAGE);
+                }
+
+            }
+        });
         supprimerButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
