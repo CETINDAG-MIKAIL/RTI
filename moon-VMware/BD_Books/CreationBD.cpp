@@ -280,10 +280,10 @@ if (mysql_query(connexion,
 }
 
 // Créer le trigger après suppression dans caddies pour supprimer les caddy_items associés
-printf("Creation du trigger after_delete_caddy...\n");
+printf("Creation du trigger before_delete_caddy...\n");
 if (mysql_query(connexion,
-    "CREATE TRIGGER after_delete_caddy "
-    "AFTER DELETE ON caddies "
+    "CREATE TRIGGER before_delete_caddy "
+    "BEFORE DELETE ON caddies "
     "FOR EACH ROW "
     "BEGIN "
     "   DELETE FROM caddy_items WHERE caddy_id = OLD.id; "
@@ -292,10 +292,10 @@ if (mysql_query(connexion,
 }
 
 // Créer le trigger après suppression dans authors pour supprimer les books associés
-printf("Creation du trigger after_delete_author...\n");
+printf("Creation du trigger before_delete_author...\n");
 if (mysql_query(connexion,
-    "CREATE TRIGGER after_delete_author "
-    "AFTER DELETE ON authors "
+    "CREATE TRIGGER before_delete_author "
+    "BEFORE DELETE ON authors "
     "FOR EACH ROW "
     "BEGIN "
     "   DELETE FROM books WHERE author_id = OLD.id; "
@@ -304,10 +304,10 @@ if (mysql_query(connexion,
 }
 
 // Créer le trigger après suppression dans subjects pour supprimer les books associés
-printf("Creation du trigger after_delete_subject...\n");
+printf("Creation du trigger before_delete_subject...\n");
 if (mysql_query(connexion,
-    "CREATE TRIGGER after_delete_subject "
-    "AFTER DELETE ON subjects "
+    "CREATE TRIGGER before_delete_subject "
+    "BEFORE DELETE ON subjects "
     "FOR EACH ROW "
     "BEGIN "
     "   DELETE FROM books WHERE subject_id = OLD.id; "
