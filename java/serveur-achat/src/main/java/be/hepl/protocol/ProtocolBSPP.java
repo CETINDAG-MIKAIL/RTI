@@ -83,6 +83,7 @@ public class ProtocolBSPP implements Protocol {
             client.setId(null);
             client.setLastName(request.getLastName());
             client.setFirstName(request.getFirstName());
+            client.setNumClient(-1);
             dao.save(client);
 
             connectedClients.put(socket, client.getId());

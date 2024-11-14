@@ -2,10 +2,21 @@ Starting TH Server (RequestThreadServer)...
 Connection accepted, creation TH Client
 TH Client (Request) starts...
 RequestEmployee received, login = aa
-RequestClient received from Martin Dupont
+RequestClient received from Luca Geelen
+RequestSelectBook received
+RequestSelectBook received
+RequestSelectBook received
+RequestSelectBook received
+RequestSelectBook received
+RequestSelectBook received
+RequestSelectBook received
+RequestSelectBook received
+RequestSelectBook received
+RequestSelectBook received
+RequestSelectBook received
+RequestSelectBook received
+RequestSelectBook received
+RequestSelectBook received
+RequestSelectBook received
 Erreur I/O
 TH Client (Request) ends.
-Connection accepted, creation TH Client
-TH Client (Request) starts...
-RequestEmployee received, login = aa
-RequestClient received from Luca Geelen
