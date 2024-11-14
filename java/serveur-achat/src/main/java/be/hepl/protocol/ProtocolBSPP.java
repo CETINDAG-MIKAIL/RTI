@@ -98,7 +98,7 @@ public class ProtocolBSPP implements Protocol {
         ArrayList<Client> clients = dao.read(vm);
 
         if(clients.isEmpty()) {
-            return new ResponseClient(null);
+            throw new EndConnexionException(new ResponseClient(null));
         }
 
         System.out.println("2--- id du client que je vais mettre dans la HashMap, idclient = " + clients.getFirst().getId());
@@ -204,10 +204,11 @@ public class ProtocolBSPP implements Protocol {
         ArrayList<Caddy> caddies = dao.read(cvm);
 
         if(caddies.isEmpty()) {
-            return new ResponseCancelCaddy(false);
+            throw new EndConnexionException(new ResponseCancelCaddy(false));
         }
+
         dao.delete(caddies.getFirst().getId());
-        return new ResponseCancelCaddy(true);
+        throw new EndConnexionException(new ResponseCancelCaddy(true));
     }
 
     private synchronized ResponsePayCaddy ProcessingPayCaddy(RequestPayCaddy request) throws EndConnexionException {
@@ -230,7 +231,7 @@ public class ProtocolBSPP implements Protocol {
         return new ResponsePayCaddy(true);
     }
 
-    private synchronized ResponsePayCaddy ProcessingEmptyCaddy(RequestEmptyCaddy request) throws EndConnexionException {
+    private synchronized ResponseEmptyCaddy ProcessingEmptyCaddy(RequestEmptyCaddy request) throws EndConnexionException {
         logger.trace("RequestEmptyCaddy received");
 
         CaddySearchVM cvm = new CaddySearchVM();
@@ -239,12 +240,12 @@ public class ProtocolBSPP implements Protocol {
         ArrayList<Caddy> caddies = dao.read(cvm);
 
         if(caddies.isEmpty()) {
-            return new ResponsePayCaddy(false);
+            return new ResponseEmptyCaddy(false);
         }
 
         Caddy caddy = caddies.getFirst();
         dao.delete(caddy.getId());
 
-        return new ResponsePayCaddy(true);
+        return new ResponseEmptyCaddy(true);
     }
 }
