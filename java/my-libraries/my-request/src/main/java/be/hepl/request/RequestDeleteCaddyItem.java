@@ -29,7 +29,7 @@ public class RequestDeleteCaddyItem implements Request {
 
     @Override
     public String toString() {
-        return "RequestAddCaddyItem{" +
+        return "RequestDeleteCaddyItem{" +
                 "idBook=" + idBook +
                 ", quantity=" + quantity +
                 '}';

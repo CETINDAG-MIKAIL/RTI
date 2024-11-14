@@ -19,7 +19,7 @@ public class ResponseCancelCaddy implements Response {
 
     @Override
     public String toString() {
-        return "ResponseAddCaddyItem{" +
+        return "ResponseCancelCaddy{" +
                 "success=" + success +
                 '}';
     }

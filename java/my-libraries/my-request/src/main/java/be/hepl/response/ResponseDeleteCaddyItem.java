@@ -19,7 +19,7 @@ public class ResponseDeleteCaddyItem implements Response {
 
     @Override
     public String toString() {
-        return "ResponseAddCaddyItem{" +
+        return "ResponseDeleteCaddyItem{" +
                 "success=" + success +
                 '}';
     }

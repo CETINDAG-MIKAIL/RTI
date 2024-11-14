@@ -19,7 +19,7 @@ public class RequestPayCaddy {
 
     @Override
     public String toString() {
-        return "RequestCancelCaddy{" +
+        return "RequestPayCaddy{" +
                 "idClient=" + idClient +
                 '}';
     }

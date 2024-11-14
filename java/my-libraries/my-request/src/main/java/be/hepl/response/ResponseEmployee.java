@@ -19,7 +19,7 @@ public class ResponseEmployee implements Response {
 
     @Override
     public String toString() {
-        return "ResponseAddCaddyItem{" +
+        return "ResponseEmployee{" +
                 "success=" + success +
                 '}';
     }

@@ -21,6 +21,6 @@ public class ResponseClient implements Response {
 
     @Override
     public String toString() {
-        return "ResponseLogin [id=" + id + "]";
+        return "ResponseClient [id=" + id + "]";
     }
 }

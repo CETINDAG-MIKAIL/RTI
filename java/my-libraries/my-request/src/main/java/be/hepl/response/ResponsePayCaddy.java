@@ -19,7 +19,7 @@ public class ResponsePayCaddy implements Response {
 
     @Override
     public String toString() {
-        return "ResponseAddCaddyItem{" +
+        return "ResponsePayCaddy{" +
                 "success=" + success +
                 '}';
     }
