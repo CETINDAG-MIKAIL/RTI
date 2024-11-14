@@ -43,6 +43,17 @@ public class Book implements Entity, Serializable {
     public Book() {
 
     }
+    public Book(Book otherBook) {
+        this.id = otherBook.id;
+        this.author = otherBook.author; // Vous pourriez vouloir créer une copie de l'auteur si nécessaire
+        this.subject = otherBook.subject; // Idem pour le sujet
+        this.title = otherBook.title;
+        this.isbn = otherBook.isbn;
+        this.pageCount = otherBook.pageCount;
+        this.publishYear = otherBook.publishYear;
+        this.price = otherBook.price;
+        this.stockQuantity = otherBook.stockQuantity; // Vous pouvez initialiser la quantité à une valeur spécifique
+    }
 
 
     //***************************************************

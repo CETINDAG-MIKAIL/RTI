@@ -69,8 +69,34 @@ public class BookModelAchatClient extends AbstractTableModel {
         return books.get(rowIndex);
     }
 
-    public void addRow(Book book) {
-        this.books.add(book);
-        fireTableRowsInserted(books.size() - 1, books.size() - 1);
+    public void addRow(Book book, int quantityToAdd) {
+        boolean bookExists = false;
+
+        // Parcours des livres dans le panier pour vérifier si le livre existe déjà
+        for (int i = 0; i < books.size(); i++) {
+            Book existingBook = books.get(i);
+
+            // Si le livre est déjà dans le panier, on augmente sa quantité
+            if (existingBook.getId() == book.getId()) {
+                existingBook.setStockQuantity(existingBook.getStockQuantity() + quantityToAdd);
+                fireTableRowsUpdated(i, i); // Actualise l'affichage de la ligne modifiée
+                bookExists = true;
+                break;
+            }
+        }
+
+        // Si le livre n'existe pas dans le panier, on l'ajoute comme nouvelle ligne
+        if (!bookExists) {
+            Book bookCopy = new Book(book); // Copier le livre pour éviter de modifier l'original
+            bookCopy.setStockQuantity(quantityToAdd);
+            books.add(bookCopy);
+            fireTableRowsInserted(books.size() - 1, books.size() - 1); // Actualise l'affichage pour la nouvelle ligne
+        }
+    }
+    public void removeRow(int rowIndex) {
+        if (rowIndex >= 0 && rowIndex < books.size()) {
+            books.remove(rowIndex);
+            fireTableRowsDeleted(rowIndex, rowIndex); // Actualise l'affichage
+        }
     }
 }

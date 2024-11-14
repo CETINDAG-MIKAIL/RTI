@@ -3,12 +3,14 @@ package Window;
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
+import javax.swing.table.AbstractTableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.OutputStream;
 import java.net.Socket;
 import java.util.ArrayList;
 
@@ -20,7 +22,10 @@ import be.hepl.model.entity.Subject;
 
 import be.hepl.model.entity.Book;
 import be.hepl.model.viewmodel.BookSearchVM;
-import be.hepl.request.RequestSelectBook;
+import be.hepl.request.*;
+import be.hepl.response.ResponseAddCaddyItem;
+import be.hepl.response.ResponseCancelCaddy;
+import be.hepl.response.ResponseDeleteCaddyItem;
 import be.hepl.response.ResponseSelectBook;
 import com.formdev.flatlaf.FlatDarkLaf;
 
@@ -51,6 +56,7 @@ public class MainWindow extends JFrame{
 
     private JSpinner spinnerMaxPrice;
     private JSpinner spinnerMaxPageCount;
+    private JSpinner spinnerQuantite;
 
     private JButton rechercheButton;
     private JButton xButtonTitle;
@@ -68,9 +74,13 @@ public class MainWindow extends JFrame{
     private JLabel labelPageCount;
     private JLabel labelMaxPrice;
 
-    public MainWindow() {
-        oos = null;
-        ois = null;
+
+    public MainWindow() throws IOException {
+        String ipServeur = FileHelper.getSettingString("./config.txt", "IP_SERVER");
+        int portServeur = FileHelper.getSettingInt("./config.txt", "PORT_PURCHASE");
+        this.socket = new Socket(ipServeur, portServeur);
+        oos = new ObjectOutputStream(socket.getOutputStream());
+        ois = new ObjectInputStream(socket.getInputStream());
         setContentPane(MainPanel);
         setTitle("MainWindow");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -91,16 +101,64 @@ public class MainWindow extends JFrame{
             @Override
             public void actionPerformed(ActionEvent e) {
                 int selectedRow = tableStock.getSelectedRow();
-
-                // Vérifie si une ligne est bien sélectionnée dans tableStock
                 if (selectedRow != -1) {
-                    // Récupère le livre de la ligne sélectionnée
                     Book selectedBook = ((BookModelAchatClient) tableStock.getModel()).getBook(selectedRow);
-                    // Ajoute le livre au panier
-                    addBookToBasket(selectedBook);
+                    int selectedQuantity = (Integer) spinnerQuantite.getValue();
+
+                    if (selectedQuantity > selectedBook.getStockQuantity()) {
+                        JOptionPane.showMessageDialog(null,
+                                "Quantité demandée supérieure au stock disponible (" + selectedBook.getStockQuantity() + " en stock).",
+                                "Quantité non disponible", JOptionPane.WARNING_MESSAGE);
+                        return;
+                    }
+
+                    // Tentative de diminution du stock côté serveur
+                    boolean stockUpdated = updateBookStock(selectedBook, selectedQuantity);
+                    if (stockUpdated) {
+                        // Mise à jour du modèle du panier
+                        BookModelAchatClient basketModel = (BookModelAchatClient) tableBasket.getModel();
+                        basketModel.addRow(selectedBook, selectedQuantity);
+
+                        // Diminuer la quantité dans tableStock pour refléter le nouveau stock
+                        selectedBook.setStockQuantity(selectedBook.getStockQuantity() - selectedQuantity);
+                        ((AbstractTableModel) tableStock.getModel()).fireTableRowsUpdated(selectedRow, selectedRow);
+                    } else {
+                        JOptionPane.showMessageDialog(null,
+                                "Impossible de mettre à jour le stock. Veuillez réessayer.",
+                                "Erreur de stock", JOptionPane.ERROR_MESSAGE);
+                    }
                 } else {
                     JOptionPane.showMessageDialog(null, "Veuillez sélectionner un livre à ajouter au panier.",
                             "Aucune sélection", JOptionPane.WARNING_MESSAGE);
+                }
+            }
+        });
+        supprimerButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int selectedRow = tableBasket.getSelectedRow();
+
+                if (selectedRow != -1) {
+                    BookModelAchatClient basketModel = (BookModelAchatClient) tableBasket.getModel();
+                    Book bookInBasket = basketModel.getBook(selectedRow);
+                    int quantityInBasket = (Integer) basketModel.getValueAt(selectedRow, 9);
+
+                    // Restaurer le stock sur le serveur
+                    boolean stockRestored = restoreBookStock(bookInBasket, quantityInBasket);
+                    if (stockRestored) {
+                        // Supprimer du panier et actualiser la quantité dans tableStock
+                        basketModel.removeRow(selectedRow);
+
+                        // Actualiser la quantité dans tableStock
+                        for (int i = 0; i < tableStock.getRowCount(); i++) {
+                            Book bookInStock = ((BookModelAchatClient) tableStock.getModel()).getBook(i);
+                            if (bookInStock.getId() == bookInBasket.getId()) {
+                                bookInStock.setStockQuantity(bookInStock.getStockQuantity() + quantityInBasket);
+                                ((AbstractTableModel) tableStock.getModel()).fireTableRowsUpdated(i, i);
+                                break;
+                            }
+                        }
+                    }
                 }
             }
         });
@@ -108,7 +166,7 @@ public class MainWindow extends JFrame{
         setVisible(true);
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         try {
             UIManager.setLookAndFeel(new FlatDarkLaf());
         } catch (UnsupportedLookAndFeelException e) {
@@ -129,18 +187,50 @@ public class MainWindow extends JFrame{
             }
         });
     }
+    private boolean updateBookStock(Book book, int quantity) {
+        try {
+            // Envoyer une requête au serveur pour mettre à jour le stock
+            // Créez une requête personnalisée `RequestUpdateStock`
+            RequestAddCaddyItem request = new RequestAddCaddyItem(book.getId(), quantity);
+            oos.writeObject(request);
 
+            // Recevoir la réponse pour savoir si l’opération a réussi
+            ResponseAddCaddyItem response = (ResponseAddCaddyItem) ois.readObject();
+            return response.isSuccess(); // isSuccess() retourne true si la mise à jour a réussi
+
+        } catch (IOException | ClassNotFoundException ex) {
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(null, "Erreur lors de la mise à jour du stock : " + ex.getMessage(),
+                    "Erreur", JOptionPane.ERROR_MESSAGE);
+        }
+        return false;
+    }
+
+    private boolean restoreBookStock(Book book, int quantity) {
+        try {
+            // Envoyer une requête au serveur pour restaurer le stock
+            RequestDeleteCaddyItem request = new RequestDeleteCaddyItem(book.getId(), quantity);
+            oos.writeObject(request);
+
+            // Recevoir la réponse du serveur
+            ResponseDeleteCaddyItem response = (ResponseDeleteCaddyItem) ois.readObject();
+            return response.isSuccess(); // isSuccess() retourne true si la restauration a réussi
+
+        } catch (IOException | ClassNotFoundException ex) {
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(null, "Erreur lors de la restauration du stock : " + ex.getMessage(),
+                    "Erreur", JOptionPane.ERROR_MESSAGE);
+        }
+        return false;
+    }
     private void buttonSearch(JButton button) {
         button.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
 
-                String ipServeur = FileHelper.getSettingString("./config.txt", "IP_SERVER");
-                int portServeur = FileHelper.getSettingInt("./config.txt", "PORT_PURCHASE");
+
                 // Ouvrir la connexion avec le serveur une seule fois au lieu de chaque clic
-                try (Socket socket = new Socket(ipServeur, portServeur);
-                     ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
-                     ObjectInputStream ois = new ObjectInputStream(socket.getInputStream())) {
+                try {
 
                     // Préparation des filtres de recherche
                     BookSearchVM searchFilters = new BookSearchVM();
@@ -174,7 +264,14 @@ public class MainWindow extends JFrame{
                     RequestSelectBook request = new RequestSelectBook(searchFilters);
 
                     // Envoyer la requête au serveur
-                    oos.writeObject(request);
+                    try {
+                        oos.writeObject(request);
+                    } catch (IOException ex) {
+                        ex.printStackTrace();
+                        JOptionPane.showMessageDialog(null, "Erreur de connexion : " + ex.getMessage(),
+                                "Erreur", JOptionPane.ERROR_MESSAGE);
+                    }
+
                     System.out.println("Requête envoyée : " + request);
 
                     // Lire la réponse du serveur
@@ -201,11 +298,34 @@ public class MainWindow extends JFrame{
             }
         });
     }
-    private void addBookToBasket(Book book) {
-        // Ajoutez le livre au modèle de données de tableBasket
+    private void addBookToBasket(Book book, int quantity) {
+        // Vérifier si le livre existe déjà dans le panier
         BookModelAchatClient basketModel = (BookModelAchatClient) tableBasket.getModel();
-        basketModel.addRow(book);
+        boolean bookExistsInBasket = false;
+
+        // Parcours des livres déjà dans le panier pour vérifier si le livre est déjà là
+        for (int i = 0; i < basketModel.getRowCount(); i++) {
+            Book existingBook = basketModel.getBook(i);
+            if (existingBook.getId() == book.getId()) {
+                // Si le livre existe déjà, ajouter la quantité choisie à la quantité existante
+                existingBook.setStockQuantity(existingBook.getStockQuantity() + quantity);
+                basketModel.fireTableRowsUpdated(i, i);  // Actualiser la ligne existante
+                bookExistsInBasket = true;
+                break;
+            }
+        }
+
+        // Si le livre n'existe pas encore dans le panier, on l'ajoute avec la quantité sélectionnée
+        if (!bookExistsInBasket) {
+            // Créer une copie du livre et définir la quantité
+            Book bookCopy = new Book(book);
+            bookCopy.setStockQuantity(quantity);
+
+            // Ajouter le livre au panier
+            basketModel.addRow(bookCopy, quantity);
+        }
     }
+
 
 
 
@@ -221,7 +341,7 @@ public class MainWindow extends JFrame{
     private void UpdateSearch(JTable tableStock, ResponseSelectBook response) {
         BookModelAchatClient model = (BookModelAchatClient) tableStock.getModel();
         for (be.hepl.model.entity.Book book : response.getBooks()) {
-            model.addRow(book);
+            model.addRow(book, 1);
         }
 
     }
@@ -233,7 +353,7 @@ public class MainWindow extends JFrame{
     }
     public void addBookTable(Book book) {
         BookModelAchatClient model = (BookModelAchatClient) tableStock.getModel();
-        model.addRow(book);
+        model.addRow(book, 1);
     }
 
     private void addFilterListener(JTextField textField, JButton button, JLabel label) {
