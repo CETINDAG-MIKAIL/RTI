@@ -32,10 +32,10 @@ public abstract class ThreadClient extends Thread {
     @Override
     public void run()
     {
+        ObjectOutputStream oos = null;
+        ObjectInputStream ois = null;
         try
         {
-            ObjectOutputStream oos = null;
-            ObjectInputStream ois = null;
 
             ois = new ObjectInputStream(csocket.getInputStream());
             oos = new ObjectOutputStream(csocket.getOutputStream());
@@ -51,9 +51,14 @@ public abstract class ThreadClient extends Thread {
         } catch (ClassNotFoundException ex) {
             logger.trace("Erreur requete invalide");
         } catch (EndConnexionException e) {
-            throw new RuntimeException(e);
-        } finally
-        {
+            if (oos != null && e.getResponse() != null) {
+                try {
+                    oos.writeObject(e.getResponse());
+                } catch (IOException ex) {
+                    logger.trace("Erreur I/O");
+                }
+            }
+        } finally {
             try {
                 csocket.close();
             } catch (IOException ex) {

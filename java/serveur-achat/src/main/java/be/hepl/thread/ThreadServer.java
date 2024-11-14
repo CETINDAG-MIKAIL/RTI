@@ -23,7 +23,7 @@ public abstract class ThreadServer extends Thread {
         try {
             ssocket = new ServerSocket(port);
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.trace("Erreur I/O");
         }
     }
 }

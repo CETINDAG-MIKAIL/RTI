@@ -58,7 +58,7 @@ public class ProtocolBSPP implements Protocol {
         return null;
     }
 
-    private synchronized Response ProcessingEmployee(RequestEmployee request) throws EndConnexionException {
+    private synchronized Response ProcessingEmployee(RequestEmployee request) {
         logger.trace("RequestEmployee received, login = " + request.getLogin());
 
         EmployeeSearchVM vm = new EmployeeSearchVM();
@@ -108,7 +108,7 @@ public class ProtocolBSPP implements Protocol {
         return new ResponseClient(clients.getFirst().getId());
     }
 
-    private synchronized ResponseSelectBook ProcessingSelectBook(RequestSelectBook request) throws EndConnexionException {
+    private synchronized ResponseSelectBook ProcessingSelectBook(RequestSelectBook request) {
         logger.trace("RequestSelectBook received");
 
         BookDAO dao = new BookDAO();
@@ -117,7 +117,7 @@ public class ProtocolBSPP implements Protocol {
         return new ResponseSelectBook(books);
     }
 
-    private synchronized ResponseAddCaddyItem ProcessingAddCaddyItem(RequestAddCaddyItem request, Integer clientId) throws EndConnexionException {
+    private synchronized ResponseAddCaddyItem ProcessingAddCaddyItem(RequestAddCaddyItem request, Integer clientId) {
         logger.trace("RequestAddCaddyItem received");
 
         System.out.println("----- ClientId recu en parametre = " + clientId);
@@ -175,7 +175,7 @@ public class ProtocolBSPP implements Protocol {
         return new ResponseAddCaddyItem(false);
     }
 
-    private synchronized ResponseDeleteCaddyItem ProcessingDeleteCaddyItem(RequestDeleteCaddyItem request) throws EndConnexionException {
+    private synchronized ResponseDeleteCaddyItem ProcessingDeleteCaddyItem(RequestDeleteCaddyItem request) {
         logger.trace("RequestDeleteCaddyItem received");
 
 
@@ -211,7 +211,7 @@ public class ProtocolBSPP implements Protocol {
         throw new EndConnexionException(new ResponseCancelCaddy(true));
     }
 
-    private synchronized ResponsePayCaddy ProcessingPayCaddy(RequestPayCaddy request) throws EndConnexionException {
+    private synchronized ResponsePayCaddy ProcessingPayCaddy(RequestPayCaddy request) {
         logger.trace("RequestPayCaddy received");
 
         CaddySearchVM cvm = new CaddySearchVM();
@@ -231,7 +231,7 @@ public class ProtocolBSPP implements Protocol {
         return new ResponsePayCaddy(true);
     }
 
-    private synchronized ResponseEmptyCaddy ProcessingEmptyCaddy(RequestEmptyCaddy request) throws EndConnexionException {
+    private synchronized ResponseEmptyCaddy ProcessingEmptyCaddy(RequestEmptyCaddy request) {
         logger.trace("RequestEmptyCaddy received");
 
         CaddySearchVM cvm = new CaddySearchVM();

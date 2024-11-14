@@ -32,6 +32,7 @@ public class RequestThreadServer extends ThreadServer {
             catch (SocketTimeoutException ex)
             {
                 if(this.isInterrupted()) {
+                    logger.trace("TH (RequestThreadServer) : Connection is interrupted");
                     break;
                 } else {
                     //logger.trace("Connection timed out, time out reset on " + "2000" + " ms.");
@@ -43,7 +44,7 @@ public class RequestThreadServer extends ThreadServer {
             }
         }
 
-        logger.trace("TH  (RequestThreadServer) interrupted.");
+        logger.trace("TH (RequestThreadServer) interrupted.");
 
         try {
             ssocket.close();
