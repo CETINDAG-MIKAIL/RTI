@@ -106,9 +106,9 @@ int nbEmployees = 3;
 
 
 CLIENTS clients[] = {
-    {-1, "Martin", "Dupont", 101, "123 Rue de Paris, Paris, France"},   // id = 1
-    {-1, "Julie", "Durand", 102, "456 Avenue de Lyon, Lyon, France"},   // id = 2
-    {-1, "Luc", "Bernard", 103, "789 Boulevard de Nice, Nice, France"}  // id = 3
+    {-1, "Dupont", "Martin", 1, "Rue de Paris 123, Paris, France"},   // id = 1
+    {-1, "Durand", "Julie", 2, "Avenue de Lyon 456, Lyon, France"},   // id = 2
+    {-1, "Bernard", "Luc", 3, "Boulevard de Liege 789, Liege, Belgique"}  // id = 3
 };
 int nbClients = 3;
 
