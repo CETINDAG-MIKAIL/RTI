@@ -1,6 +1,5 @@
 package Window;
 
-import be.hepl.FileHelper;
 import be.hepl.request.RequestClient;
 import be.hepl.response.ResponseClient;
 
@@ -10,7 +9,6 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
-import java.net.UnknownHostException;
 
 
 public class ConnectClient extends JDialog {
@@ -24,6 +22,7 @@ public class ConnectClient extends JDialog {
     private JTextField textFieldLastNameClient;
     private JTextField textFieldFirstNameClient;
     private JCheckBox nouveauClientCheckBox;
+    private JButton buttonBackEmployee;
 
     public ConnectClient(Socket socket,ObjectOutputStream oos, ObjectInputStream ois) throws IOException {
         this.socket = socket;
@@ -31,7 +30,7 @@ public class ConnectClient extends JDialog {
         this.ois = ois;
         setContentPane(contentPane);
         setTitle("Client");
-        setSize(300, 200);
+        setSize(300, 250);
         setModal(true);
         getRootPane().setDefaultButton(buttonOK);
 
@@ -44,6 +43,18 @@ public class ConnectClient extends JDialog {
         buttonCancel.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 onCancel();
+            }
+        });
+        buttonBackEmployee.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                dispose();
+                ConnectEmploye connectClientDialog = null;
+                try {
+                    connectClientDialog = new ConnectEmploye(socket, oos, ois);
+                } catch (IOException ex) {
+                    throw new RuntimeException(ex);
+                }
+                connectClientDialog.setVisible(true);
             }
         });
 
@@ -71,24 +82,16 @@ public class ConnectClient extends JDialog {
 
         try
         {
-            if (socket.isClosed()) {
-                JOptionPane.showMessageDialog(this, "Le socket est fermé !", "Erreur...", JOptionPane.ERROR_MESSAGE);
-                return;
-            }
-
             RequestClient requete = new RequestClient(loginLastName,loginFirstName,newClient );
-
-
             oos.writeObject(requete);
 
-
-
             ResponseClient response = (ResponseClient) ois.readObject();
+
 
             if (response.isValide())
             {
                 dispose();
-                new MainWindow(socket, oos, ois);
+                new MainWindow(socket, oos, ois, response.getId());
             }
             else
             {

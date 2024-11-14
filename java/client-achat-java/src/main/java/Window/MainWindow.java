@@ -10,24 +10,18 @@ import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.io.OutputStream;
 import java.net.Socket;
 import java.util.ArrayList;
 
 import Window.table.BookColumnModelAchatClient;
 import Window.table.BookModelAchatClient;
-import be.hepl.FileHelper;
 import be.hepl.model.entity.Author;
 import be.hepl.model.entity.Subject;
 
 import be.hepl.model.entity.Book;
 import be.hepl.model.viewmodel.BookSearchVM;
 import be.hepl.request.*;
-import be.hepl.response.ResponseAddCaddyItem;
-import be.hepl.response.ResponseCancelCaddy;
-import be.hepl.response.ResponseDeleteCaddyItem;
-import be.hepl.response.ResponseSelectBook;
-import com.formdev.flatlaf.FlatDarkLaf;
+import be.hepl.response.*;
 
 
 public class MainWindow extends JFrame{
@@ -72,7 +66,7 @@ public class MainWindow extends JFrame{
     private JLabel labelMaxPrice;
 
 
-    public MainWindow(Socket socket, ObjectOutputStream oos, ObjectInputStream ois) throws IOException {
+    public MainWindow(Socket socket, ObjectOutputStream oos, ObjectInputStream ois,Integer idClient) throws IOException {
         this.socket = socket;
         this.oos = oos;
         this.ois = ois;
@@ -133,21 +127,82 @@ public class MainWindow extends JFrame{
             @Override
             public void actionPerformed(ActionEvent e) {
 
-                try {
-                    // Envoyer une requête au serveur pour restaurer le stock
-                    RequestPayCaddy request = new RequestPayCaddy(client.getId());
-                    oos.writeObject(request);
+                int confirmation = JOptionPane.showConfirmDialog(
+                        null,
+                        "Paiement réalisé ?",
+                        "Confirmation de paiement",
+                        JOptionPane.YES_NO_OPTION
+                );
 
-                    // Recevoir la réponse du serveur
-                    RequestPayCaddy response = (RequestPayCaddy) ois.readObject();
-                    return response.isSuccess(); // isSuccess() retourne true si la restauration a réussi
+                // Si l'utilisateur clique sur "Oui", envoie la requête
+                if (confirmation == JOptionPane.YES_OPTION) {
+                    try {
+                        // Envoyer une requête au serveur pour restaurer le stock
+                        RequestPayCaddy request = new RequestPayCaddy(idClient);
+                        oos.writeObject(request);
 
-                } catch (IOException | ClassNotFoundException ex) {
-                    ex.printStackTrace();
-                    JOptionPane.showMessageDialog(null, "Erreur lors de la restauration du stock : " + ex.getMessage(),
-                            "Erreur", JOptionPane.ERROR_MESSAGE);
+                        // Recevoir la réponse du serveur
+                        ResponsePayCaddy response = (ResponsePayCaddy) ois.readObject();
+                        // Vérifie si le paiement a été traité avec succès
+                        if (response.isSuccess()) { // Assurez-vous que votre classe RequestPayCaddy a cette méthode
+                            JOptionPane.showMessageDialog(null, "Paiement effectué avec succès !", "Succès", JOptionPane.INFORMATION_MESSAGE);
+                            dispose();
+                            ConnectClient connectClientDialog = new ConnectClient(socket, oos, ois);
+                            connectClientDialog.setVisible(true);
+                        } else {
+                            JOptionPane.showMessageDialog(null, "Erreur lors du paiement. Veuillez réessayer.", "Erreur", JOptionPane.ERROR_MESSAGE);
+                        }
+
+                    } catch (IOException | ClassNotFoundException ex) {
+                        ex.printStackTrace();
+                        JOptionPane.showMessageDialog(null, "Erreur lors de la restauration du stock : " + ex.getMessage(),
+                                "Erreur", JOptionPane.ERROR_MESSAGE);
+                    }
+                } else {
+                    // Si "Non" est sélectionné, rien ne se passe
+                    JOptionPane.showMessageDialog(null, "Paiement annulé.", "Annulation", JOptionPane.INFORMATION_MESSAGE);
                 }
+            }
+        });
+        annulerButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
 
+                int confirmation = JOptionPane.showConfirmDialog(
+                        null,
+                        "Demande de deconnexion du client ?",
+                        "Deconnexion",
+                        JOptionPane.YES_NO_OPTION
+                );
+
+                // Si l'utilisateur clique sur "Oui", envoie la requête
+                if (confirmation == JOptionPane.YES_OPTION) {
+                    try {
+                        // Envoyer une requête au serveur pour restaurer le stock
+                        RequestCancelCaddy request = new RequestCancelCaddy(idClient);
+                        oos.writeObject(request);
+
+                        // Recevoir la réponse du serveur
+                        ResponseCancelCaddy response = (ResponseCancelCaddy) ois.readObject();
+                        // Vérifie si le paiement a été traité avec succès
+                        if (response.isSuccess()) { // Assurez-vous que votre classe RequestPayCaddy a cette méthode
+                            JOptionPane.showMessageDialog(null, "Déconnexion effectué avec succès !", "Succès", JOptionPane.INFORMATION_MESSAGE);
+                            dispose();
+                            ConnectClient connectClientDialog = new ConnectClient(socket, oos, ois);
+                            connectClientDialog.setVisible(true);
+                        } else {
+                            JOptionPane.showMessageDialog(null, "Erreur lors de la déconnexion. Veuillez réessayer.", "Erreur", JOptionPane.ERROR_MESSAGE);
+                        }
+
+                    } catch (IOException | ClassNotFoundException ex) {
+                        ex.printStackTrace();
+                        JOptionPane.showMessageDialog(null, "Erreur le la déconnexion : " + ex.getMessage(),
+                                "Erreur", JOptionPane.ERROR_MESSAGE);
+                    }
+                } else {
+                    // Si "Non" est sélectionné, rien ne se passe
+                    JOptionPane.showMessageDialog(null, "Déconnexion annulé.", "Annulation", JOptionPane.INFORMATION_MESSAGE);
+                }
             }
         });
         supprimerButton.addActionListener(new ActionListener() {
@@ -158,7 +213,9 @@ public class MainWindow extends JFrame{
                 if (selectedRow != -1) {
                     BookModelAchatClient basketModel = (BookModelAchatClient) tableBasket.getModel();
                     Book bookInBasket = basketModel.getBook(selectedRow);
-                    int quantityInBasket = (Integer) basketModel.getValueAt(selectedRow, 9);
+
+                    // Supposons que `getQuantity` puisse directement obtenir la quantité pour l'élément en cours
+                    int quantityInBasket = bookInBasket.getStockQuantity();
 
                     // Restaurer le stock sur le serveur
                     boolean stockRestored = restoreBookStock(bookInBasket, quantityInBasket);
@@ -180,8 +237,47 @@ public class MainWindow extends JFrame{
             }
         });
 
+
+        viderLePanierButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // Demander confirmation à l'utilisateur
+                int confirmation = JOptionPane.showConfirmDialog(
+                        null,
+                        "Voulez-vous vraiment vider le panier ?",
+                        "Confirmation de suppression",
+                        JOptionPane.YES_NO_OPTION
+                );
+                if (confirmation == JOptionPane.YES_OPTION) {
+                    try {
+                        // Créer et envoyer une requête pour vider le panier
+                        RequestEmptyCaddy request = new RequestEmptyCaddy(idClient);
+                        oos.writeObject(request);
+
+                        // Lire la réponse du serveur
+                        ResponseEmptyCaddy response = (ResponseEmptyCaddy) ois.readObject();
+
+                        // Vérifier si l'opération a réussi
+                        if (response.isSuccess()) {
+                            clearBooksTable(tableBasket);
+                            JOptionPane.showMessageDialog(null, "Le panier a été vidé avec succès !", "Succès", JOptionPane.INFORMATION_MESSAGE);
+                        } else {
+                            JOptionPane.showMessageDialog(null, "Erreur lors du vidage du panier. Veuillez réessayer.", "Erreur", JOptionPane.ERROR_MESSAGE);
+                        }
+
+                    } catch (IOException | ClassNotFoundException ex) {
+                        ex.printStackTrace();
+                        JOptionPane.showMessageDialog(null, "Erreur de communication avec le serveur : " + ex.getMessage(),
+                                "Erreur", JOptionPane.ERROR_MESSAGE);
+                    }
+                }
+            }
+        });
         setVisible(true);
     }
+
+
+
 
 //    public static void main(String[] args) throws IOException {
 //        try {
@@ -213,22 +309,14 @@ public class MainWindow extends JFrame{
             // Recevoir la réponse du serveur
             ResponseAddCaddyItem response = (ResponseAddCaddyItem) ois.readObject();
 
-            if (response != null) {
-                // Vérifier si la mise à jour a réussi
-                if (response.isSuccess()) {
-                    return true;
-                } else {
-                    // Si la réponse est négative, afficher un message d'erreur plus détaillé
-                    JOptionPane.showMessageDialog(null,
-                            "Échec de la mise à jour du stock : ",
-                            "Erreur de mise à jour", JOptionPane.ERROR_MESSAGE);
-                }
+            if (response.isSuccess()) {
+                return true;
             } else {
+                // Si la réponse est négative, afficher un message d'erreur plus détaillé
                 JOptionPane.showMessageDialog(null,
-                        "Réponse du serveur invalide.",
-                        "Erreur de communication", JOptionPane.ERROR_MESSAGE);
+                        "Échec de la mise à jour du stock : ",
+                        "Erreur de mise à jour", JOptionPane.ERROR_MESSAGE);
             }
-
         } catch (IOException | ClassNotFoundException ex) {
             // Gérer les erreurs de communication ou de sérialisation
             ex.printStackTrace();

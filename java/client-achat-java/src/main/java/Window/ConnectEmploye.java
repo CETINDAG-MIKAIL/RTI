@@ -63,12 +63,6 @@ public class ConnectEmploye extends JDialog{
 
             if (response.isSuccess()) {
                 dispose();
-                System.out.println("Connexion réussie pour l'employé : " + loginEmployee);
-                if (socket.isClosed()) {
-                    JOptionPane.showMessageDialog(this, "Le socket est fermé !", "Erreur...", JOptionPane.ERROR_MESSAGE);
-                    return;
-                }
-                // Vous pouvez appeler ici une autre fenêtre si nécessaire, par exemple :
                 ConnectClient connectClientDialog = new ConnectClient(socket, oos, ois);
                 connectClientDialog.setVisible(true);
             }
