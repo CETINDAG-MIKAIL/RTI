@@ -14,12 +14,10 @@ import java.net.UnknownHostException;
 
 
 public class ConnectClient extends JDialog {
-    private ObjectOutputStream oos;
-    private ObjectInputStream ois;
-    private Socket socket;
+    private final Socket socket; // Utilise le même socket
     private String login;
-
-
+    private final ObjectOutputStream oos;
+    private final ObjectInputStream ois;
     private JPanel contentPane;
     private JButton buttonOK;
     private JButton buttonCancel;
@@ -27,7 +25,10 @@ public class ConnectClient extends JDialog {
     private JTextField textFieldFirstNameClient;
     private JCheckBox nouveauClientCheckBox;
 
-    public ConnectClient() {
+    public ConnectClient(Socket socket,ObjectOutputStream oos, ObjectInputStream ois) throws IOException {
+        this.socket = socket;
+        this.oos = oos;
+        this.ois = ois;
         setContentPane(contentPane);
         setTitle("Client");
         setSize(300, 200);
@@ -63,8 +64,6 @@ public class ConnectClient extends JDialog {
     }
 
     private void onOK() {
-        //String ipServeur = jTextFieldIP.getText();
-        //int portServeur = Integer.parseInt(jTextFieldPort.getText());
         String loginLastName = textFieldLastNameClient.getText();
         String loginFirstName = textFieldFirstNameClient.getText();
         boolean newClient = nouveauClientCheckBox.isSelected();
@@ -72,26 +71,28 @@ public class ConnectClient extends JDialog {
 
         try
         {
-            String ipServeur = FileHelper.getSettingString("./config.txt", "IP_SERVER");
-            int portServeur = FileHelper.getSettingInt("./config.txt", "PORT_PURCHASE");
-            socket = new Socket(ipServeur, portServeur);
+            if (socket.isClosed()) {
+                JOptionPane.showMessageDialog(this, "Le socket est fermé !", "Erreur...", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
             RequestClient requete = new RequestClient(loginLastName,loginFirstName,newClient );
-            oos = new ObjectOutputStream(socket.getOutputStream());
-            ois = new ObjectInputStream(socket.getInputStream());
+
+
             oos.writeObject(requete);
+
+
+
             ResponseClient response = (ResponseClient) ois.readObject();
+
             if (response.isValide())
             {
-                buttonOK.setEnabled(false);
-                buttonCancel.setEnabled(true);
-                this.login = login;
                 dispose();
-                new MainWindow();
+                new MainWindow(socket, oos, ois);
             }
             else
             {
                 JOptionPane.showMessageDialog(this,"Erreur de login !","Erreur...",JOptionPane.ERROR_MESSAGE);
-                socket.close();
             }
         }catch (IOException | ClassNotFoundException ex)
         {
@@ -104,11 +105,5 @@ public class ConnectClient extends JDialog {
 
     private void onCancel() {
         dispose();
-    }
-
-    public static void main(String[] args) {
-        ConnectClient dialog = new ConnectClient();
-        dialog.pack();
-        dialog.setVisible(true);
     }
 }

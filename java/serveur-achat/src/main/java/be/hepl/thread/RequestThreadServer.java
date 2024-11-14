@@ -34,7 +34,7 @@ public class RequestThreadServer extends ThreadServer {
                 if(this.isInterrupted()) {
                     break;
                 } else {
-                    logger.trace("Connection timed out, time out reset on " + "2000" + " ms.");
+                    //logger.trace("Connection timed out, time out reset on " + "2000" + " ms.");
                 }
             }
             catch (IOException ex)

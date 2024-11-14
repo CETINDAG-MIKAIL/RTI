@@ -21,19 +21,20 @@ public class ConnectEmploye extends JDialog{
     private JTextField textFieldLogin;
     private JPasswordField passwordField;
 
-    private ObjectOutputStream oos;
-    private ObjectInputStream ois;
-    private Socket socket;
-    private String login;
+    private final Socket socket; // Utilise le même socket
+    private final ObjectOutputStream oos;
+    private final ObjectInputStream ois;
 
-
-
-    public ConnectEmploye() {
+    public ConnectEmploye(Socket socket, ObjectOutputStream oos, ObjectInputStream ois) throws IOException {
+        this.socket = socket;
+        this.oos = oos;
+        this.ois = ois;
         setTitle("Employée");
         setContentPane(contentPane);
         setModal(true);
         setSize(300, 200);
         getRootPane().setDefaultButton(buttonOK);
+
         buttonOK.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -54,65 +55,35 @@ public class ConnectEmploye extends JDialog{
 
         try
         {
-            System.out.println("Tentative de connexion avec l'employé : " + loginEmployee);
-            System.out.println("Mot de passe : " + passwordfield); // Ne jamais afficher le mot de passe en production
-            // Simuler une réponse en créant un objet ResponseEmployee fictif
-            // Pour l'exemple, on suppose que la connexion est réussie
-            ResponseEmployee response = new ResponseEmployee();
-            //response.setSuccess(true);  // Simuler une réponse réussie
+            RequestEmployee requete = new RequestEmployee(loginEmployee, passwordfield );
 
-            // Vérifier la réponse
-            try {
-                if (response.isSuccess()) {
-                    buttonOK.setEnabled(false);
-                    buttonCancel.setEnabled(true);
-                    System.out.println("Connexion réussie pour l'employé : " + loginEmployee);
-                    // Vous pouvez appeler ici une autre fenêtre si nécessaire, par exemple :
-                    // ConnectClient connectClientDialog = new ConnectClient();
-                    // connectClientDialog.setVisible(true);
+            oos.writeObject(requete);
+
+            ResponseEmployee response = (ResponseEmployee) ois.readObject();
+
+            if (response.isSuccess()) {
+                dispose();
+                System.out.println("Connexion réussie pour l'employé : " + loginEmployee);
+                if (socket.isClosed()) {
+                    JOptionPane.showMessageDialog(this, "Le socket est fermé !", "Erreur...", JOptionPane.ERROR_MESSAGE);
+                    return;
                 }
+                // Vous pouvez appeler ici une autre fenêtre si nécessaire, par exemple :
+                ConnectClient connectClientDialog = new ConnectClient(socket, oos, ois);
+                connectClientDialog.setVisible(true);
             }
-            catch (Exception e)
+            else
             {
-                e.printStackTrace();
-                JOptionPane.showMessageDialog(this, "Erreur de login !", "Erreur...", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(this,"Erreur de login !","Erreur...",JOptionPane.ERROR_MESSAGE);
             }
         }catch (Exception ex)
         {
             ex.printStackTrace();
-            JOptionPane.showMessageDialog(this,"Problème de connexion !","Erreur...",JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this,"Problème de connexion !","Connect employe",JOptionPane.ERROR_MESSAGE);
         }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     }
 
     private void onCancel() {
         dispose();
-    }
-    public static void main(String[] args) {
-        ConnectEmploye dialog = new ConnectEmploye();
-        dialog.setVisible(true);
-        dialog.pack();
     }
 }

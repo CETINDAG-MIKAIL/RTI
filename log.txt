@@ -1,35 +1,13 @@
 Starting TH Server (RequestThreadServer)...
-Connection timed out, time out reset on 2000 ms.
-Connection timed out, time out reset on 2000 ms.
-Connection timed out, time out reset on 2000 ms.
 Connection accepted, creation TH Client
 TH Client (Request) starts...
+RequestEmployee received, login = aa
+RequestClient received from Dupont Martin
 RequestSelectBook received
-Connection timed out, time out reset on 2000 ms.
 RequestAddCaddyItem received
-Connection timed out, time out reset on 2000 ms.
-Connection timed out, time out reset on 2000 ms.
-Connection timed out, time out reset on 2000 ms.
-Connection timed out, time out reset on 2000 ms.
-Connection timed out, time out reset on 2000 ms.
-Connection timed out, time out reset on 2000 ms.
-Connection timed out, time out reset on 2000 ms.
-Connection timed out, time out reset on 2000 ms.
-Connection timed out, time out reset on 2000 ms.
-Connection timed out, time out reset on 2000 ms.
-Connection timed out, time out reset on 2000 ms.
-Connection timed out, time out reset on 2000 ms.
-Connection timed out, time out reset on 2000 ms.
-Connection timed out, time out reset on 2000 ms.
-Connection timed out, time out reset on 2000 ms.
-Connection timed out, time out reset on 2000 ms.
-Connection timed out, time out reset on 2000 ms.
-Connection timed out, time out reset on 2000 ms.
-Connection timed out, time out reset on 2000 ms.
-Connection timed out, time out reset on 2000 ms.
-Connection timed out, time out reset on 2000 ms.
-Connection timed out, time out reset on 2000 ms.
-Connection timed out, time out reset on 2000 ms.
-Connection timed out, time out reset on 2000 ms.
-Connection timed out, time out reset on 2000 ms.
-Connection timed out, time out reset on 2000 ms.
+Connection accepted, creation TH Client
+TH Client (Request) starts...
+RequestEmployee received, login = aa
+RequestClient received from Dupont Martin
+RequestSelectBook received
+RequestAddCaddyItem received

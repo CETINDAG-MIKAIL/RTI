@@ -38,6 +38,7 @@ public class ProtocolBSPP implements Protocol {
         }
 
         Integer idClient = connectedClients.get(socket);
+        System.out.println("idClient = " + idClient);
 
         if(request instanceof RequestAddCaddyItem) {
             return ProcessingAddCaddyItem((RequestAddCaddyItem) request, idClient);
@@ -83,6 +84,8 @@ public class ProtocolBSPP implements Protocol {
 
             connectedClients.put(socket, client.getId());
 
+            System.out.println("1---- id du client que je vais mettre dans la HashMap");
+
             return new ResponseClient(client.getId());
         }
 
@@ -94,6 +97,8 @@ public class ProtocolBSPP implements Protocol {
         if(clients.isEmpty()) {
             return new ResponseClient(null);
         }
+
+        System.out.println("2--- id du client que je vais mettre dans la HashMap, idclient = " + clients.getFirst().getId());
 
         connectedClients.put(socket, clients.getFirst().getId());
 
@@ -112,6 +117,8 @@ public class ProtocolBSPP implements Protocol {
     private synchronized ResponseAddCaddyItem ProcessingAddCaddyItem(RequestAddCaddyItem request, Integer clientId) throws EndConnexionException {
         logger.trace("RequestAddCaddyItem received");
 
+        System.out.println("----- ClientId recu en parametre = " + clientId);
+
         BookSearchVM bvm = new BookSearchVM();
         bvm.setId(request.getIdBook());
         bvm.setMinStockQuantity(request.getQuantity());
@@ -121,7 +128,9 @@ public class ProtocolBSPP implements Protocol {
             // modify the quantity, if the quantity requered and the stock are the same, juste delete the book
             Book book = books.getFirst();
             if(book.getStockQuantity() == request.getQuantity()) {
-                daoB.delete(book);
+                //daoB.delete(book);
+                book.setStockQuantity(book.getStockQuantity() - request.getQuantity());
+                daoB.update(book);
             } else {
                 book.setStockQuantity(book.getStockQuantity() - request.getQuantity());
                 daoB.update(books.getFirst());
@@ -132,6 +141,7 @@ public class ProtocolBSPP implements Protocol {
             Caddy caddy = daoC.getById(clientId);
 
             if(caddy == null) {     // check if the caddy exists, if not, juste create it
+                System.out.println("Le client n'a pas encore de caddy, je vais en créer un");
                 caddy = new Caddy();
 
                 ClientDAO daoCli = new ClientDAO();
@@ -143,6 +153,8 @@ public class ProtocolBSPP implements Protocol {
                 caddy.setPayed(false);
 
                 daoC.create(caddy);
+            } else {
+                System.out.println("Le client a déjà un caddy");
             }
 
             CaddyItem caddyItem = new CaddyItem();

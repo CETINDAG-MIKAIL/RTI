@@ -31,14 +31,11 @@ import com.formdev.flatlaf.FlatDarkLaf;
 
 
 public class MainWindow extends JFrame{
-    private Socket socket;
-
-    private String login;
 
 
     private ObjectOutputStream oos;
     private ObjectInputStream ois;
-
+    private Socket socket;
 
     private JTable tableStock;
     private JTable tableBasket;
@@ -75,12 +72,11 @@ public class MainWindow extends JFrame{
     private JLabel labelMaxPrice;
 
 
-    public MainWindow() throws IOException {
-        String ipServeur = FileHelper.getSettingString("./config.txt", "IP_SERVER");
-        int portServeur = FileHelper.getSettingInt("./config.txt", "PORT_PURCHASE");
-        this.socket = new Socket(ipServeur, portServeur);
-        oos = new ObjectOutputStream(socket.getOutputStream());
-        ois = new ObjectInputStream(socket.getInputStream());
+    public MainWindow(Socket socket, ObjectOutputStream oos, ObjectInputStream ois) throws IOException {
+        this.socket = socket;
+        this.oos = oos;
+        this.ois = ois;
+
         setContentPane(MainPanel);
         setTitle("MainWindow");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -166,14 +162,14 @@ public class MainWindow extends JFrame{
         setVisible(true);
     }
 
-    public static void main(String[] args) throws IOException {
-        try {
-            UIManager.setLookAndFeel(new FlatDarkLaf());
-        } catch (UnsupportedLookAndFeelException e) {
-            throw new RuntimeException(e);
-        }
-        new MainWindow();
-    }
+//    public static void main(String[] args) throws IOException {
+//        try {
+//            UIManager.setLookAndFeel(new FlatDarkLaf());
+//        } catch (UnsupportedLookAndFeelException e) {
+//            throw new RuntimeException(e);
+//        }
+//        new MainWindow(socket);
+//    }
 
     private void initClearButton(JButton button, JTextField textField, JLabel label) {
         button.setVisible(false);
@@ -189,22 +185,39 @@ public class MainWindow extends JFrame{
     }
     private boolean updateBookStock(Book book, int quantity) {
         try {
-            // Envoyer une requête au serveur pour mettre à jour le stock
-            // Créez une requête personnalisée `RequestUpdateStock`
+            // Créer une requête personnalisée pour mettre à jour le stock
             RequestAddCaddyItem request = new RequestAddCaddyItem(book.getId(), quantity);
             oos.writeObject(request);
 
-            // Recevoir la réponse pour savoir si l’opération a réussi
+            // Recevoir la réponse du serveur
             ResponseAddCaddyItem response = (ResponseAddCaddyItem) ois.readObject();
-            return response.isSuccess(); // isSuccess() retourne true si la mise à jour a réussi
+
+            if (response != null) {
+                // Vérifier si la mise à jour a réussi
+                if (response.isSuccess()) {
+                    return true;
+                } else {
+                    // Si la réponse est négative, afficher un message d'erreur plus détaillé
+                    JOptionPane.showMessageDialog(null,
+                            "Échec de la mise à jour du stock : ",
+                            "Erreur de mise à jour", JOptionPane.ERROR_MESSAGE);
+                }
+            } else {
+                JOptionPane.showMessageDialog(null,
+                        "Réponse du serveur invalide.",
+                        "Erreur de communication", JOptionPane.ERROR_MESSAGE);
+            }
 
         } catch (IOException | ClassNotFoundException ex) {
+            // Gérer les erreurs de communication ou de sérialisation
             ex.printStackTrace();
             JOptionPane.showMessageDialog(null, "Erreur lors de la mise à jour du stock : " + ex.getMessage(),
                     "Erreur", JOptionPane.ERROR_MESSAGE);
         }
+
         return false;
     }
+
 
     private boolean restoreBookStock(Book book, int quantity) {
         try {
