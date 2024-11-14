@@ -52,6 +52,9 @@ public class ProtocolBSPP implements Protocol {
         if(request instanceof RequestPayCaddy) {
             return ProcessingPayCaddy((RequestPayCaddy) request);
         }
+        if(request instanceof RequestEmptyCaddy) {
+            return ProcessingEmptyCaddy((RequestEmptyCaddy) request);
+        }
         return null;
     }
 
@@ -210,11 +213,37 @@ public class ProtocolBSPP implements Protocol {
     private synchronized ResponsePayCaddy ProcessingPayCaddy(RequestPayCaddy request) throws EndConnexionException {
         logger.trace("RequestPayCaddy received");
 
+        CaddySearchVM cvm = new CaddySearchVM();
+        cvm.setClientId(request.getIdClient());
         CaddyDAO dao = new CaddyDAO();
-        Caddy caddy = dao.getById(request.getIdClient());
+        ArrayList<Caddy> caddies = dao.read(cvm);
+
+        if(caddies.isEmpty()) {
+            return new ResponsePayCaddy(false);
+        }
+
+        Caddy caddy = caddies.getFirst();
         caddy.setPayed(true);
 
         dao.update(caddy);
+
+        return new ResponsePayCaddy(true);
+    }
+
+    private synchronized ResponsePayCaddy ProcessingEmptyCaddy(RequestEmptyCaddy request) throws EndConnexionException {
+        logger.trace("RequestEmptyCaddy received");
+
+        CaddySearchVM cvm = new CaddySearchVM();
+        cvm.setClientId(request.getIdClient());
+        CaddyDAO dao = new CaddyDAO();
+        ArrayList<Caddy> caddies = dao.read(cvm);
+
+        if(caddies.isEmpty()) {
+            return new ResponsePayCaddy(false);
+        }
+
+        Caddy caddy = caddies.getFirst();
+        dao.delete(caddy.getId());
 
         return new ResponsePayCaddy(true);
     }

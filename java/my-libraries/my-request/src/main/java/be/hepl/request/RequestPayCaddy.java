@@ -1,6 +1,6 @@
 package be.hepl.request;
 
-public class RequestPayCaddy {
+public class RequestPayCaddy implements Request {
     private int idClient;
 
     public RequestPayCaddy() {}
