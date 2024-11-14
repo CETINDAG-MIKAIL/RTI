@@ -145,6 +145,7 @@ public class ProtocolBSPP implements Protocol {
                 caddy = new Caddy();
 
                 ClientDAO daoCli = new ClientDAO();
+                daoCli.read();
                 Client client = daoCli.getById(clientId);
 
                 caddy.setClient(client);
