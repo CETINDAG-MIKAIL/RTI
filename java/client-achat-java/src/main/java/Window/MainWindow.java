@@ -352,10 +352,8 @@ public class MainWindow extends JFrame{
 
     private boolean restoreBookStock(Book book, int quantity) {
         try {
-
             RequestDeleteCaddyItem request = new RequestDeleteCaddyItem(book.getId(), quantity);
             oos.writeObject(request);
-
 
             ResponseDeleteCaddyItem response = (ResponseDeleteCaddyItem) ois.readObject();
             return response.isSuccess();
@@ -452,10 +450,6 @@ public class MainWindow extends JFrame{
         BookModelAchatClient model = new BookModelAchatClient(new ArrayList<>());
         tableStock.setModel(model);
         tableStock.setColumnModel(new BookColumnModelAchatClient());
-    }
-    public void addBookTable(Book book) {
-        BookModelAchatClient model = (BookModelAchatClient) tableStock.getModel();
-        model.addRow(book, 1);
     }
 
     private void addFilterListener(JTextField textField, JButton button, JLabel label) {

@@ -4,71 +4,14 @@ TH Client (Request) starts...
 RequestEmployee received, login = aa
 RequestClient received from Luca Geelen
 RequestSelectBook received
-RequestAddCaddyItem received
-Erreur I/O
-TH Client (Request) ends.
-Connection accepted, creation TH Client
-TH Client (Request) starts...
-RequestEmployee received, login = aa
-RequestClient received from Luca Geelen
 RequestSelectBook received
-RequestAddCaddyItem received
-Erreur I/O
-TH Client (Request) ends.
-Connection accepted, creation TH Client
-TH Client (Request) starts...
-RequestEmployee received, login = aa
-RequestClient received from Luca Geelen
 RequestSelectBook received
-Erreur I/O
-TH Client (Request) ends.
-Connection accepted, creation TH Client
-TH Client (Request) starts...
-RequestEmployee received, login = aa
-RequestClient received from Luca Geelen
 RequestSelectBook received
-Erreur I/O
-TH Client (Request) ends.
-Connection accepted, creation TH Client
-TH Client (Request) starts...
-RequestEmployee received, login = aa
-RequestClient received from Luca Geelen
 RequestSelectBook received
-Erreur I/O
-TH Client (Request) ends.
-Connection accepted, creation TH Client
-TH Client (Request) starts...
-RequestEmployee received, login = aa
-RequestClient received from Luca Geelen
 RequestSelectBook received
-RequestAddCaddyItem received
-RequestAddCaddyItem received
-Erreur I/O
-TH Client (Request) ends.
-Connection accepted, creation TH Client
-TH Client (Request) starts...
-RequestEmployee received, login = aa
-RequestClient received from Luca Geelen
 RequestSelectBook received
-RequestAddCaddyItem received
-RequestAddCaddyItem received
-RequestDeleteCaddyItem received
-Erreur I/O
-TH Client (Request) ends.
-Connection accepted, creation TH Client
-TH Client (Request) starts...
-RequestEmployee received, login = aa
-RequestClient received from Luca Geelen
 RequestSelectBook received
-RequestAddCaddyItem received
-Erreur I/O
-TH Client (Request) ends.
-Connection accepted, creation TH Client
-TH Client (Request) starts...
-RequestEmployee received, login = aa
-RequestClient received from Luca Geelen
 RequestSelectBook received
-RequestAddCaddyItem received
-RequestDeleteCaddyItem received
+RequestSelectBook received
 Erreur I/O
 TH Client (Request) ends.
