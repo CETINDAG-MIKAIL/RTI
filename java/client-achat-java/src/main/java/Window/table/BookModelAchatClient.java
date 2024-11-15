@@ -99,4 +99,8 @@ public class BookModelAchatClient extends AbstractTableModel {
             fireTableRowsDeleted(rowIndex, rowIndex); // Actualise l'affichage
         }
     }
+    public void clearData() {
+        books.clear();
+        fireTableDataChanged(); // Notifie la table que les données ont été modifiées
+    }
 }

@@ -82,8 +82,8 @@ public class MainWindow extends JFrame{
         initClearButton(xButtonFirstName, textFieldFirstNameAuthor, labelFirstName);
         initClearButtonForSpinner(xButtonMaxPrice, spinnerMaxPrice, labelMaxPrice);
         initClearButtonForSpinner(xButtonMaxPageCount, spinnerMaxPageCount, labelPageCount);
+        initTable();
         buttonSearch(rechercheButton);
-        clearBooksTable( tableStock );
         clearBooksTable( tableBasket );
         tableStock.setFillsViewportHeight(true);
 
@@ -188,6 +188,7 @@ public class MainWindow extends JFrame{
                         if (response.isSuccess()) { // Assurez-vous que votre classe RequestPayCaddy a cette méthode
                             JOptionPane.showMessageDialog(null, "Déconnexion effectué avec succès !", "Succès", JOptionPane.INFORMATION_MESSAGE);
                             dispose();
+
                             ConnectClient connectClientDialog = new ConnectClient(socket, oos, ois);
                             connectClientDialog.setVisible(true);
                         } else {
@@ -401,13 +402,14 @@ public class MainWindow extends JFrame{
 
                     // Vérifier si la réponse est valide
                     if (response != null && response.getBooks() != null && !response.getBooks().isEmpty()) {
-//                        System.out.println("Livres reçus : ");
-//                        for (Book book : response.getBooks()) {
-//                            System.out.println(book);
-//                        }
+                        System.out.println("Livres reçus : ");
+                        for (Book book : response.getBooks()) {
+                            System.out.println(book);
+                        }
                         UpdateSearch(tableStock, response);
 
                     } else {
+                        clearBooksTable(tableStock);
                         System.out.println("Aucun livre trouvé ou erreur de serveur.");
                     }
 
@@ -461,7 +463,9 @@ public class MainWindow extends JFrame{
         });
     }
     private void UpdateSearch(JTable tableStock, ResponseSelectBook response) {
+        clearBooksTable(tableStock);
         BookModelAchatClient model = (BookModelAchatClient) tableStock.getModel();
+
         for (be.hepl.model.entity.Book book : response.getBooks()) {
             model.addRow(book, 1);
         }
@@ -519,5 +523,46 @@ public class MainWindow extends JFrame{
         boolean ValueBool = (Integer) spinner.getValue() != 0;
         button.setEnabled(ValueBool);
         label.setForeground(ValueBool ? Color.WHITE : Color.GRAY);
+    }
+    private void initTable() {
+        try {
+
+            // Préparation des filtres de recherche
+            BookSearchVM searchFilters = new BookSearchVM();
+            RequestSelectBook request = new RequestSelectBook(searchFilters);
+
+            // Envoyer la requête au serveur
+            try {
+                oos.writeObject(request);
+            } catch (IOException ex) {
+                ex.printStackTrace();
+                JOptionPane.showMessageDialog(null, "Erreur de connexion : " + ex.getMessage(),
+                        "Erreur", JOptionPane.ERROR_MESSAGE);
+            }
+
+            System.out.println("Requête envoyée : " + request);
+
+            // Lire la réponse du serveur
+            ResponseSelectBook response = (ResponseSelectBook) ois.readObject();
+
+            // Vérifier si la réponse est valide
+            if (response != null && response.getBooks() != null && !response.getBooks().isEmpty()) {
+                System.out.println("Livres reçus : ");
+                for (Book book : response.getBooks()) {
+                    System.out.println(book);
+                }
+                UpdateSearch(tableStock, response);
+
+            } else {
+                clearBooksTable(tableStock);
+                System.out.println("Aucun livre trouvé ou erreur de serveur.");
+            }
+
+        } catch (IOException | ClassNotFoundException ex) {
+            // Gestion des erreurs réseau ou des erreurs de classe
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(null, "Erreur lors de la communication avec le serveur : " + ex.getMessage(),
+                    "Erreur", JOptionPane.ERROR_MESSAGE);
+        }
     }
 }
