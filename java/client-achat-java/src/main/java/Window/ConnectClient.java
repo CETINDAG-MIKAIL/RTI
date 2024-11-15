@@ -12,7 +12,7 @@ import java.net.Socket;
 
 
 public class ConnectClient extends JDialog {
-    private final Socket socket; // Utilise le même socket
+    private final Socket socket;
     private String login;
     private final ObjectOutputStream oos;
     private final ObjectInputStream ois;

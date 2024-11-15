@@ -4,5 +4,9 @@ TH Client (Request) starts...
 RequestEmployee received, login = aa
 RequestClient received from Mikail Cetindag
 RequestSelectBook received
+RequestAddCaddyItem received
+RequestDeleteCaddyItem received
+RequestAddCaddyItem received
+RequestEmptyCaddy received
 RequestCancelCaddy received
 TH Client (Request) ends.

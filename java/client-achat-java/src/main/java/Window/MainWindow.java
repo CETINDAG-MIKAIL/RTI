@@ -102,14 +102,14 @@ public class MainWindow extends JFrame{
                         return;
                     }
 
-                    // Tentative de diminution du stock côté serveur
+
                     boolean stockUpdated = updateBookStock(selectedBook, selectedQuantity);
                     if (stockUpdated) {
-                        // Mise à jour du modèle du panier
+
                         BookModelAchatClient basketModel = (BookModelAchatClient) tableBasket.getModel();
                         basketModel.addRow(selectedBook, selectedQuantity);
 
-                        // Diminuer la quantité dans tableStock pour refléter le nouveau stock
+
                         selectedBook.setStockQuantity(selectedBook.getStockQuantity() - selectedQuantity);
                         ((AbstractTableModel) tableStock.getModel()).fireTableRowsUpdated(selectedRow, selectedRow);
                     } else {
@@ -134,17 +134,14 @@ public class MainWindow extends JFrame{
                         JOptionPane.YES_NO_OPTION
                 );
 
-                // Si l'utilisateur clique sur "Oui", envoie la requête
+
                 if (confirmation == JOptionPane.YES_OPTION) {
                     try {
-                        // Envoyer une requête au serveur pour restaurer le stock
                         RequestPayCaddy request = new RequestPayCaddy(idClient);
                         oos.writeObject(request);
 
-                        // Recevoir la réponse du serveur
                         ResponsePayCaddy response = (ResponsePayCaddy) ois.readObject();
-                        // Vérifie si le paiement a été traité avec succès
-                        if (response.isSuccess()) { // Assurez-vous que votre classe RequestPayCaddy a cette méthode
+                        if (response.isSuccess()) {
                             JOptionPane.showMessageDialog(null, "Paiement effectué avec succès !", "Succès", JOptionPane.INFORMATION_MESSAGE);
                             dispose();
                             ConnectClient connectClientDialog = new ConnectClient(socket, oos, ois);
@@ -159,7 +156,7 @@ public class MainWindow extends JFrame{
                                 "Erreur", JOptionPane.ERROR_MESSAGE);
                     }
                 } else {
-                    // Si "Non" est sélectionné, rien ne se passe
+
                     JOptionPane.showMessageDialog(null, "Paiement annulé.", "Annulation", JOptionPane.INFORMATION_MESSAGE);
                 }
             }
@@ -175,17 +172,17 @@ public class MainWindow extends JFrame{
                         JOptionPane.YES_NO_OPTION
                 );
 
-                // Si l'utilisateur clique sur "Oui", envoie la requête
+
                 if (confirmation == JOptionPane.YES_OPTION) {
                     try {
-                        // Envoyer une requête au serveur pour restaurer le stock
+
                         RequestCancelCaddy request = new RequestCancelCaddy(idClient);
                         oos.writeObject(request);
 
-                        // Recevoir la réponse du serveur
+
                         ResponseCancelCaddy response = (ResponseCancelCaddy) ois.readObject();
-                        // Vérifie si le paiement a été traité avec succès
-                        if (response.isSuccess()) { // Assurez-vous que votre classe RequestPayCaddy a cette méthode
+
+                        if (response.isSuccess()) {
                             JOptionPane.showMessageDialog(null, "Déconnexion effectué avec succès !", "Succès", JOptionPane.INFORMATION_MESSAGE);
                             dispose();
 
@@ -201,7 +198,7 @@ public class MainWindow extends JFrame{
                                 "Erreur", JOptionPane.ERROR_MESSAGE);
                     }
                 } else {
-                    // Si "Non" est sélectionné, rien ne se passe
+
                     JOptionPane.showMessageDialog(null, "Déconnexion annulé.", "Annulation", JOptionPane.INFORMATION_MESSAGE);
                 }
             }
@@ -215,16 +212,13 @@ public class MainWindow extends JFrame{
                     BookModelAchatClient basketModel = (BookModelAchatClient) tableBasket.getModel();
                     Book bookInBasket = basketModel.getBook(selectedRow);
 
-                    // Supposons que `getQuantity` puisse directement obtenir la quantité pour l'élément en cours
+
                     int quantityInBasket = bookInBasket.getStockQuantity();
 
-                    // Restaurer le stock sur le serveur
+
                     boolean stockRestored = restoreBookStock(bookInBasket, quantityInBasket);
                     if (stockRestored) {
-                        // Supprimer du panier et actualiser la quantité dans tableStock
                         basketModel.removeRow(selectedRow);
-
-                        // Actualiser la quantité dans tableStock
                         for (int i = 0; i < tableStock.getRowCount(); i++) {
                             Book bookInStock = ((BookModelAchatClient) tableStock.getModel()).getBook(i);
                             if (bookInStock.getId() == bookInBasket.getId()) {
@@ -242,7 +236,7 @@ public class MainWindow extends JFrame{
         viderLePanierButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                // Demander confirmation à l'utilisateur
+
                 int confirmation = JOptionPane.showConfirmDialog(
                         null,
                         "Voulez-vous vraiment vider le panier ?",
@@ -251,15 +245,32 @@ public class MainWindow extends JFrame{
                 );
                 if (confirmation == JOptionPane.YES_OPTION) {
                     try {
-                        // Créer et envoyer une requête pour vider le panier
+                        // 1. Récupérer tous les livres du panier avant de vider
+                        BookModelAchatClient basketModel = (BookModelAchatClient) tableBasket.getModel();
+                        for (int i = 0; i < basketModel.getRowCount(); i++) {
+                            Book bookInBasket = basketModel.getBook(i);
+                            int quantityInBasket = bookInBasket.getStockQuantity();
+
+                            // 2. Restaurer les livres dans le stock
+                            for (int j = 0; j < tableStock.getRowCount(); j++) {
+                                Book bookInStock = ((BookModelAchatClient) tableStock.getModel()).getBook(j);
+                                if (bookInStock.getId() == bookInBasket.getId()) {
+                                    // Ajout de la quantité du panier au stock
+                                    bookInStock.setStockQuantity(bookInStock.getStockQuantity() + quantityInBasket);
+                                    ((AbstractTableModel) tableStock.getModel()).fireTableRowsUpdated(j, j);
+                                    break;
+                                }
+                            }
+                        }
+
+                        // 3. Envoyer la requête pour vider le panier côté serveur
                         RequestEmptyCaddy request = new RequestEmptyCaddy(idClient);
                         oos.writeObject(request);
 
-                        // Lire la réponse du serveur
                         ResponseEmptyCaddy response = (ResponseEmptyCaddy) ois.readObject();
 
-                        // Vérifier si l'opération a réussi
                         if (response.isSuccess()) {
+                            // 4. Vider la table du panier
                             clearBooksTable(tableBasket);
                             JOptionPane.showMessageDialog(null, "Le panier a été vidé avec succès !", "Succès", JOptionPane.INFORMATION_MESSAGE);
                         } else {
@@ -274,20 +285,9 @@ public class MainWindow extends JFrame{
                 }
             }
         });
+
         setVisible(true);
     }
-
-
-
-
-//    public static void main(String[] args) throws IOException {
-//        try {
-//            UIManager.setLookAndFeel(new FlatDarkLaf());
-//        } catch (UnsupportedLookAndFeelException e) {
-//            throw new RuntimeException(e);
-//        }
-//        new MainWindow(socket);
-//    }
 
     private void initClearButton(JButton button, JTextField textField, JLabel label) {
         button.setVisible(false);
@@ -303,23 +303,23 @@ public class MainWindow extends JFrame{
     }
     private boolean updateBookStock(Book book, int quantity) {
         try {
-            // Créer une requête personnalisée pour mettre à jour le stock
+
             RequestAddCaddyItem request = new RequestAddCaddyItem(book.getId(), quantity);
             oos.writeObject(request);
 
-            // Recevoir la réponse du serveur
+
             ResponseAddCaddyItem response = (ResponseAddCaddyItem) ois.readObject();
 
             if (response.isSuccess()) {
                 return true;
             } else {
-                // Si la réponse est négative, afficher un message d'erreur plus détaillé
+
                 JOptionPane.showMessageDialog(null,
                         "Échec de la mise à jour du stock : ",
                         "Erreur de mise à jour", JOptionPane.ERROR_MESSAGE);
             }
         } catch (IOException | ClassNotFoundException ex) {
-            // Gérer les erreurs de communication ou de sérialisation
+
             ex.printStackTrace();
             JOptionPane.showMessageDialog(null, "Erreur lors de la mise à jour du stock : " + ex.getMessage(),
                     "Erreur", JOptionPane.ERROR_MESSAGE);
@@ -331,13 +331,13 @@ public class MainWindow extends JFrame{
 
     private boolean restoreBookStock(Book book, int quantity) {
         try {
-            // Envoyer une requête au serveur pour restaurer le stock
+
             RequestDeleteCaddyItem request = new RequestDeleteCaddyItem(book.getId(), quantity);
             oos.writeObject(request);
 
-            // Recevoir la réponse du serveur
+
             ResponseDeleteCaddyItem response = (ResponseDeleteCaddyItem) ois.readObject();
-            return response.isSuccess(); // isSuccess() retourne true si la restauration a réussi
+            return response.isSuccess();
 
         } catch (IOException | ClassNotFoundException ex) {
             ex.printStackTrace();
@@ -352,10 +352,10 @@ public class MainWindow extends JFrame{
             public void actionPerformed(ActionEvent e) {
 
 
-                // Ouvrir la connexion avec le serveur une seule fois au lieu de chaque clic
+
                 try {
 
-                    // Préparation des filtres de recherche
+
                     BookSearchVM searchFilters = new BookSearchVM();
 
                     if (!textFieldTitle.getText().isEmpty()) {
@@ -383,10 +383,10 @@ public class MainWindow extends JFrame{
                         searchFilters.setMaxPrice(((Number) spinnerMaxPrice.getValue()).floatValue());
                     }
 
-                    // Créer la requête avec les filtres
+
                     RequestSelectBook request = new RequestSelectBook(searchFilters);
 
-                    // Envoyer la requête au serveur
+
                     try {
                         oos.writeObject(request);
                     } catch (IOException ex) {
@@ -397,10 +397,10 @@ public class MainWindow extends JFrame{
 
                     System.out.println("Requête envoyée : " + request);
 
-                    // Lire la réponse du serveur
+
                     ResponseSelectBook response = (ResponseSelectBook) ois.readObject();
 
-                    // Vérifier si la réponse est valide
+
                     if (response != null && response.getBooks() != null && !response.getBooks().isEmpty()) {
                         System.out.println("Livres reçus : ");
                         for (Book book : response.getBooks()) {
@@ -414,40 +414,13 @@ public class MainWindow extends JFrame{
                     }
 
                 } catch (IOException | ClassNotFoundException ex) {
-                    // Gestion des erreurs réseau ou des erreurs de classe
+
                     ex.printStackTrace();
                     JOptionPane.showMessageDialog(null, "Erreur lors de la communication avec le serveur : " + ex.getMessage(),
                             "Erreur", JOptionPane.ERROR_MESSAGE);
                 }
             }
         });
-    }
-    private void addBookToBasket(Book book, int quantity) {
-        // Vérifier si le livre existe déjà dans le panier
-        BookModelAchatClient basketModel = (BookModelAchatClient) tableBasket.getModel();
-        boolean bookExistsInBasket = false;
-
-        // Parcours des livres déjà dans le panier pour vérifier si le livre est déjà là
-        for (int i = 0; i < basketModel.getRowCount(); i++) {
-            Book existingBook = basketModel.getBook(i);
-            if (existingBook.getId() == book.getId()) {
-                // Si le livre existe déjà, ajouter la quantité choisie à la quantité existante
-                existingBook.setStockQuantity(existingBook.getStockQuantity() + quantity);
-                basketModel.fireTableRowsUpdated(i, i);  // Actualiser la ligne existante
-                bookExistsInBasket = true;
-                break;
-            }
-        }
-
-        // Si le livre n'existe pas encore dans le panier, on l'ajoute avec la quantité sélectionnée
-        if (!bookExistsInBasket) {
-            // Créer une copie du livre et définir la quantité
-            Book bookCopy = new Book(book);
-            bookCopy.setStockQuantity(quantity);
-
-            // Ajouter le livre au panier
-            basketModel.addRow(bookCopy, quantity);
-        }
     }
 
 
@@ -527,11 +500,11 @@ public class MainWindow extends JFrame{
     private void initTable() {
         try {
 
-            // Préparation des filtres de recherche
+
             BookSearchVM searchFilters = new BookSearchVM();
             RequestSelectBook request = new RequestSelectBook(searchFilters);
 
-            // Envoyer la requête au serveur
+
             try {
                 oos.writeObject(request);
             } catch (IOException ex) {
@@ -542,10 +515,10 @@ public class MainWindow extends JFrame{
 
             System.out.println("Requête envoyée : " + request);
 
-            // Lire la réponse du serveur
+
             ResponseSelectBook response = (ResponseSelectBook) ois.readObject();
 
-            // Vérifier si la réponse est valide
+
             if (response != null && response.getBooks() != null && !response.getBooks().isEmpty()) {
                 System.out.println("Livres reçus : ");
                 for (Book book : response.getBooks()) {
@@ -559,7 +532,7 @@ public class MainWindow extends JFrame{
             }
 
         } catch (IOException | ClassNotFoundException ex) {
-            // Gestion des erreurs réseau ou des erreurs de classe
+
             ex.printStackTrace();
             JOptionPane.showMessageDialog(null, "Erreur lors de la communication avec le serveur : " + ex.getMessage(),
                     "Erreur", JOptionPane.ERROR_MESSAGE);
