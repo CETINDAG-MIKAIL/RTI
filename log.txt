@@ -2,26 +2,73 @@ Starting TH Server (RequestThreadServer)...
 Connection accepted, creation TH Client
 TH Client (Request) starts...
 RequestEmployee received, login = aa
-Erreur I/O
-TH Client (Request) ends.
-Connection accepted, creation TH Client
-TH Client (Request) starts...
-RequestEmployee received, login = bb
 RequestClient received from Luca Geelen
 RequestSelectBook received
 RequestAddCaddyItem received
-RequestEmptyCaddy received
-RequestAddCaddyItem received
-RequestPayCaddy received
 Erreur I/O
 TH Client (Request) ends.
 Connection accepted, creation TH Client
 TH Client (Request) starts...
-RequestClient received from Gabriel Antoine
+RequestEmployee received, login = aa
+RequestClient received from Luca Geelen
 RequestSelectBook received
-RequestCancelCaddy received
+RequestAddCaddyItem received
+Erreur I/O
 TH Client (Request) ends.
 Connection accepted, creation TH Client
 TH Client (Request) starts...
-RequestClient received from qsdf qsdf
+RequestEmployee received, login = aa
+RequestClient received from Luca Geelen
+RequestSelectBook received
+Erreur I/O
+TH Client (Request) ends.
+Connection accepted, creation TH Client
+TH Client (Request) starts...
+RequestEmployee received, login = aa
+RequestClient received from Luca Geelen
+RequestSelectBook received
+Erreur I/O
+TH Client (Request) ends.
+Connection accepted, creation TH Client
+TH Client (Request) starts...
+RequestEmployee received, login = aa
+RequestClient received from Luca Geelen
+RequestSelectBook received
+Erreur I/O
+TH Client (Request) ends.
+Connection accepted, creation TH Client
+TH Client (Request) starts...
+RequestEmployee received, login = aa
+RequestClient received from Luca Geelen
+RequestSelectBook received
+RequestAddCaddyItem received
+RequestAddCaddyItem received
+Erreur I/O
+TH Client (Request) ends.
+Connection accepted, creation TH Client
+TH Client (Request) starts...
+RequestEmployee received, login = aa
+RequestClient received from Luca Geelen
+RequestSelectBook received
+RequestAddCaddyItem received
+RequestAddCaddyItem received
+RequestDeleteCaddyItem received
+Erreur I/O
+TH Client (Request) ends.
+Connection accepted, creation TH Client
+TH Client (Request) starts...
+RequestEmployee received, login = aa
+RequestClient received from Luca Geelen
+RequestSelectBook received
+RequestAddCaddyItem received
+Erreur I/O
+TH Client (Request) ends.
+Connection accepted, creation TH Client
+TH Client (Request) starts...
+RequestEmployee received, login = aa
+RequestClient received from Luca Geelen
+RequestSelectBook received
+RequestAddCaddyItem received
+RequestDeleteCaddyItem received
+Erreur I/O
 TH Client (Request) ends.

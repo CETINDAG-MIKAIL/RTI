@@ -35,7 +35,7 @@ public class MySocket {
     private static void createSocket() throws IOException {
         // Chargement de la configuration si nécessaire
         if (ipServer == null) {
-            ipServer = FileHelper.getSettingString("./config.txt", "IP_SERVER");
+            ipServer = FileHelper.getSettingString("./config.txt", "IP_PURCHASE");
         }
 
         if (portServer == null) {

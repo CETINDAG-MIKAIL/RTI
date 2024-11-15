@@ -12,10 +12,10 @@ import java.net.Socket;
 
 
 public class ConnectClient extends JDialog {
-    private final Socket socket;
+    private Socket socket;
     private String login;
-    private final ObjectOutputStream oos;
-    private final ObjectInputStream ois;
+    private ObjectOutputStream oos;
+    private ObjectInputStream ois;
     private JPanel contentPane;
     private JButton buttonOK;
     private JButton buttonCancel;
@@ -99,9 +99,14 @@ public class ConnectClient extends JDialog {
             else
             {
                 JOptionPane.showMessageDialog(this,"Erreur de login !","Erreur...",JOptionPane.ERROR_MESSAGE);
+                MySocket.closeSocket();
+                MySocket myInstance = MySocket.getInstance();
+
+                this.socket = myInstance.getMySocket();
+                this.oos = myInstance.getOutputStream();
+                this.ois = myInstance.getInputStream();
             }
-        }catch (IOException | ClassNotFoundException ex)
-        {
+        } catch (IOException | ClassNotFoundException ex) {
             ex.printStackTrace();
             JOptionPane.showMessageDialog(this,"Problème de connexion !","Erreur...",JOptionPane.ERROR_MESSAGE);
         }

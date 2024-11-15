@@ -77,7 +77,7 @@ public class MainWindow extends JFrame{
         setContentPane(MainPanel);
         setTitle("MainWindow");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(700, 400);
+        setSize(1000, 700);
 
         initClearButton(xButtonTitle, textFieldTitle, labelTitle);
         initClearButton(xButtonSubject, textFieldSubject, labelSubject);
@@ -98,6 +98,18 @@ public class MainWindow extends JFrame{
                     Book selectedBook = ((BookModelAchatClient) tableStock.getModel()).getBook(selectedRow);
                     int selectedQuantity = (Integer) spinnerQuantite.getValue();
 
+                    if(selectedQuantity < 1) {
+                        JOptionPane.showMessageDialog(null,
+                                "Aucune quantité mise.",
+                                "Quantité non disponible", JOptionPane.WARNING_MESSAGE);
+                        return;
+                    }
+                    if(selectedBook.getStockQuantity() < 1) {
+                        JOptionPane.showMessageDialog(null,
+                                "Aucune quantité disponible en stock (" + selectedBook.getStockQuantity() + " en stock).",
+                                "Quantité non disponible", JOptionPane.WARNING_MESSAGE);
+                        return;
+                    }
                     if (selectedQuantity > selectedBook.getStockQuantity()) {
                         JOptionPane.showMessageDialog(null,
                                 "Quantité demandée supérieure au stock disponible (" + selectedBook.getStockQuantity() + " en stock).",
@@ -130,9 +142,16 @@ public class MainWindow extends JFrame{
             @Override
             public void actionPerformed(ActionEvent e) {
 
+                BookModelAchatClient basketModel = (BookModelAchatClient) tableBasket.getModel();
+                float mountTotal = 0;
+                for (int i = 0; i < basketModel.getRowCount(); i++) {
+                    Book bookInBasket = basketModel.getBook(i);
+                    mountTotal += bookInBasket.getStockQuantity() * bookInBasket.getPrice();
+                }
+
                 int confirmation = JOptionPane.showConfirmDialog(
                         null,
-                        "Paiement réalisé ?",
+                        "Paiement de " + mountTotal + "€ réalisé ?",
                         "Confirmation de paiement",
                         JOptionPane.YES_NO_OPTION
                 );
@@ -423,8 +442,8 @@ public class MainWindow extends JFrame{
         clearBooksTable(tableStock);
         BookModelAchatClient model = (BookModelAchatClient) tableStock.getModel();
 
-        for (be.hepl.model.entity.Book book : response.getBooks()) {
-            model.addRow(book, 1);
+        for (Book book : response.getBooks()) {
+            model.addRow(book, book.getStockQuantity());
         }
 
     }
