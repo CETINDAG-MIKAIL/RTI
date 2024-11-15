@@ -16,6 +16,7 @@ public class RequestThreadServer extends ThreadServer {
     @Override
     public void run()
     {
+        System.out.println("Thread server starting...");
         logger.trace("Starting TH Server (RequestThreadServer)...");
 
         while(!this.isInterrupted())

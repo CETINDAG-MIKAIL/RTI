@@ -9,8 +9,9 @@
     import java.io.ObjectOutputStream;
     import java.net.Socket;
 
+    import static Window.MySocket.*;
+
     public class main {
-        private static Socket socket;
         public static void main(String[] args) throws IOException {
             try {
                 UIManager.setLookAndFeel(new FlatDarkLaf());
@@ -18,14 +19,7 @@
                 throw new RuntimeException(e);
             }
 
-            String ipServeur = FileHelper.getSettingString("./config.txt", "IP_SERVER");
-            int portServeur = FileHelper.getSettingInt("./config.txt", "PORT_PURCHASE");
-
-            socket = new Socket(ipServeur, portServeur);
-            ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
-            ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());
-
-            ConnectEmploye dialog = new ConnectEmploye(socket, oos, ois);
+            ConnectEmploye dialog = new ConnectEmploye();
             dialog.setVisible(true);
             dialog.pack();
         }

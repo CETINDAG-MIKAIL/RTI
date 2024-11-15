@@ -205,7 +205,7 @@ public class ProtocolBSPP implements Protocol {
         ArrayList<Caddy> caddies = dao.read(cvm);
 
         if(caddies.isEmpty()) {
-            throw new EndConnexionException(new ResponseCancelCaddy(false));
+            throw new EndConnexionException(new ResponseCancelCaddy(true));
         }
 
         dao.delete(caddies.getFirst().getId());

@@ -66,10 +66,13 @@ public class MainWindow extends JFrame{
     private JLabel labelMaxPrice;
 
 
-    public MainWindow(Socket socket, ObjectOutputStream oos, ObjectInputStream ois,Integer idClient) throws IOException {
-        this.socket = socket;
-        this.oos = oos;
-        this.ois = ois;
+    public MainWindow(Integer idClient) throws IOException {
+        MySocket myInstance = MySocket.getInstance();
+
+        this.socket = myInstance.getMySocket();
+        this.oos = myInstance.getOutputStream();
+        this.ois = myInstance.getInputStream();
+
 
         setContentPane(MainPanel);
         setTitle("MainWindow");
@@ -144,7 +147,8 @@ public class MainWindow extends JFrame{
                         if (response.isSuccess()) {
                             JOptionPane.showMessageDialog(null, "Paiement effectué avec succès !", "Succès", JOptionPane.INFORMATION_MESSAGE);
                             dispose();
-                            ConnectClient connectClientDialog = new ConnectClient(socket, oos, ois);
+                            MySocket.closeSocket();
+                            ConnectClient connectClientDialog = new ConnectClient();
                             connectClientDialog.setVisible(true);
                         } else {
                             JOptionPane.showMessageDialog(null, "Erreur lors du paiement. Veuillez réessayer.", "Erreur", JOptionPane.ERROR_MESSAGE);
@@ -186,7 +190,9 @@ public class MainWindow extends JFrame{
                             JOptionPane.showMessageDialog(null, "Déconnexion effectué avec succès !", "Succès", JOptionPane.INFORMATION_MESSAGE);
                             dispose();
 
-                            ConnectClient connectClientDialog = new ConnectClient(socket, oos, ois);
+                            MySocket.closeSocket();
+
+                            ConnectClient connectClientDialog = new ConnectClient();
                             connectClientDialog.setVisible(true);
                         } else {
                             JOptionPane.showMessageDialog(null, "Erreur lors de la déconnexion. Veuillez réessayer.", "Erreur", JOptionPane.ERROR_MESSAGE);

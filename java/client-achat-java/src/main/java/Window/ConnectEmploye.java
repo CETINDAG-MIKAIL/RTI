@@ -25,10 +25,12 @@ public class ConnectEmploye extends JDialog{
     private final ObjectOutputStream oos;
     private final ObjectInputStream ois;
 
-    public ConnectEmploye(Socket socket, ObjectOutputStream oos, ObjectInputStream ois) throws IOException {
-        this.socket = socket;
-        this.oos = oos;
-        this.ois = ois;
+    public ConnectEmploye() throws IOException {
+        MySocket myInstance = MySocket.getInstance();
+
+        this.socket = myInstance.getMySocket();
+        this.oos = myInstance.getOutputStream();
+        this.ois = myInstance.getInputStream();
         setTitle("Employée");
         setContentPane(contentPane);
         setModal(true);
@@ -63,7 +65,7 @@ public class ConnectEmploye extends JDialog{
 
             if (response.isSuccess()) {
                 dispose();
-                ConnectClient connectClientDialog = new ConnectClient(socket, oos, ois);
+                ConnectClient connectClientDialog = new ConnectClient();
                 connectClientDialog.setVisible(true);
             }
             else

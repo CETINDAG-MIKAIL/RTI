@@ -24,10 +24,12 @@ public class ConnectClient extends JDialog {
     private JCheckBox nouveauClientCheckBox;
     private JButton buttonBackEmployee;
 
-    public ConnectClient(Socket socket,ObjectOutputStream oos, ObjectInputStream ois) throws IOException {
-        this.socket = socket;
-        this.oos = oos;
-        this.ois = ois;
+    public ConnectClient() throws IOException {
+        MySocket myInstance = MySocket.getInstance();
+
+        this.socket = myInstance.getMySocket();
+        this.oos = myInstance.getOutputStream();
+        this.ois = myInstance.getInputStream();
         setContentPane(contentPane);
         setTitle("Client");
         setSize(300, 250);
@@ -50,7 +52,8 @@ public class ConnectClient extends JDialog {
                 dispose();
                 ConnectEmploye connectClientDialog = null;
                 try {
-                    connectClientDialog = new ConnectEmploye(socket, oos, ois);
+                    MySocket.closeSocket();
+                    connectClientDialog = new ConnectEmploye();
                 } catch (IOException ex) {
                     throw new RuntimeException(ex);
                 }
@@ -91,7 +94,7 @@ public class ConnectClient extends JDialog {
             if (response.isValide())
             {
                 dispose();
-                new MainWindow(socket, oos, ois, response.getId());
+                new MainWindow(response.getId());
             }
             else
             {
