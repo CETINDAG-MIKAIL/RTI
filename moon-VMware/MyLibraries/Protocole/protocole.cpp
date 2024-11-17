@@ -37,39 +37,53 @@ vector<string> ReadTrame(string requete)
     string longueurStr, champ;
     char *buffer;
 
-    cout << "trame recue = " << requete << endl;
+    cout << endl << endl << "PARTIE CRITIQUE..." << endl;   //---------------------------------
+
+    cout << "\ttrame recue = " << requete << endl;
+
     getline(ss, longueurStr, '#');
     int longueurTotale = stoi(longueurStr);
-    cout << "Longueur totale de la trame : " << longueurTotale << endl;
 
-    
+    cout << "\tLongueur totale de la trame : " << longueurTotale << endl << endl;
+
+
     int totalLus = longueurStr.size() + 1;
 
-    printf("1111---- totalLus = %d\n", totalLus);
+    printf("\t1 ---- totalLus = %d\n", totalLus);
 
 
-     while (getline(ss, longueurStr, '#') && totalLus < longueurTotale) {
-        printf("2222---- totalLus = %d\n", totalLus);
+    while (getline(ss, longueurStr, '#') && totalLus < longueurTotale) {
+        printf("\t2 ---- totalLus = %d\n", totalLus);
 
-        int longueurChamp = stoi(longueurStr);  
-        printf("----------- longueurChamp = %d\n", longueurChamp);
-        
+        int longueurChamp = stoi(longueurStr);
+
+        printf("\t3 ----- longueurChamp = %d\n", longueurChamp);
+
         if (totalLus + longueurChamp > longueurTotale) {
-            break;  
+            printf("\t4 ------ on sort de la boucle while, on a assez lu : %d", totalLus + longueurChamp);
+            break;
         }
 
 
         char *buffer = new char[longueurChamp];
-        ss.read(buffer, longueurChamp);         
-        champ = string(buffer, longueurChamp);  
-        
+        ss.read(buffer, longueurChamp);
+        champ = string(buffer, longueurChamp);
+
+        cout << "\t5 ----- Champ lu : " << champ << endl;
+
         champs.push_back(champ);
-        delete[] buffer;  
+        delete[] buffer;
 
         totalLus += longueurChamp + longueurStr.size();
 
-        printf("33333---- totalLus = %d\n", totalLus);
+        printf("\t6 ---- totalLus = %d\n", totalLus);
+
+        printf("\t7 ---- prochaine condition de la boucle while :\n");
+        printf("\t\tgetline(ss, longueurStr, '#') -> encore des données à lire dans le flux.\n");
+        printf("\t\ttotalLus < longueurTotale : %d < %d\n\n", totalLus, longueurTotale);
     }
+
+    cout << "FIN PARTIE CRITIQUE..." << endl << endl;
 
 
     //for(int i=0 ; i<champs.size() ; i++) {
