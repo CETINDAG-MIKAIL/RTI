@@ -121,8 +121,6 @@ public class ProtocolBSPP implements Protocol {
     private synchronized ResponseAddCaddyItem ProcessingAddCaddyItem(RequestAddCaddyItem request, Integer clientId) {
         logger.trace("RequestAddCaddyItem received");
 
-        System.out.println("----- ClientId recu en parametre = " + clientId);
-
         BookSearchVM bvm = new BookSearchVM();
         bvm.setId(request.getIdBook());
         bvm.setMinStockQuantity(request.getQuantity());
@@ -141,11 +139,18 @@ public class ProtocolBSPP implements Protocol {
             }
 
 
+            CaddySearchVM cvm = new CaddySearchVM();
+            cvm.setClientId(clientId);
+            cvm.setPayed(false);
             CaddyDAO daoC = new CaddyDAO();
-            Caddy caddy = daoC.getById(clientId);
+            ArrayList<Caddy> caddies = daoC.read(cvm);
+
+            Caddy caddy = null;
+            if(!caddies.isEmpty()) {
+                caddy = caddies.getFirst();
+            }
 
             if(caddy == null) {     // check if the caddy exists, if not, juste create it
-                System.out.println("Le client n'a pas encore de caddy, je vais en créer un");
                 caddy = new Caddy();
 
                 ClientDAO daoCli = new ClientDAO();

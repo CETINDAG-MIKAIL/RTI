@@ -114,7 +114,7 @@ int nbClients = 3;
 
 CADDIES caddies[] = {
     {-1, 1, "2023-10-10", true},     // id = 1, clientId = 1
-    {-1, 2, "2023-11-05", false},    // id = 2, clientId = 2
+    {-1, 2, "2023-11-05", true},    // id = 2, clientId = 2
     {-1, 3, "2023-12-01", true}      // id = 3, clientId = 3
 };
 int nbCaddies = 3;
@@ -247,7 +247,7 @@ int main(int argc,char *argv[])
                        "id INT(4) AUTO_INCREMENT PRIMARY KEY, "
                        "client_id INT, "
                        "date DATE,"
-                       "payed INT, "
+                       "payed BOOLEAN, "
                        "FOREIGN KEY (client_id) REFERENCES clients(id));")) {
     finish_with_error(connexion);
   }

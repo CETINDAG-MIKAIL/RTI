@@ -29,7 +29,7 @@ include_directories(
 # Fichiers sources du serveur
 set(SERVER_SOURCES
     MyLibraries/Socket/TCP.cpp
-    MyLibraries/Protocole/protocol.cpp   # Ajout du fichier protocol pour le serveur
+    MyLibraries/Protocole/protocole.cpp   # Ajout du fichier protocol pour le serveur
     MyLibraries/BD/BDHelper.cpp           # Ajout du fichier BDHelper pour la base de données
     Encodage_S/Encodage_S.cpp
     MyLibraries/Protocole/protocoleS.cpp
@@ -39,7 +39,7 @@ set(SERVER_SOURCES
 # Fichiers sources du client
 set(CLIENT_SOURCES
     MyLibraries/Socket/TCP.cpp
-    MyLibraries/Protocole/protocol.cpp   # Déjà inclus pour le client
+    MyLibraries/Protocole/protocole.cpp   # Déjà inclus pour le client
     MyLibraries/BD/BDHelper.cpp           # Déjà inclus pour le client
     ClientBookEncoderQt/main.cpp
     ClientBookEncoderQt/mainwindowclientbookencoder.cpp

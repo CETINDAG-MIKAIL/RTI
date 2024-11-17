@@ -37,6 +37,7 @@ vector<string> ReadTrame(string requete)
     string longueurStr, champ;
     char *buffer;
 
+    cout << "trame recue = " << requete << endl;
     getline(ss, longueurStr, '#');
     int longueurTotale = stoi(longueurStr);
     cout << "Longueur totale de la trame : " << longueurTotale << endl;
