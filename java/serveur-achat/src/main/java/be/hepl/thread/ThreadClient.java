@@ -18,15 +18,25 @@ public abstract class ThreadClient extends Thread {
 
     private int numero;
 
-    private static int numCourant = 1;
+    private static int currentNum = 1;
 
     public ThreadClient(Protocol protocol, Socket csocket, Logger logger) throws IOException
     {
-        super("TH Client " + numCourant + " (protocol=" + protocol.getNom() + ")");
+        super("TH Client " + currentNum + " (protocol=" + protocol.getNom() + ")");
         this.protocol = protocol;
         this.csocket = csocket;
         this.logger = logger;
-        this.numero = numCourant++;
+        this.numero = currentNum++;
+    }
+
+    public ThreadClient(Protocol protocol, ThreadGroup groupe, Logger logger)
+            throws IOException
+    {
+        super(groupe,"TH Client " + currentNum + " (protocole=" + protocol.getNom() + ")");
+        this.protocol = protocol;
+        this.csocket = null;
+        this.logger = logger;
+        this.numero = currentNum++;
     }
 
     @Override

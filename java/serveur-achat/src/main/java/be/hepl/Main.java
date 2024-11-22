@@ -2,6 +2,7 @@ package be.hepl;
 
 import be.hepl.protocol.Protocol;
 import be.hepl.protocol.ProtocolBSPP;
+import be.hepl.protocol.ProtocolBSPPS;
 import be.hepl.thread.RequestThreadServer;
 import be.hepl.thread.ThreadServer;
 import be.hepl.trace.Logger;
@@ -9,13 +10,19 @@ import be.hepl.trace.MyLogger;
 
 public class Main {
     public static void main(String[] args) {
-        Protocol protocol = new ProtocolBSPP();
-        int port = FileHelper.getSettingInt("./config.txt", "PORT_PURCHASE");
         Logger logger = MyLogger.getInstance();
 
-        ThreadServer threadServeur = new RequestThreadServer(port, protocol, logger);
+        Protocol protocolBSPP = new ProtocolBSPP();
+        int port = FileHelper.getSettingInt("./config.txt", "PORT_PURCHASE");
+
+//        Protocol protocolBSPPS = new ProtocolBSPPS();
+//        int portS = FileHelper.getSettingInt("./config.txt", "PORT_PURCHASE_SECURE");
+
+        ThreadServer threadServeur = new RequestThreadServer(port, protocolBSPP, logger);
+        //ThreadServer threadServeurSecure = new RequestThreadServer(portS, protocolBSPPS, logger);
 
         logger.clearTrace();
         threadServeur.start();
+        //threadServeurSecure.start();
     }
 }

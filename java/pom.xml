@@ -15,6 +15,7 @@
         <module>serveur-achat</module>
         <module>my-libraries</module>
         <module>client-achat-java</module>
+        <module>client-achat-java-S</module>
     </modules>
 
     <artifactId>java</artifactId>

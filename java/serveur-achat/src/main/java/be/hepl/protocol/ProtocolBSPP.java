@@ -58,7 +58,7 @@ public class ProtocolBSPP implements Protocol {
         return null;
     }
 
-    private synchronized Response ProcessingEmployee(RequestEmployee request) {
+    private synchronized ResponseEmployee ProcessingEmployee(RequestEmployee request) {
         logger.trace("RequestEmployee received, login = " + request.getLogin());
 
         EmployeeSearchVM vm = new EmployeeSearchVM();
