@@ -7,10 +7,15 @@ import be.hepl.thread.RequestThreadServer;
 import be.hepl.thread.ThreadServer;
 import be.hepl.trace.Logger;
 import be.hepl.trace.MyLogger;
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
+
+import java.security.Security;
 
 public class Main {
     public static void main(String[] args) {
         Logger logger = MyLogger.getInstance();
+
+        Security.addProvider(new BouncyCastleProvider());
 
         Protocol protocolBSPP = new ProtocolBSPP();
         int port = FileHelper.getSettingInt("./config.txt", "PORT_PURCHASE");

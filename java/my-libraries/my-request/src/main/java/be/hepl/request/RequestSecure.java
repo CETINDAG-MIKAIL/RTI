@@ -1,18 +1,23 @@
 package be.hepl.request;
 
-import be.hepl.response.Response;
-
 import java.io.Serializable;
+import java.security.cert.X509Certificate;
 
 public class RequestSecure implements Serializable {
     private Request request;
-    private byte[] data;
+    private byte[] requestEncrypted;
+    private byte[] digest;
+    private X509Certificate certificate;
+    private byte[] signature;
 
     public RequestSecure() {}
 
-    public RequestSecure (Request request, byte[] data) {
+    public RequestSecure (Request request, byte[] requestEncrypted, byte[] digest, X509Certificate certificate, byte[] signature) {
         this.request = request;
-        this.data = data;
+        this.requestEncrypted = requestEncrypted;
+        this.digest = digest;
+        this.certificate = certificate;
+        this.signature = signature;
     }
 
     public Request getRequest() {
@@ -23,11 +28,36 @@ public class RequestSecure implements Serializable {
         this.request = request;
     }
 
-    public byte[] getData() {
-        return data;
+    public byte[] getRequestEncrypted() {
+        return requestEncrypted;
     }
 
-    public void setData(byte[] data) {
-        this.data = data;
+    public void setRequestEncrypted(byte[] requestEncrypted) {
+        this.requestEncrypted = requestEncrypted;
     }
+
+    public byte[] getDigest() {
+        return digest;
+    }
+
+    public void setDigest(byte[] digest) {
+        this.digest = digest;
+    }
+
+    public X509Certificate getCertificate() {
+        return certificate;
+    }
+
+    public void setCertificate(X509Certificate certificate) {
+        this.certificate = certificate;
+    }
+
+    public byte[] getSignature() {
+        return signature;
+    }
+
+    public void setSignature(byte[] signature) {
+        this.signature = signature;
+    }
+
 }
