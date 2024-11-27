@@ -5,9 +5,12 @@ import be.hepl.request.Request;
 import be.hepl.response.Response;
 
 import java.net.Socket;
+import java.util.HashMap;
 
 public interface Protocol {
     String getNom();
 
-    Response processingRequest(Request requete, Socket socket) throws EndConnexionException;
+    HashMap<Socket, Integer> getConnectedClients();
+
+    Response processingRequest(Request request, Socket socket) throws EndConnexionException;
 }

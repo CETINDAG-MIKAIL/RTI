@@ -24,6 +24,11 @@ public class ProtocolBSPP implements Protocol {
     }
 
     @Override
+    public HashMap<Socket, Integer> getConnectedClients() {
+        return connectedClients;
+    }
+
+    @Override
     public synchronized Response processingRequest(Request request, Socket socket) throws EndConnexionException {
         logger = MyLogger.getInstance();
 

@@ -2,10 +2,11 @@ package be.hepl.thread;
 
 import java.net.Socket;
 import java.util.LinkedList;
+import java.util.Queue;
 
 public class WaitingQueue {
 
-    private LinkedList<Socket> waitingQueue;
+    private final Queue<Socket> waitingQueue;
 
     public WaitingQueue()
     {
@@ -14,7 +15,7 @@ public class WaitingQueue {
 
     public synchronized void addConnexion(Socket socket)
     {
-        waitingQueue.addLast(socket);
+        waitingQueue.add(socket);
         notify();
     }
 

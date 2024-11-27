@@ -1,19 +1,23 @@
 package be.hepl.response;
 
+import java.security.cert.X509Certificate;
+
 public class ResponseSecure implements Response {
     private Response response;
     private byte[] requestEncrypted;
     private byte[] sel;
     private byte[] sessionsKey;
+    private X509Certificate certificate;
     private byte[] hmac;
 
     public ResponseSecure() {}
 
-    public ResponseSecure (Response response, byte[] requestEncrypted, byte[] sel, byte[] sessionsKey, byte[] hmac) {
+    public ResponseSecure (Response response, byte[] requestEncrypted, byte[] sel, byte[] sessionsKey, X509Certificate certificate, byte[] hmac) {
         this.response = response;
         this.requestEncrypted = requestEncrypted;
         this.sel = sel;
         this.sessionsKey = sessionsKey;
+        this.certificate = certificate;
         this.hmac = hmac;
     }
 
@@ -47,6 +51,14 @@ public class ResponseSecure implements Response {
 
     public void setSessionsKey(byte[] sessionsKey) {
         this.sessionsKey = sessionsKey;
+    }
+
+    public X509Certificate getCertificate() {
+        return certificate;
+    }
+
+    public void setCertificate(X509Certificate certificate) {
+        this.certificate = certificate;
     }
 
     public byte[] getHmac() {

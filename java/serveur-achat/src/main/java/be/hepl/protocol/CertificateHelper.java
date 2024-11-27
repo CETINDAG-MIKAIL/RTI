@@ -3,10 +3,7 @@ package be.hepl.protocol;
 import be.hepl.trace.Logger;
 
 import java.io.FileInputStream;
-import java.security.KeyStore;
-import java.security.Provider;
-import java.security.PublicKey;
-import java.security.Security;
+import java.security.*;
 import java.security.cert.X509Certificate;
 import java.util.Enumeration;
 
@@ -46,6 +43,37 @@ public class CertificateHelper {
             return null;
         }
         return certificate.getPublicKey();
+    }
+
+    public static synchronized PrivateKey getPrivateKey(Logger logger) {
+        try {
+            KeyStore ks = KeyStore.getInstance("JKS");
+            FileInputStream fis = new FileInputStream(keystoreFile);
+            ks.load(fis, keystorePassword.toCharArray());
+            fis.close();
+
+            Enumeration<String> aliases = ks.aliases();
+            while (aliases.hasMoreElements()) {
+                String alias = aliases.nextElement();
+
+                if (alias.equals(certificateAlias)) {
+                    if (ks.isKeyEntry(alias)) {
+                        Key key = ks.getKey(alias, keystorePassword.toCharArray());
+                        if (key instanceof PrivateKey) {
+                            PrivateKey privateKey = (PrivateKey) key;
+                            return privateKey;
+                        } else {
+                            logger.trace("The alias does not correspond to a private key entry.");
+                        }
+                    } else {
+                        logger.trace("The alias does not correspond to a key entry.");
+                    }
+                }
+            }
+        } catch (Exception e) {
+            logger.trace("Error while getting the private key");
+        }
+        return null;
     }
 
     public static void main(String[] args) {

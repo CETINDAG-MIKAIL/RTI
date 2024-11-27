@@ -12,8 +12,7 @@ public class PoolThreadServer extends ThreadServer {
     private ThreadGroup pool;
     private int sizePool;
 
-    public PoolThreadServer(int port, Protocol protocole, int sizePool, Logger logger) throws IOException
-    {
+    public PoolThreadServer(int port, Protocol protocole, int sizePool, Logger logger) throws IOException {
         super(port, protocole, logger);
 
         connectionsWaiting = new WaitingQueue();
@@ -22,43 +21,33 @@ public class PoolThreadServer extends ThreadServer {
     }
 
     @Override
-    public void run()
-    {
+    public void run() {
         logger.trace("Démarrage du TH Serveur (Pool)...");
         // Création du pool de threads
-        try
-        {
-            for (int i=0 ; i<sizePool ; i++)
+        try {
+            for (int i = 0; i < sizePool; i++)
                 new PoolThreadClient(protocol, connectionsWaiting, pool, logger).start();
-        }
-        catch (IOException ex)
-        {
+        } catch (IOException ex) {
             logger.trace("Erreur I/O lors de la création du pool de threads");
             return;
         }
 
         // Attente des connexions
-        while(!this.isInterrupted())
-        {
+        while (!this.isInterrupted()) {
             Socket csocket;
-            try
-            {
+            try {
                 ssocket.setSoTimeout(2000);
                 csocket = ssocket.accept();
                 logger.trace("Connexion acceptée, mise en file d'attente.");
                 connectionsWaiting.addConnexion(csocket);
-            }
-            catch (SocketTimeoutException ex)
-            {
-                if(this.isInterrupted()) {
+            } catch (SocketTimeoutException ex) {
+                if (this.isInterrupted()) {
                     logger.trace("TH (RequestThreadServer) : Connection is interrupted");
                     break;
                 } else {
                     //logger.trace("Connection timed out, time out reset on " + "2000" + " ms.");
                 }
-            }
-            catch (IOException ex)
-            {
+            } catch (IOException ex) {
                 logger.trace("Erreur I/O");
             }
         }

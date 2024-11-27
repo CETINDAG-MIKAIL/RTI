@@ -1,8 +1,12 @@
 package be.hepl.protocol;
 
 import be.hepl.trace.Logger;
+import com.mysql.cj.log.Log;
 
 import javax.crypto.*;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.security.*;
 import java.util.Date;
 
@@ -38,11 +42,21 @@ public class CryptoHelper {
         return digest.digest(); // Calculer le hachage
     }
 
-    public static byte[] CryptSymDES(SecretKey cle, byte[] data, Logger logger)
+    public static byte[] generateDigest(byte[] data, Logger logger) {
+        MessageDigest digest = null;
+        try {
+            digest = MessageDigest.getInstance("SHA-256");
+        } catch (NoSuchAlgorithmException e) {
+            logger.trace("Error while creating the digest");
+        }
+        return digest.digest(data); // Calculer le hachage
+    }
+
+    public static byte[] CryptSymDESede(SecretKey cle, byte[] data, Logger logger)
     {
         Cipher chiffrementE = null;
         try {
-            chiffrementE = Cipher.getInstance("DES/ECB/PKCS5Padding", "BC");
+            chiffrementE = Cipher.getInstance("DESede/ECB/PKCS5Padding", "BC");
             chiffrementE.init(Cipher.ENCRYPT_MODE, cle);
 
             return chiffrementE.doFinal(data);
@@ -52,10 +66,10 @@ public class CryptoHelper {
         return null;
     }
 
-    public static byte[] DecryptSymDES(SecretKey cle, byte[] data, Logger logger)
+    public static byte[] DecryptSymDESede(SecretKey cle, byte[] data, Logger logger)
     {
         try {
-            Cipher chiffrementD = Cipher.getInstance("DES/ECB/PKCS5Padding", "BC");
+            Cipher chiffrementD = Cipher.getInstance("DESede/ECB/PKCS5Padding", "BC");
             chiffrementD.init(Cipher.DECRYPT_MODE, cle);
             return chiffrementD.doFinal(data);
         } catch (NoSuchPaddingException | NoSuchAlgorithmException | NoSuchProviderException | InvalidKeyException | IllegalBlockSizeException | BadPaddingException e) {
@@ -86,5 +100,40 @@ public class CryptoHelper {
             logger.trace("Error while creating the cipher");
         }
         return null;
+    }
+
+    public static Object deserializeObject(byte[] data, Logger logger) {
+        ByteArrayInputStream bis = new ByteArrayInputStream(data);
+        ObjectInputStream ois = null;
+        try {
+            ois = new ObjectInputStream(bis);
+            return ois.readObject();
+        } catch (IOException | ClassNotFoundException e) {
+            logger.trace("Error while deserializing the object");
+        }
+        return null;
+    }
+
+    public static byte[] createHMAC(byte[] data, SecretKey key, Logger logger) {
+        try {
+            Mac mac = Mac.getInstance("HMAC-MD5", "BC");
+            mac.init(key);
+            return mac.doFinal(data);
+        } catch (NoSuchAlgorithmException | NoSuchProviderException | InvalidKeyException e) {
+            logger.trace("Error while creating the HMAC");
+        }
+        return null;
+    }
+
+    public static boolean verifySignature(byte[] data, byte[] signature, PublicKey publicKey, Logger logger) {
+        try {
+            Signature sign = Signature.getInstance("SHA256withRSA", "BC");
+            sign.initVerify(publicKey);
+            sign.update(data);
+            return sign.verify(signature);
+        } catch (NoSuchAlgorithmException | NoSuchProviderException | InvalidKeyException | SignatureException e) {
+            logger.trace("Error while verifying the signature");
+        }
+        return false;
     }
 }
