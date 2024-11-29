@@ -10,9 +10,9 @@ import java.util.Enumeration;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
 public class CertificateHelper {
-    private static final String keystoreFile = "./server-keystore.keystore";
+    private static final String keystoreFile = "./server.jks";
     private static final String keystorePassword = "admin";
-    private static final String certificateAlias = "server-achat-certificat";
+    private static final String certificateAlias = "server";
 
     public static synchronized X509Certificate getCertificate(Logger logger) {
         try {

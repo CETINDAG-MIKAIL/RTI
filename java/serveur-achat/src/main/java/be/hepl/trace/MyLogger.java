@@ -13,7 +13,7 @@ public class MyLogger implements Logger{
             synchronized (MyLogger.class) { //when some threads will get the instance at the same time
                 if (instance == null) {
                     instance = new MyLogger();
-                    filename = "log.txt";
+                    filename = "./java/serveur-achat/server.log";
                 }
             }
         }

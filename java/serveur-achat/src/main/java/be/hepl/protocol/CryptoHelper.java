@@ -1,16 +1,11 @@
 package be.hepl.protocol;
 
 import be.hepl.trace.Logger;
-import com.mysql.cj.log.Log;
 
 import javax.crypto.*;
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
+import java.io.*;
 import java.security.*;
 import java.util.Date;
-
-import static com.mysql.cj.conf.PropertyKey.logger;
 
 public class CryptoHelper {
     public static byte[] generateSalt() {
@@ -37,9 +32,12 @@ public class CryptoHelper {
         } catch (NoSuchAlgorithmException e) {
             logger.trace("Error while creating the digest");
         }
-        digest.update(salt); // Ajouter le sel
-        digest.update(Integer.toString(clientNumber).getBytes()); // Ajouter le numéro de client
-        return digest.digest(); // Calculer le hachage
+        if (digest != null) {
+            digest.update(salt); // Ajouter le sel
+            digest.update(Integer.toString(clientNumber).getBytes()); // Ajouter le numéro de client
+            return digest.digest(); // Calculer le hachage
+        }
+        return null;
     }
 
     public static byte[] generateDigest(byte[] data, Logger logger) {
@@ -49,7 +47,10 @@ public class CryptoHelper {
         } catch (NoSuchAlgorithmException e) {
             logger.trace("Error while creating the digest");
         }
-        return digest.digest(data); // Calculer le hachage
+        if (digest != null) {
+            return digest.digest(data); // Calculer le hachage
+        }
+        return null;
     }
 
     public static byte[] CryptSymDESede(SecretKey cle, byte[] data, Logger logger)
@@ -135,5 +136,18 @@ public class CryptoHelper {
             logger.trace("Error while verifying the signature");
         }
         return false;
+    }
+
+    public static byte[] convertToBytes(Object obj, Logger logger) {
+        ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
+        ObjectOutputStream objStream = null;
+        try {
+            objStream = new ObjectOutputStream(byteStream);
+            objStream.writeObject(obj);
+            objStream.flush();
+            return byteStream.toByteArray();
+        } catch (IOException e) {
+            logger.trace("Error while converting the object to bytes");
+        }
     }
 }

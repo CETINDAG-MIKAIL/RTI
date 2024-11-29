@@ -18,7 +18,7 @@ public class Main {
         Security.addProvider(new BouncyCastleProvider());
 
         Protocol protocolBSPP = new ProtocolBSPP();
-        int port = FileHelper.getSettingInt("./config.txt", "PORT_PURCHASE");
+        int port = FileHelper.getSettingInt("./config.properties", "PORT_PURCHASE");
 
 //        Protocol protocolBSPPS = new ProtocolBSPPS();
 //        int portS = FileHelper.getSettingInt("./config.txt", "PORT_PURCHASE_SECURE");

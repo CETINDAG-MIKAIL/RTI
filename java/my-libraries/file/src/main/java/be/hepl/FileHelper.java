@@ -1,9 +1,7 @@
 package be.hepl;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
+import java.util.Properties;
 
 public class FileHelper {
     public static boolean writeToFile(String filename, String content) {
@@ -26,43 +24,42 @@ public class FileHelper {
     }
 
     public static int getSettingInt(String nomFichier, String nomParam) {
-        int setting = -1;
-        String line;
-
-        try (BufferedReader configFile = new BufferedReader(new FileReader(nomFichier))) {
-            while ((line = configFile.readLine()) != null) {
-                if (line.startsWith(nomParam + "=")) {
-                    String value = line.substring(nomParam.length() + 1);       // '+1' pour ne pas prendre le '='
-                    setting = Integer.parseInt(value);
-                    break;
-                }
+        Properties properties = new Properties();
+        try (FileInputStream fis = new FileInputStream(nomFichier)) {
+            properties.load(fis);
+            String value = properties.getProperty(nomParam);
+            if (value != null) {
+                return Integer.parseInt(value);
+            } else {
+                System.err.println("Paramètre non trouvé : " + nomParam);
+                return -1;
             }
         } catch (IOException e) {
-            System.err.println("ERROR : cannot open filer : " + e.getMessage());
+            System.err.println("Erreur de lecture du fichier : " + e.getMessage());
+            return -1;
+        } catch (NumberFormatException e) {
+            System.err.println("Valeur invalide pour le paramètre : " + nomParam);
             return -1;
         }
-
-        return setting;
     }
 
     public static String getSettingString(String nomFichier, String nomParam) {
-        String setting = "";
-        String line;
-
-        try (BufferedReader configFile = new BufferedReader(new FileReader(nomFichier))) {
-            while ((line = configFile.readLine()) != null) {
-                if (line.startsWith(nomParam + "=")) {
-
-                    setting = line.substring(nomParam.length() + 1);        // '+1' pour ne pas prendre le '='
-                    break;
-                }
+        Properties properties = new Properties();
+        try (FileInputStream fis = new FileInputStream(nomFichier)) {
+            properties.load(fis);
+            String value = properties.getProperty(nomParam);
+            if (value == null) {
+                System.err.println("Paramètre non trouvé : " + nomParam);
             }
-        } catch (IOException e) {
-            System.err.println("ERROR : cannot open filer : " + e.getMessage());
-            return "";
-        }
+            return value;
 
-        return setting;
+        } catch (IOException e) {
+            System.err.println("Erreur de lecture du fichier : " + e.getMessage());
+            return null;
+        } catch (NumberFormatException e) {
+            System.err.println("Valeur invalide pour le paramètre : " + nomParam);
+            return null;
+        }
     }
 
     public static void main (String[] args) {
@@ -70,7 +67,7 @@ public class FileHelper {
 
         System.out.println("Répertoire de travail actuel : " + System.getProperty("user.dir") + "\n");
 
-        String nomFichier = "../config.txt";
+        String nomFichier = "./config.properties";
 
         int portServeur = getSettingInt(nomFichier, "PORT_ENCODING");
         int nbThreadsPool = getSettingInt(nomFichier, "NUM_THREADS");
