@@ -12,9 +12,9 @@
             } catch (UnsupportedLookAndFeelException e) {
                 throw new RuntimeException(e);
             }
-
-            ConnectEmploye dialog = new ConnectEmploye();
+            ConnectClient dialog = new ConnectClient();
             dialog.setVisible(true);
             dialog.pack();
+
         }
     }

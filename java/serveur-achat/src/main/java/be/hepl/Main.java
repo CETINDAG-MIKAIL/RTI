@@ -18,16 +18,16 @@ public class Main {
         Security.addProvider(new BouncyCastleProvider());
 
         Protocol protocolBSPP = new ProtocolBSPP();
-        int port = FileHelper.getSettingInt("./config.properties", "PORT_PURCHASE");
-
-//        Protocol protocolBSPPS = new ProtocolBSPPS();
-//        int portS = FileHelper.getSettingInt("./config.txt", "PORT_PURCHASE_SECURE");
-
+       int port = FileHelper.getSettingInt("./config.properties", "PORT_PURCHASE");
+        System.out.println("port: " + port);
+        Protocol protocolBSPPS = new ProtocolBSPPS();
+        int portS = FileHelper.getSettingInt("./config.properties", "PORT_PURCHASE_SECURE");
+        System.out.println("portS: " + portS);
         ThreadServer threadServeur = new RequestThreadServer(port, protocolBSPP, logger);
-        //ThreadServer threadServeurSecure = new RequestThreadServer(portS, protocolBSPPS, logger);
+        ThreadServer threadServeurSecure = new RequestThreadServer(portS, protocolBSPPS, logger);
 
         logger.clearTrace();
         threadServeur.start();
-        //threadServeurSecure.start();
+        threadServeurSecure.start();
     }
 }

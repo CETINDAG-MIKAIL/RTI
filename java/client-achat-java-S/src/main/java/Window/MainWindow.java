@@ -2,11 +2,18 @@ package Window;
 
 import Window.table.BookColumnModelAchatClient;
 import Window.table.BookModelAchatClient;
+import be.hepl.ClientCertificateHelper;
+import be.hepl.CryptoHelper;
 import be.hepl.model.entity.Author;
 import be.hepl.model.entity.Book;
 import be.hepl.model.entity.Subject;
 import be.hepl.model.viewmodel.BookSearchVM;
+import be.hepl.request.*;
+import be.hepl.response.*;
+import be.hepl.trace.Logger;
+import be.hepl.trace.MyLogger;
 
+import javax.crypto.SecretKey;
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
@@ -18,7 +25,10 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.security.PrivateKey;
+import java.security.cert.X509Certificate;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 
 public class MainWindow extends JFrame{
@@ -62,13 +72,15 @@ public class MainWindow extends JFrame{
     private JLabel labelPageCount;
     private JLabel labelMaxPrice;
 
-
+    private final HashMap<Socket, SecretKey> storedSessionKey = new HashMap<>();
+    private Logger logger = MyLogger.getInstance();
     public MainWindow(Integer idClient) throws IOException {
         MySocket myInstance = MySocket.getInstance();
 
         this.socket = myInstance.getMySocket();
         this.oos = myInstance.getOutputStream();
         this.ois = myInstance.getInputStream();
+
 
 
         setContentPane(MainPanel);
@@ -138,7 +150,6 @@ public class MainWindow extends JFrame{
         payerButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-
                 BookModelAchatClient basketModel = (BookModelAchatClient) tableBasket.getModel();
                 float mountTotal = 0;
                 for (int i = 0; i < basketModel.getRowCount(); i++) {
@@ -153,11 +164,53 @@ public class MainWindow extends JFrame{
                         JOptionPane.YES_NO_OPTION
                 );
 
-
                 if (confirmation == JOptionPane.YES_OPTION) {
                     try {
-                        RequestPayCaddy request = new RequestPayCaddy(idClient);
-                        oos.writeObject(request);
+
+                        String cardName = JOptionPane.showInputDialog("Entrez le nom de la carte VISA :");
+                        if (cardName == null || cardName.trim().isEmpty()) {
+                            JOptionPane.showMessageDialog(null, "Le nom de la carte est obligatoire.", "Erreur", JOptionPane.ERROR_MESSAGE);
+                            return;
+                        }
+
+                        String cardNumberString = JOptionPane.showInputDialog("Entrez le numéro de la carte VISA :");
+                        if (cardNumberString == null || cardNumberString.trim().isEmpty()) {
+                            JOptionPane.showMessageDialog(null, "Le numéro de carte est obligatoire.", "Erreur", JOptionPane.ERROR_MESSAGE);
+                            return;
+                        }
+
+                        int cardNumber;
+                        try {
+                            cardNumber = Integer.parseInt(cardNumberString);
+                        } catch (NumberFormatException ex) {
+                            JOptionPane.showMessageDialog(null, "Le numéro de carte doit être un entier valide.", "Erreur", JOptionPane.ERROR_MESSAGE);
+                            return;
+                        }
+
+                        RequestPayCaddyWithVisa request = new RequestPayCaddyWithVisa(idClient, cardNumber, cardName);
+                        byte[] requestBytes = CryptoHelper.convertToBytes(request, logger);
+
+                        if (requestBytes == null || requestBytes.length == 0) {
+                            System.out.println("Erreur : La conversion de la requête en octets a échoué.");
+                            return;
+                        }
+
+                        byte[] encryptedRequest = CryptoHelper.CryptSymDESede(storedSessionKey.get(socket), requestBytes, logger);
+                        if (encryptedRequest == null) {
+                            System.out.println("Erreur : Chiffrement de la requête échoué.");
+                            return;
+                        }
+
+                        PrivateKey privateKey = ClientCertificateHelper.getPrivateKey(logger);
+                        byte[] signature = CryptoHelper.signData(requestBytes, privateKey, logger);
+                        if (signature == null) {
+                            System.out.println("Erreur : La signature des données a échoué.");
+                            return;
+                        }
+
+                        RequestSecure secureRequest = new RequestSecure(request, encryptedRequest, null, null, signature);
+
+                        oos.writeObject(secureRequest);
 
                         ResponsePayCaddy response = (ResponsePayCaddy) ois.readObject();
                         if (response.isSuccess()) {
@@ -172,15 +225,15 @@ public class MainWindow extends JFrame{
 
                     } catch (IOException | ClassNotFoundException ex) {
                         ex.printStackTrace();
-                        JOptionPane.showMessageDialog(null, "Erreur lors de la restauration du stock : " + ex.getMessage(),
+                        JOptionPane.showMessageDialog(null, "Erreur lors du paiement : " + ex.getMessage(),
                                 "Erreur", JOptionPane.ERROR_MESSAGE);
                     }
                 } else {
-
                     JOptionPane.showMessageDialog(null, "Paiement annulé.", "Annulation", JOptionPane.INFORMATION_MESSAGE);
                 }
             }
         });
+
         annulerButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -195,9 +248,21 @@ public class MainWindow extends JFrame{
 
                 if (confirmation == JOptionPane.YES_OPTION) {
                     try {
+                        X509Certificate clientCertificate = ClientCertificateHelper.getCertificate(logger); // Pour le certificat public
+                        PrivateKey privateKey = ClientCertificateHelper.getPrivateKey(logger); // Pour signer
 
                         RequestCancelCaddy request = new RequestCancelCaddy(idClient);
-                        oos.writeObject(request);
+                        byte[] requestBytes = CryptoHelper.convertToBytes(request, logger);
+
+                        if (requestBytes == null || requestBytes.length == 0) {System.out.println("requestBytes is null or empty");}
+
+                        System.out.println("requestBytes length " + requestBytes.length);
+                        byte[] signature = CryptoHelper.signData(requestBytes, privateKey, logger);
+                        byte [] cryptedRequest = CryptoHelper.CryptSymDESede(storedSessionKey.get(socket), requestBytes, logger);
+
+                        RequestSecure initialSecureRequest  = new RequestSecure(request, cryptedRequest, null, null, signature);
+
+                        oos.writeObject(initialSecureRequest);
 
 
                         ResponseCancelCaddy response = (ResponseCancelCaddy) ois.readObject();
@@ -323,7 +388,14 @@ public class MainWindow extends JFrame{
         try {
 
             RequestAddCaddyItem request = new RequestAddCaddyItem(book.getId(), quantity);
-            oos.writeObject(request);
+            byte[] requestBytes = CryptoHelper.convertToBytes(request, logger);
+            if (requestBytes == null || requestBytes.length == 0) {System.out.println("requestBytes is null or empty");}
+            System.out.println("requestBytes length " + requestBytes.length);
+
+            byte [] cryptedRequest = CryptoHelper.CryptSymDESede(storedSessionKey.get(socket), requestBytes, logger);
+
+            RequestSecure initialSecureRequest  = new RequestSecure(request, cryptedRequest, null, null, null);
+            oos.writeObject(initialSecureRequest);
 
 
             ResponseAddCaddyItem response = (ResponseAddCaddyItem) ois.readObject();
@@ -350,9 +422,19 @@ public class MainWindow extends JFrame{
     private boolean restoreBookStock(Book book, int quantity) {
         try {
             RequestDeleteCaddyItem request = new RequestDeleteCaddyItem(book.getId(), quantity);
-            oos.writeObject(request);
+            byte[] requestBytes = CryptoHelper.convertToBytes(request, logger);
+            if (requestBytes == null || requestBytes.length == 0)
+            {
+                System.out.println("requestBytes is null or empty");
+            }
+            System.out.println("requestBytes length " + requestBytes.length);
+
+            byte [] cryptedRequest = CryptoHelper.CryptSymDESede(storedSessionKey.get(socket), requestBytes, logger);
+            RequestSecure initialSecureRequest  = new RequestSecure(request, cryptedRequest, null, null, null);
+            oos.writeObject(initialSecureRequest);
 
             ResponseDeleteCaddyItem response = (ResponseDeleteCaddyItem) ois.readObject();
+
             return response.isSuccess();
 
         } catch (IOException | ClassNotFoundException ex) {

@@ -1,4 +1,4 @@
-package be.hepl.protocol;
+package be.hepl;
 
 import be.hepl.trace.Logger;
 

@@ -1,4 +1,4 @@
-package be.hepl.protocol;
+package be.hepl;
 
 import be.hepl.trace.Logger;
 
@@ -69,6 +69,11 @@ public class CryptoHelper {
 
     public static byte[] DecryptSymDESede(SecretKey cle, byte[] data, Logger logger)
     {
+        if (data == null || data.length == 0) {
+            System.out.println("aAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+            logger.trace("Error: Input data is null or empty");
+            return null;  // Retourner null si les données sont invalides
+        }
         try {
             Cipher chiffrementD = Cipher.getInstance("DESede/ECB/PKCS5Padding", "BC");
             chiffrementD.init(Cipher.DECRYPT_MODE, cle);
@@ -149,5 +154,17 @@ public class CryptoHelper {
         } catch (IOException e) {
             logger.trace("Error while converting the object to bytes");
         }
+        return null;
+    }
+    public static byte[] signData(byte[] data, PrivateKey privateKey, Logger logger) {
+        try {
+            Signature signature = Signature.getInstance("SHA256withRSA", "BC");
+            signature.initSign(privateKey);
+            signature.update(data);
+            return signature.sign();
+        } catch (NoSuchAlgorithmException | NoSuchProviderException | InvalidKeyException | SignatureException e) {
+            logger.trace("Error while signing the data");
+        }
+        return null;
     }
 }

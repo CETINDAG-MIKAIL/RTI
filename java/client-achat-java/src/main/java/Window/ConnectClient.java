@@ -21,6 +21,7 @@ public class ConnectClient extends JDialog {
     private JButton buttonCancel;
     private JTextField textFieldLastNameClient;
     private JTextField textFieldFirstNameClient;
+    private JTextField textFieldIdClient;
     private JCheckBox nouveauClientCheckBox;
     private JButton buttonBackEmployee;
 

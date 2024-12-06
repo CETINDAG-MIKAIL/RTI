@@ -12,7 +12,7 @@ public class ConnectDB {
     private static Connection conn = null;
     private static ConnectDB instance = null;
 
-    private static String fileName = "./java/settingsDB.txt";
+    private static String fileName = "./java/settingsDB.properties";
     private static String sCon;
     private static String sUser;
     private static String sPwd;

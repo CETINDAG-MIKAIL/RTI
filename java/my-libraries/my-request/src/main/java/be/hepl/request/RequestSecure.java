@@ -3,7 +3,7 @@ package be.hepl.request;
 import java.io.Serializable;
 import java.security.cert.X509Certificate;
 
-public class RequestSecure implements Serializable {
+public class RequestSecure implements Request {
     private Request request;
     private byte[] requestEncrypted;
     private byte[] digest;

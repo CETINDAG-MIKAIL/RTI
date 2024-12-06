@@ -83,7 +83,10 @@ public class ProtocolBSPP implements Protocol {
         logger.trace("RequestClient received from " + request.getFirstName() + " " + request.getLastName());
         ClientDAO dao = new ClientDAO();
 
+        System.out.println("PSBP-------------------------------1");
         if(request.isNewClient()) {
+
+            System.out.println("PSBP-------------------------------2");
             Client client = new Client();
             client.setId(null);
             client.setLastName(request.getLastName());
@@ -98,15 +101,21 @@ public class ProtocolBSPP implements Protocol {
             return new ResponseClient(client.getId());
         }
 
+        System.out.println("PSBP-------------------------------3");
+
         ClientSearchVM vm = new ClientSearchVM();
         vm.setLastName(request.getLastName());
         vm.setFirstName(request.getFirstName());
         ArrayList<Client> clients = dao.read(vm);
 
+        System.out.println("PSBP-------------------------------4");
         if(clients.isEmpty()) {
+
+            System.out.println("PSBP-------------------------------5");
             throw new EndConnexionException(new ResponseClient(null));
         }
 
+        System.out.println("PSBP-------------------------------6");
         System.out.println("2--- id du client que je vais mettre dans la HashMap, idclient = " + clients.getFirst().getId());
 
         connectedClients.put(socket, clients.getFirst().getId());

@@ -119,13 +119,15 @@
             <properties/>
             <border type="none"/>
             <children>
-              <component id="777ff" class="javax.swing.JTextField">
+              <component id="777ff" class="javax.swing.JTextField" binding="textFieldIdClient">
                 <constraints>
                   <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
                     <minimum-size width="250" height="-1"/>
                   </grid>
                 </constraints>
-                <properties/>
+                <properties>
+                  <text value=""/>
+                </properties>
               </component>
               <component id="3bca2" class="javax.swing.JLabel">
                 <constraints>

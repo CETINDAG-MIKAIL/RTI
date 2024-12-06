@@ -1,7 +1,12 @@
 package Window;
 
+import be.hepl.ClientCertificateHelper;
 import be.hepl.request.RequestClient;
+import be.hepl.request.RequestSecure;
 import be.hepl.response.ResponseClient;
+import be.hepl.response.ResponseSecure;
+import be.hepl.trace.Logger;
+import be.hepl.trace.MyLogger;
 
 import javax.swing.*;
 import java.awt.event.*;
@@ -9,6 +14,11 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.nio.charset.StandardCharsets;
+import java.security.NoSuchAlgorithmException;
+import java.security.cert.X509Certificate;
+import java.security.MessageDigest;
+import java.util.Arrays;
 
 
 public class ConnectClient extends JDialog {
@@ -21,8 +31,8 @@ public class ConnectClient extends JDialog {
     private JButton buttonCancel;
     private JTextField textFieldLastNameClient;
     private JTextField textFieldFirstNameClient;
-    private JCheckBox nouveauClientCheckBox;
-    private JButton buttonBackEmployee;
+    private JTextField textFieldIdClient;
+    private Logger logger = MyLogger.getInstance();
 
     public ConnectClient() throws IOException {
         MySocket myInstance = MySocket.getInstance();
@@ -47,21 +57,7 @@ public class ConnectClient extends JDialog {
                 onCancel();
             }
         });
-        buttonBackEmployee.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                dispose();
-                ConnectEmploye connectClientDialog = null;
-                try {
-                    MySocket.closeSocket();
-                    connectClientDialog = new ConnectEmploye();
-                } catch (IOException ex) {
-                    throw new RuntimeException(ex);
-                }
-                connectClientDialog.setVisible(true);
-            }
-        });
 
-        // call onCancel() when cross is clicked
         setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
         addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent e) {
@@ -69,7 +65,6 @@ public class ConnectClient extends JDialog {
             }
         });
 
-        // call onCancel() on ESCAPE
         contentPane.registerKeyboardAction(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 onCancel();
@@ -80,21 +75,54 @@ public class ConnectClient extends JDialog {
     private void onOK() {
         String loginLastName = textFieldLastNameClient.getText();
         String loginFirstName = textFieldFirstNameClient.getText();
-        boolean newClient = nouveauClientCheckBox.isSelected();
+        String IdClientText = textFieldIdClient.getText();
+        boolean newClient = false;
 
 
         try
         {
             RequestClient requete = new RequestClient(loginLastName,loginFirstName,newClient );
-            oos.writeObject(requete);
+            RequestSecure initialSecureRequest  = new RequestSecure(requete, null, null, null, null);
+            oos.writeObject(initialSecureRequest );
 
-            ResponseClient response = (ResponseClient) ois.readObject();
+            ResponseSecure responseSecure = (ResponseSecure) ois.readObject();
+
+            byte[] sel = responseSecure.getSel();
+
+            if (sel == null) {
+                JOptionPane.showMessageDialog(this, "Erreur lors de la réception du sel.", "Erreur", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            if (IdClientText == null || IdClientText.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Veuillez entrer un ID valide (entier).", "Erreur", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            byte[] clientNumber = IdClientText.getBytes(StandardCharsets.UTF_8);
+            MessageDigest digest = MessageDigest.getInstance("SHA-256");
+            digest.update(sel);
+
+            byte[] clientDigest = digest.digest(clientNumber);
+
+            X509Certificate clientCertificate = ClientCertificateHelper.getCertificate(logger);
+            if (clientCertificate == null) {
+                JOptionPane.showMessageDialog(this, "Certificat du client introuvable ou invalide.", "Erreur", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            RequestSecure secureRequest = new RequestSecure(null, null, clientDigest, clientCertificate, null);
+            oos.writeObject(secureRequest);
+
+            ResponseSecure finalResponse = (ResponseSecure) ois.readObject();
+            byte[] sessionKey = finalResponse.getSessionsKey();
 
 
-            if (response.isValide())
+            if (sessionKey!=null)
             {
                 dispose();
-                new MainWindow(response.getId());
+                int IdClient = Integer.parseInt(IdClientText);
+                new MainWindow(IdClient);
             }
             else
             {
@@ -106,9 +134,12 @@ public class ConnectClient extends JDialog {
                 this.oos = myInstance.getOutputStream();
                 this.ois = myInstance.getInputStream();
             }
+
         } catch (IOException | ClassNotFoundException ex) {
             ex.printStackTrace();
             JOptionPane.showMessageDialog(this,"Problème de connexion !","Erreur...",JOptionPane.ERROR_MESSAGE);
+        } catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException(e);
         }
 
     }
