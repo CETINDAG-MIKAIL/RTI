@@ -209,7 +209,7 @@ public class MainWindow extends JFrame{
                             return;
                         }
 
-                        RequestSecure secureRequest = new RequestSecure(request, encryptedRequest, null, null, signature);
+                        RequestSecure secureRequest = new RequestSecure(request, encryptedRequest, null, null, signature, null);
 
                         oos.writeObject(secureRequest);
 
@@ -266,7 +266,7 @@ public class MainWindow extends JFrame{
                         byte[] signature = CryptoHelper.signData(requestBytes, privateKey, logger);
                         byte [] cryptedRequest = CryptoHelper.CryptSymDESede(storedSessionKey.get(socket), requestBytes, logger);
 
-                        RequestSecure initialSecureRequest  = new RequestSecure(request, cryptedRequest, null, null, signature);
+                        RequestSecure initialSecureRequest  = new RequestSecure(request, cryptedRequest, null, null, signature, null);
 
                         oos.writeObject(initialSecureRequest);
                         ResponseSecure responseSecure = (ResponseSecure) ois.readObject();
@@ -370,7 +370,7 @@ public class MainWindow extends JFrame{
                             return;
                         }
 
-                        RequestSecure secureRequest = new RequestSecure(request, encryptedRequest, null, null, null);
+                        RequestSecure secureRequest = new RequestSecure(request, encryptedRequest, null, null, null, null);
 
                         oos.writeObject(secureRequest);
 
@@ -423,7 +423,7 @@ public class MainWindow extends JFrame{
 
             byte [] cryptedRequest = CryptoHelper.CryptSymDESede(storedSessionKey.get(socket), requestBytes, logger);
 
-            RequestSecure initialSecureRequest  = new RequestSecure(request, cryptedRequest, null, null, null);
+            RequestSecure initialSecureRequest  = new RequestSecure(request, cryptedRequest, null, null, null, null);
             oos.writeObject(initialSecureRequest);
 
 
@@ -459,7 +459,7 @@ public class MainWindow extends JFrame{
             System.out.println("requestBytes length " + requestBytes.length);
 
             byte [] cryptedRequest = CryptoHelper.CryptSymDESede(storedSessionKey.get(socket), requestBytes, logger);
-            RequestSecure initialSecureRequest  = new RequestSecure(request, cryptedRequest, null, null, null);
+            RequestSecure initialSecureRequest  = new RequestSecure(request, cryptedRequest, null, null, null, null);
             oos.writeObject(initialSecureRequest);
 
             ResponseDeleteCaddyItem response = (ResponseDeleteCaddyItem) ois.readObject();

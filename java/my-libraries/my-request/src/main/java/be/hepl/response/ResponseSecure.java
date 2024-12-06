@@ -7,18 +7,18 @@ public class ResponseSecure implements Response {
     private byte[] requestEncrypted;
     private byte[] sel;
     private byte[] sessionsKey;
-    private X509Certificate certificate;
     private byte[] hmac;
+    private byte[] IV;
 
     public ResponseSecure() {}
 
-    public ResponseSecure (Response response, byte[] requestEncrypted, byte[] sel, byte[] sessionsKey, X509Certificate certificate, byte[] hmac) {
+    public ResponseSecure (Response response, byte[] requestEncrypted, byte[] sel, byte[] sessionsKey, byte[] hmac, byte[] IV) {
         this.response = response;
         this.requestEncrypted = requestEncrypted;
         this.sel = sel;
         this.sessionsKey = sessionsKey;
-        this.certificate = certificate;
         this.hmac = hmac;
+        this.IV = IV;
     }
 
     public Response getResponse() {
@@ -53,19 +53,19 @@ public class ResponseSecure implements Response {
         this.sessionsKey = sessionsKey;
     }
 
-    public X509Certificate getCertificate() {
-        return certificate;
-    }
-
-    public void setCertificate(X509Certificate certificate) {
-        this.certificate = certificate;
-    }
-
     public byte[] getHmac() {
         return hmac;
     }
 
     public void setHmac(byte[] hmac) {
         this.hmac = hmac;
+    }
+
+    public byte[] getIV() {
+        return IV;
+    }
+
+    public void setIV(byte[] IV) {
+        this.IV = IV;
     }
 }

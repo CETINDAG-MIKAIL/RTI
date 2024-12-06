@@ -3,6 +3,7 @@ package be.hepl;
 import be.hepl.trace.Logger;
 
 import javax.crypto.*;
+import javax.crypto.spec.IvParameterSpec;
 import java.io.*;
 import java.security.*;
 import java.util.Date;
@@ -53,36 +54,36 @@ public class CryptoHelper {
         return null;
     }
 
-    public static byte[] CryptSymDESede(SecretKey cle, byte[] data, Logger logger)
+    public static byte[] CryptSymDESede(SecretKey cle, byte[] data, Logger logger, byte[] iv)
     {
         Cipher chiffrementE = null;
         try {
-            chiffrementE = Cipher.getInstance("DESede/ECB/PKCS5Padding", "BC");
-            chiffrementE.init(Cipher.ENCRYPT_MODE, cle);
+            chiffrementE = Cipher.getInstance("DESede/CBC/PKCS5Padding", "BC");
+            IvParameterSpec ivSpec = new IvParameterSpec(iv);
+            chiffrementE.init(Cipher.ENCRYPT_MODE, cle, ivSpec);
 
             return chiffrementE.doFinal(data);
-        } catch (NoSuchPaddingException | NoSuchAlgorithmException | NoSuchProviderException | InvalidKeyException | IllegalBlockSizeException | BadPaddingException e) {
+        } catch (NoSuchPaddingException | NoSuchAlgorithmException | NoSuchProviderException | InvalidKeyException | IllegalBlockSizeException | BadPaddingException | InvalidAlgorithmParameterException e) {
             logger.trace("Error while creating the cipher");
         }
         return null;
     }
 
-    public static byte[] DecryptSymDESede(SecretKey cle, byte[] data, Logger logger)
+    public static byte[] DecryptSymDESede(SecretKey cle, byte[] data, Logger logger, byte[] iv)
     {
-        if (data == null || data.length == 0) {
-            System.out.println("aAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
-            logger.trace("Error: Input data is null or empty");
-            return null;  // Retourner null si les données sont invalides
-        }
+        Cipher chiffrementD = null;
         try {
-            Cipher chiffrementD = Cipher.getInstance("DESede/ECB/PKCS5Padding", "BC");
-            chiffrementD.init(Cipher.DECRYPT_MODE, cle);
+            chiffrementD = Cipher.getInstance("DESede/CBC/PKCS5Padding", "BC");
+            IvParameterSpec ivSpec = new IvParameterSpec(iv);
+            chiffrementD.init(Cipher.DECRYPT_MODE, cle, ivSpec);
+
             return chiffrementD.doFinal(data);
-        } catch (NoSuchPaddingException | NoSuchAlgorithmException | NoSuchProviderException | InvalidKeyException | IllegalBlockSizeException | BadPaddingException e) {
+        } catch (NoSuchPaddingException | NoSuchAlgorithmException | NoSuchProviderException | InvalidKeyException | IllegalBlockSizeException | BadPaddingException | InvalidAlgorithmParameterException e) {
             logger.trace("Error while creating the cipher");
         }
         return null;
     }
+
 
     public static byte[] CryptAsymRSA(PublicKey cle, byte[] data, Logger logger)
     {
@@ -156,6 +157,7 @@ public class CryptoHelper {
         }
         return null;
     }
+
     public static byte[] signData(byte[] data, PrivateKey privateKey, Logger logger) {
         try {
             Signature signature = Signature.getInstance("SHA256withRSA", "BC");
@@ -166,5 +168,12 @@ public class CryptoHelper {
             logger.trace("Error while signing the data");
         }
         return null;
+    }
+
+    public static byte[] generateIV() {
+        byte[] iv = new byte[8];
+        SecureRandom random = new SecureRandom();
+        random.nextBytes(iv);
+        return iv;
     }
 }

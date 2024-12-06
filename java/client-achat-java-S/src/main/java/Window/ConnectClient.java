@@ -82,7 +82,7 @@ public class ConnectClient extends JDialog {
         try
         {
             RequestClient requete = new RequestClient(loginLastName,loginFirstName,newClient );
-            RequestSecure initialSecureRequest  = new RequestSecure(requete, null, null, null, null);
+            RequestSecure initialSecureRequest  = new RequestSecure(requete, null, null, null, null, null);
             oos.writeObject(initialSecureRequest );
 
             ResponseSecure responseSecure = (ResponseSecure) ois.readObject();
@@ -111,7 +111,7 @@ public class ConnectClient extends JDialog {
                 return;
             }
 
-            RequestSecure secureRequest = new RequestSecure(null, null, clientDigest, clientCertificate, null);
+            RequestSecure secureRequest = new RequestSecure(null, null, clientDigest, clientCertificate, null, null);
             oos.writeObject(secureRequest);
 
             ResponseSecure finalResponse = (ResponseSecure) ois.readObject();
@@ -141,7 +141,6 @@ public class ConnectClient extends JDialog {
         } catch (NoSuchAlgorithmException e) {
             throw new RuntimeException(e);
         }
-
     }
 
 

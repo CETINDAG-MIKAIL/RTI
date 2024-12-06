@@ -1,6 +1,5 @@
 package be.hepl.protocol;
 
-import be.hepl.CertificateHelper;
 import be.hepl.CryptoHelper;
 import be.hepl.myException.EndConnexionException;
 import be.hepl.request.*;
@@ -25,8 +24,6 @@ public class ProtocolBSPPS implements Protocol {
     private final HashMap<Socket, SecretKey> storedSessionKey = new HashMap<>();
     private final HashMap<Socket, X509Certificate> storedCertificate = new HashMap<>();
     private Logger logger;
-    CertificateHelper certHelper = new CertificateHelper("./server.jks", "admin", "server");
-
 
     @Override
     public String getNom() {
@@ -96,27 +93,27 @@ public class ProtocolBSPPS implements Protocol {
     }
 
     private synchronized Response ProcessingClient(RequestSecure request, Socket socket) throws EndConnexionException {
-        System.out.println("ProcessingClient 0 ");
+        //System.out.println("ProcessingClient 0 ");
         RequestClient requestClient = (RequestClient)request.getRequest();
-        System.out.println("ProcessingClient 1");
+        //System.out.println("ProcessingClient 1");
 
-        System.out.println("pBSPP : "+ pBSPP);
-        System.out.println("requestClient : " + requestClient);
-        System.out.println("socket : " + socket);
+        //System.out.println("pBSPP : "+ pBSPP);
+        //System.out.println("requestClient : " + requestClient);
+        //System.out.println("socket : " + socket);
         ResponseClient response = (ResponseClient)pBSPP.processingRequest(requestClient, socket);
-        System.out.println("ProcessingClient 2");
+        //System.out.println("ProcessingClient 2");
 
         if(!response.isValide()) {
-            System.out.println("ProcessingClient 3 ");
+            //System.out.println("ProcessingClient 3 ");
             return new ResponseSecure(null, null, null, null, null, null);
         }
-        System.out.println("ProcessingClient 4");
+        //System.out.println("ProcessingClient 4");
 
         byte[] salt = CryptoHelper.generateSalt();
 
         storedSalt.put(socket, salt);
 
-        System.out.println("ProcessingClient 5 ");
+        //System.out.println("ProcessingClient 5 ");
         return new ResponseSecure(null, null, salt, null, null, null);
     }
 
@@ -136,7 +133,7 @@ public class ProtocolBSPPS implements Protocol {
                 logger.trace("Error while creating the session key");
             }
             if (genKey != null) {
-                genKey.init(new SecureRandom());
+                genKey.init(168);
                 SecretKey sessionKey = genKey.generateKey();
 
                 storedSessionKey.put(socket, sessionKey);
@@ -145,9 +142,7 @@ public class ProtocolBSPPS implements Protocol {
                 byte[] cleSessionCrypte = CryptoHelper.CryptAsymRSA(request.getCertificate().getPublicKey(), sessionKey.getEncoded(), logger);
 
                 ResponseSuccess responseValid = new ResponseSuccess(true);
-                CertificateHelper serverHelper = new CertificateHelper("./server.jks", "admin", "server");
-                X509Certificate certificate = serverHelper.getCertificate(logger);
-                return new ResponseSecure(responseValid, null, null, cleSessionCrypte, certificate, null);
+                return new ResponseSecure(responseValid, null, null, cleSessionCrypte, null, null);
             }
 
         }
@@ -168,7 +163,9 @@ public class ProtocolBSPPS implements Protocol {
         }
         if (storedSessionKey.get(socket) == null)
             System.out.println("storedSessionKey.get(socket) == null ");
-        byte [] decryptedRequest = CryptoHelper.DecryptSymDESede(storedSessionKey.get(socket), request.getRequestEncrypted(), logger);
+
+        byte[] iv = request.getIV();
+        byte [] decryptedRequest = CryptoHelper.DecryptSymDESede(storedSessionKey.get(socket), request.getRequestEncrypted(), logger, iv);
         System.out.println("ProcessingAddCaddyItem 1");
         RequestAddCaddyItem requestAddCaddyItem = (RequestAddCaddyItem)CryptoHelper.deserializeObject(decryptedRequest, logger);
 
@@ -177,8 +174,8 @@ public class ProtocolBSPPS implements Protocol {
     }
 
     private synchronized ResponseDeleteCaddyItem ProcessingDeleteCaddyItem(RequestSecure request, Socket socket) throws EndConnexionException {
-
-        byte [] decryptedRequest = CryptoHelper.DecryptSymDESede(storedSessionKey.get(socket), request.getRequestEncrypted(), logger);
+        byte[] iv = request.getIV();
+        byte [] decryptedRequest = CryptoHelper.DecryptSymDESede(storedSessionKey.get(socket), request.getRequestEncrypted(), logger, iv);
 
         RequestDeleteCaddyItem requestDeleteCaddyItem = (RequestDeleteCaddyItem)CryptoHelper.deserializeObject(decryptedRequest, logger);
 
@@ -186,32 +183,34 @@ public class ProtocolBSPPS implements Protocol {
     }
 
     private synchronized Response ProcessingCancelCaddy(RequestSecure request, Socket socket) throws EndConnexionException {
-        System.out.println("ProcessingCancelCaddy 0 ");
-        byte[] decryptedRequest = CryptoHelper.DecryptAsymRSA(certHelper.getPrivateKey(logger), request.getRequestEncrypted(), logger);
+        //System.out.println("ProcessingCancelCaddy 0 ");
+        byte[] iv = request.getIV();
+        byte[] decryptedRequest = CryptoHelper.DecryptSymDESede(storedSessionKey.get(socket), request.getRequestEncrypted(), logger, iv);
 
 
-        System.out.println("ProcessingCancelCaddy 1");
+        //System.out.println("ProcessingCancelCaddy 1");
         boolean isSignatureVerified = CryptoHelper.verifySignature(decryptedRequest, request.getSignature(), storedCertificate.get(socket).getPublicKey(), logger);
-        System.out.println("ProcessingCancelCaddy 2");
+        //System.out.println("ProcessingCancelCaddy 2");
         // Check if the digest is valid, if they are the same, the signature is valid
         //boolean isSameDigest = Arrays.equals(recalculatedDigest, decryptedDigest);
 
         if (isSignatureVerified) {
-            System.out.println("ProcessingCancelCaddy 3");
+            //System.out.println("ProcessingCancelCaddy 3");
             RequestCancelCaddy requestCancelCaddy = (RequestCancelCaddy)CryptoHelper.deserializeObject(decryptedRequest, logger);
-            System.out.println("ProcessingCancelCaddy 4");
+            //System.out.println("ProcessingCancelCaddy 4");
             ResponseCancelCaddy responseCancelCaddy = (ResponseCancelCaddy)pBSPP.processingRequest(requestCancelCaddy, socket);
-            System.out.println("ProcessingCancelCaddy 5");
+            //System.out.println("ProcessingCancelCaddy 5");
             byte[] HMAC = CryptoHelper.createHMAC(convertToBytes(responseCancelCaddy, logger), storedSessionKey.get(socket), logger);
-            System.out.println("ProcessingCancelCaddy 6");
-            return new ResponseSecure(responseCancelCaddy, null, null, null, null, HMAC);
+            //System.out.println("ProcessingCancelCaddy 6");
+            return new ResponseSecure(responseCancelCaddy, null, null, null, HMAC, null);
         }
-        System.out.println("ProcessingCancelCaddy 7");
+        //System.out.println("ProcessingCancelCaddy 7");
         return new ResponseSecure(new ResponseCancelCaddy(false), null, null, null, null, null);
     }
 
     private synchronized Response ProcessingPayCaddy(RequestSecure request, Socket socket) throws EndConnexionException {
-        byte[] decryptedRequest = CryptoHelper.DecryptAsymRSA(certHelper.getPrivateKey(logger), request.getRequestEncrypted(), logger);
+        byte[] iv = request.getIV();
+        byte[] decryptedRequest = CryptoHelper.DecryptSymDESede(storedSessionKey.get(socket), request.getRequestEncrypted(), logger, iv);
 
         boolean isSignatureVerified = CryptoHelper.verifySignature(decryptedRequest, request.getSignature(), storedCertificate.get(socket).getPublicKey(), logger);
 
@@ -222,15 +221,15 @@ public class ProtocolBSPPS implements Protocol {
             byte[] HMAC = CryptoHelper.createHMAC(convertToBytes(responsePayCaddy, logger), storedSessionKey.get(socket), logger);
 
 
-            return new ResponseSecure(responsePayCaddy, null, null, null, null, HMAC);
+            return new ResponseSecure(responsePayCaddy, null, null, null, HMAC, null);
         }
 
         return new ResponseSecure(new ResponseCancelCaddy(false), null, null, null, null, null);
     }
 
     private synchronized ResponseSecure ProcessingEmptyCaddy(RequestSecure request, Socket socket) throws EndConnexionException {
-
-        byte [] decryptedRequest = CryptoHelper.DecryptSymDESede(storedSessionKey.get(socket), request.getRequestEncrypted(), logger);
+        byte[] iv = request.getIV();
+        byte [] decryptedRequest = CryptoHelper.DecryptSymDESede(storedSessionKey.get(socket), request.getRequestEncrypted(), logger, iv);
 
         RequestEmptyCaddy requestEmptyCaddy = (RequestEmptyCaddy)CryptoHelper.deserializeObject(decryptedRequest, logger);
 
@@ -238,7 +237,7 @@ public class ProtocolBSPPS implements Protocol {
 
         byte[] HMAC = CryptoHelper.createHMAC(convertToBytes(requestDeleteCaddyItem, logger), storedSessionKey.get(socket), logger);
 
-        return new ResponseSecure(requestDeleteCaddyItem, null, null, null, null, HMAC);
+        return new ResponseSecure(requestDeleteCaddyItem, null, null, null, HMAC, null);
     }
 }
 

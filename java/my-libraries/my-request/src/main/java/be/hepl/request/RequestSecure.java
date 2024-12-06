@@ -9,15 +9,17 @@ public class RequestSecure implements Request {
     private byte[] digest;
     private X509Certificate certificate;
     private byte[] signature;
+    private byte[] IV;
 
     public RequestSecure() {}
 
-    public RequestSecure (Request request, byte[] requestEncrypted, byte[] digest, X509Certificate certificate, byte[] signature) {
+    public RequestSecure (Request request, byte[] requestEncrypted, byte[] digest, X509Certificate certificate, byte[] signature, byte[] IV) {
         this.request = request;
         this.requestEncrypted = requestEncrypted;
         this.digest = digest;
         this.certificate = certificate;
         this.signature = signature;
+        this.IV = IV;
     }
 
     public Request getRequest() {
@@ -60,4 +62,11 @@ public class RequestSecure implements Request {
         this.signature = signature;
     }
 
+    public byte[] getIV() {
+        return IV;
+    }
+
+    public void setIV(byte[] IV) {
+        this.IV = IV;
+    }
 }
