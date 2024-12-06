@@ -195,8 +195,8 @@ public class MainWindow extends JFrame{
                             System.out.println("Erreur : La conversion de la requête en octets a échoué.");
                             return;
                         }
-
-                        byte[] encryptedRequest = CryptoHelper.CryptSymDESede(storedSessionKey.get(socket), requestBytes, logger);
+                        byte[] Iv = CryptoHelper.generateIV();
+                        byte[] encryptedRequest = CryptoHelper.CryptSymDESede(storedSessionKey.get(socket), requestBytes, logger, Iv);
                         if (encryptedRequest == null) {
                             System.out.println("Erreur : Chiffrement de la requête échoué.");
                             return;
@@ -264,7 +264,9 @@ public class MainWindow extends JFrame{
 
                         System.out.println("requestBytes length " + requestBytes.length);
                         byte[] signature = CryptoHelper.signData(requestBytes, privateKey, logger);
-                        byte [] cryptedRequest = CryptoHelper.CryptSymDESede(storedSessionKey.get(socket), requestBytes, logger);
+
+                        byte[] Iv = CryptoHelper.generateIV();
+                        byte [] cryptedRequest = CryptoHelper.CryptSymDESede(storedSessionKey.get(socket), requestBytes, logger, Iv);
 
                         RequestSecure initialSecureRequest  = new RequestSecure(request, cryptedRequest, null, null, signature, null);
 
@@ -364,7 +366,9 @@ public class MainWindow extends JFrame{
                             System.out.println("Erreur : La conversion de la requête en octets a échoué.");
                             return;
                         }
-                        byte[] encryptedRequest = CryptoHelper.CryptSymDESede(storedSessionKey.get(socket), requestBytes, logger);
+
+                        byte[] Iv = CryptoHelper.generateIV();
+                        byte[] encryptedRequest = CryptoHelper.CryptSymDESede(storedSessionKey.get(socket), requestBytes, logger, Iv);
                         if (encryptedRequest == null) {
                             System.out.println("Erreur : Chiffrement de la requête échoué.");
                             return;
@@ -421,7 +425,8 @@ public class MainWindow extends JFrame{
             if (requestBytes == null || requestBytes.length == 0) {System.out.println("requestBytes is null or empty");}
             System.out.println("requestBytes length " + requestBytes.length);
 
-            byte [] cryptedRequest = CryptoHelper.CryptSymDESede(storedSessionKey.get(socket), requestBytes, logger);
+            byte[] Iv = CryptoHelper.generateIV();
+            byte [] cryptedRequest = CryptoHelper.CryptSymDESede(storedSessionKey.get(socket), requestBytes, logger, Iv);
 
             RequestSecure initialSecureRequest  = new RequestSecure(request, cryptedRequest, null, null, null, null);
             oos.writeObject(initialSecureRequest);
@@ -458,7 +463,8 @@ public class MainWindow extends JFrame{
             }
             System.out.println("requestBytes length " + requestBytes.length);
 
-            byte [] cryptedRequest = CryptoHelper.CryptSymDESede(storedSessionKey.get(socket), requestBytes, logger);
+            byte[] Iv = CryptoHelper.generateIV();
+            byte [] cryptedRequest = CryptoHelper.CryptSymDESede(storedSessionKey.get(socket), requestBytes, logger, Iv);
             RequestSecure initialSecureRequest  = new RequestSecure(request, cryptedRequest, null, null, null, null);
             oos.writeObject(initialSecureRequest);
 

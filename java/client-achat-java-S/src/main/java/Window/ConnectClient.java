@@ -1,6 +1,7 @@
 package Window;
 
 import be.hepl.CertificateHelper;
+import be.hepl.CryptoHelper;
 import be.hepl.request.RequestClient;
 import be.hepl.request.RequestSecure;
 import be.hepl.response.ResponseSecure;
