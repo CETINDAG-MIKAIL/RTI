@@ -28,6 +28,7 @@ import java.net.Socket;
 import java.security.PrivateKey;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 
 
@@ -212,8 +213,14 @@ public class MainWindow extends JFrame{
 
                         oos.writeObject(secureRequest);
 
-                        ResponsePayCaddy response = (ResponsePayCaddy) ois.readObject();
-                        if (response.isSuccess()) {
+                        ResponseSecure responseSecure = (ResponseSecure) ois.readObject();
+                        ResponsePayCaddy response = (ResponsePayCaddy) responseSecure.getResponse();
+                        byte[] serverHMAC = responseSecure.getHmac();
+                        byte[] recalculatedHMAC = CryptoHelper.createHMAC(CryptoHelper.convertToBytes(response, logger), storedSessionKey.get(socket), logger);
+                        boolean isHMACValid = Arrays.equals(serverHMAC, recalculatedHMAC);
+
+
+                        if (isHMACValid) {
                             JOptionPane.showMessageDialog(null, "Paiement effectué avec succès !", "Succès", JOptionPane.INFORMATION_MESSAGE);
                             dispose();
                             MySocket.closeSocket();
@@ -248,7 +255,6 @@ public class MainWindow extends JFrame{
 
                 if (confirmation == JOptionPane.YES_OPTION) {
                     try {
-                        X509Certificate clientCertificate = clientHelper.getCertificate(logger); // Pour le certificat public
                         PrivateKey privateKey = clientHelper.getPrivateKey(logger); // Pour signer
 
                         RequestCancelCaddy request = new RequestCancelCaddy(idClient);
@@ -263,11 +269,15 @@ public class MainWindow extends JFrame{
                         RequestSecure initialSecureRequest  = new RequestSecure(request, cryptedRequest, null, null, signature);
 
                         oos.writeObject(initialSecureRequest);
+                        ResponseSecure responseSecure = (ResponseSecure) ois.readObject();
+                        ResponseCancelCaddy response = (ResponseCancelCaddy) responseSecure.getResponse();
+
+                        byte[] serverHMAC = responseSecure.getHmac();
+                        byte[] recalculatedHMAC = CryptoHelper.createHMAC(CryptoHelper.convertToBytes(response, logger), storedSessionKey.get(socket), logger);
+                        boolean isHMACValid = Arrays.equals(serverHMAC, recalculatedHMAC);
 
 
-                        ResponseCancelCaddy response = (ResponseCancelCaddy) ois.readObject();
-
-                        if (response.isSuccess()) {
+                        if (isHMACValid) {
                             JOptionPane.showMessageDialog(null, "Déconnexion effectué avec succès !", "Succès", JOptionPane.INFORMATION_MESSAGE);
                             dispose();
 
@@ -349,11 +359,30 @@ public class MainWindow extends JFrame{
 
 
                         RequestEmptyCaddy request = new RequestEmptyCaddy(idClient);
-                        oos.writeObject(request);
+                        byte[] requestBytes = CryptoHelper.convertToBytes(request, logger);
+                        if (requestBytes == null || requestBytes.length == 0) {
+                            System.out.println("Erreur : La conversion de la requête en octets a échoué.");
+                            return;
+                        }
+                        byte[] encryptedRequest = CryptoHelper.CryptSymDESede(storedSessionKey.get(socket), requestBytes, logger);
+                        if (encryptedRequest == null) {
+                            System.out.println("Erreur : Chiffrement de la requête échoué.");
+                            return;
+                        }
 
-                        ResponseEmptyCaddy response = (ResponseEmptyCaddy) ois.readObject();
+                        RequestSecure secureRequest = new RequestSecure(request, encryptedRequest, null, null, null);
 
-                        if (response.isSuccess()) {
+                        oos.writeObject(secureRequest);
+
+
+                        ResponseSecure responseSecure = (ResponseSecure) ois.readObject();
+                        ResponseEmptyCaddy response = (ResponseEmptyCaddy) responseSecure.getResponse();
+                        byte[] serverHMAC = responseSecure.getHmac();
+                        byte[] recalculatedHMAC = CryptoHelper.createHMAC(CryptoHelper.convertToBytes(response, logger), storedSessionKey.get(socket), logger);
+                        boolean isHMACValid = Arrays.equals(serverHMAC, recalculatedHMAC);
+
+
+                        if (isHMACValid) {
                             clearBooksTable(tableBasket);
                             JOptionPane.showMessageDialog(null, "Le panier a été vidé avec succès !", "Succès", JOptionPane.INFORMATION_MESSAGE);
                         } else {
