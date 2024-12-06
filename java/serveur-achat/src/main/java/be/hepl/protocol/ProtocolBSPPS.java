@@ -25,7 +25,8 @@ public class ProtocolBSPPS implements Protocol {
     private final HashMap<Socket, SecretKey> storedSessionKey = new HashMap<>();
     private final HashMap<Socket, X509Certificate> storedCertificate = new HashMap<>();
     private Logger logger;
-    
+    CertificateHelper certHelper = new CertificateHelper("./server.jks", "admin", "server");
+
 
     @Override
     public String getNom() {
@@ -144,7 +145,8 @@ public class ProtocolBSPPS implements Protocol {
                 byte[] cleSessionCrypte = CryptoHelper.CryptAsymRSA(request.getCertificate().getPublicKey(), sessionKey.getEncoded(), logger);
 
                 ResponseSuccess responseValid = new ResponseSuccess(true);
-                X509Certificate certificate = CertificateHelper.getCertificate(logger);
+                CertificateHelper serverHelper = new CertificateHelper("./server.jks", "admin", "server");
+                X509Certificate certificate = serverHelper.getCertificate(logger);
                 return new ResponseSecure(responseValid, null, null, cleSessionCrypte, certificate, null);
             }
 
@@ -185,7 +187,9 @@ public class ProtocolBSPPS implements Protocol {
 
     private synchronized Response ProcessingCancelCaddy(RequestSecure request, Socket socket) throws EndConnexionException {
         System.out.println("ProcessingCancelCaddy 0 ");
-        byte [] decryptedRequest = CryptoHelper.DecryptAsymRSA(CertificateHelper.getPrivateKey(logger), request.getRequestEncrypted(), logger);
+        byte[] decryptedRequest = CryptoHelper.DecryptAsymRSA(certHelper.getPrivateKey(logger), request.getRequestEncrypted(), logger);
+
+
         System.out.println("ProcessingCancelCaddy 1");
         boolean isSignatureVerified = CryptoHelper.verifySignature(decryptedRequest, request.getSignature(), storedCertificate.get(socket).getPublicKey(), logger);
         System.out.println("ProcessingCancelCaddy 2");
@@ -207,7 +211,7 @@ public class ProtocolBSPPS implements Protocol {
     }
 
     private synchronized Response ProcessingPayCaddy(RequestSecure request, Socket socket) throws EndConnexionException {
-        byte [] decryptedRequest = CryptoHelper.DecryptAsymRSA(CertificateHelper.getPrivateKey(logger), request.getRequestEncrypted(), logger);
+        byte[] decryptedRequest = CryptoHelper.DecryptAsymRSA(certHelper.getPrivateKey(logger), request.getRequestEncrypted(), logger);
 
         boolean isSignatureVerified = CryptoHelper.verifySignature(decryptedRequest, request.getSignature(), storedCertificate.get(socket).getPublicKey(), logger);
 

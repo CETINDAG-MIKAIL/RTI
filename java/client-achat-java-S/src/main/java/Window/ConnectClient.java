@@ -1,9 +1,8 @@
 package Window;
 
-import be.hepl.ClientCertificateHelper;
+import be.hepl.CertificateHelper;
 import be.hepl.request.RequestClient;
 import be.hepl.request.RequestSecure;
-import be.hepl.response.ResponseClient;
 import be.hepl.response.ResponseSecure;
 import be.hepl.trace.Logger;
 import be.hepl.trace.MyLogger;
@@ -18,7 +17,6 @@ import java.nio.charset.StandardCharsets;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.X509Certificate;
 import java.security.MessageDigest;
-import java.util.Arrays;
 
 
 public class ConnectClient extends JDialog {
@@ -33,6 +31,8 @@ public class ConnectClient extends JDialog {
     private JTextField textFieldFirstNameClient;
     private JTextField textFieldIdClient;
     private Logger logger = MyLogger.getInstance();
+    CertificateHelper clientHelper = new CertificateHelper("./client.jks", "PassClient", "client");
+
 
     public ConnectClient() throws IOException {
         MySocket myInstance = MySocket.getInstance();
@@ -105,7 +105,7 @@ public class ConnectClient extends JDialog {
 
             byte[] clientDigest = digest.digest(clientNumber);
 
-            X509Certificate clientCertificate = ClientCertificateHelper.getCertificate(logger);
+            X509Certificate clientCertificate = clientHelper.getCertificate(logger);
             if (clientCertificate == null) {
                 JOptionPane.showMessageDialog(this, "Certificat du client introuvable ou invalide.", "Erreur", JOptionPane.ERROR_MESSAGE);
                 return;

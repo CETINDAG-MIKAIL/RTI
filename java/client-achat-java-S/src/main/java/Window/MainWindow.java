@@ -2,7 +2,7 @@ package Window;
 
 import Window.table.BookColumnModelAchatClient;
 import Window.table.BookModelAchatClient;
-import be.hepl.ClientCertificateHelper;
+import be.hepl.CertificateHelper;
 import be.hepl.CryptoHelper;
 import be.hepl.model.entity.Author;
 import be.hepl.model.entity.Book;
@@ -80,7 +80,7 @@ public class MainWindow extends JFrame{
         this.socket = myInstance.getMySocket();
         this.oos = myInstance.getOutputStream();
         this.ois = myInstance.getInputStream();
-
+        CertificateHelper clientHelper = new CertificateHelper("./client.jks", "PassClient", "client");
 
 
         setContentPane(MainPanel);
@@ -201,7 +201,7 @@ public class MainWindow extends JFrame{
                             return;
                         }
 
-                        PrivateKey privateKey = ClientCertificateHelper.getPrivateKey(logger);
+                        PrivateKey privateKey = clientHelper.getPrivateKey(logger);
                         byte[] signature = CryptoHelper.signData(requestBytes, privateKey, logger);
                         if (signature == null) {
                             System.out.println("Erreur : La signature des données a échoué.");
@@ -248,8 +248,8 @@ public class MainWindow extends JFrame{
 
                 if (confirmation == JOptionPane.YES_OPTION) {
                     try {
-                        X509Certificate clientCertificate = ClientCertificateHelper.getCertificate(logger); // Pour le certificat public
-                        PrivateKey privateKey = ClientCertificateHelper.getPrivateKey(logger); // Pour signer
+                        X509Certificate clientCertificate = clientHelper.getCertificate(logger); // Pour le certificat public
+                        PrivateKey privateKey = clientHelper.getPrivateKey(logger); // Pour signer
 
                         RequestCancelCaddy request = new RequestCancelCaddy(idClient);
                         byte[] requestBytes = CryptoHelper.convertToBytes(request, logger);
