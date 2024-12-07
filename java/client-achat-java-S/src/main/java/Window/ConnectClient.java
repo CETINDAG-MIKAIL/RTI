@@ -8,6 +8,8 @@ import be.hepl.response.ResponseSecure;
 import be.hepl.trace.Logger;
 import be.hepl.trace.MyLogger;
 
+import javax.crypto.SecretKey;
+import javax.crypto.spec.SecretKeySpec;
 import javax.swing.*;
 import java.awt.event.*;
 import java.io.IOException;
@@ -119,11 +121,13 @@ public class ConnectClient extends JDialog {
             byte[] sessionKey = finalResponse.getSessionsKey();
 
 
+
             if (sessionKey!=null)
             {
+                SecretKey secretKey = new SecretKeySpec(sessionKey, "DESede");
                 dispose();
                 int IdClient = Integer.parseInt(IdClientText);
-                new MainWindow(IdClient);
+                new MainWindow(IdClient, secretKey);
             }
             else
             {

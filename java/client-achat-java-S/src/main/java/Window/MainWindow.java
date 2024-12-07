@@ -12,6 +12,7 @@ import be.hepl.request.*;
 import be.hepl.response.*;
 import be.hepl.trace.Logger;
 import be.hepl.trace.MyLogger;
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
 import javax.crypto.SecretKey;
 import javax.swing.*;
@@ -26,6 +27,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.security.PrivateKey;
+import java.security.Security;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -73,16 +75,18 @@ public class MainWindow extends JFrame{
     private JLabel labelPageCount;
     private JLabel labelMaxPrice;
 
-    private final HashMap<Socket, SecretKey> storedSessionKey = new HashMap<>();
-    private Logger logger = MyLogger.getInstance();
-    public MainWindow(Integer idClient) throws IOException {
+    private SecretKey sessionKey;
+
+    public MainWindow(Integer idClient, SecretKey sessionKey) throws IOException {
+
         MySocket myInstance = MySocket.getInstance();
 
+        this.sessionKey = sessionKey;
         this.socket = myInstance.getMySocket();
         this.oos = myInstance.getOutputStream();
         this.ois = myInstance.getInputStream();
         CertificateHelper clientHelper = new CertificateHelper("./client.jks", "PassClient", "client");
-
+        Security.addProvider(new BouncyCastleProvider());
 
         setContentPane(MainPanel);
         setTitle("MainWindow");
@@ -189,21 +193,21 @@ public class MainWindow extends JFrame{
                         }
 
                         RequestPayCaddyWithVisa request = new RequestPayCaddyWithVisa(idClient, cardNumber, cardName);
-                        byte[] requestBytes = CryptoHelper.convertToBytes(request, logger);
+                        byte[] requestBytes = CryptoHelper.convertToBytes(request, null);
 
                         if (requestBytes == null || requestBytes.length == 0) {
                             System.out.println("Erreur : La conversion de la requête en octets a échoué.");
                             return;
                         }
                         byte[] Iv = CryptoHelper.generateIV();
-                        byte[] encryptedRequest = CryptoHelper.CryptSymDESede(storedSessionKey.get(socket), requestBytes, logger, Iv);
+                        byte[] encryptedRequest = CryptoHelper.CryptSymDESede(sessionKey, requestBytes, null, Iv);
                         if (encryptedRequest == null) {
                             System.out.println("Erreur : Chiffrement de la requête échoué.");
                             return;
                         }
 
-                        PrivateKey privateKey = clientHelper.getPrivateKey(logger);
-                        byte[] signature = CryptoHelper.signData(requestBytes, privateKey, logger);
+                        PrivateKey privateKey = clientHelper.getPrivateKey(null);
+                        byte[] signature = CryptoHelper.signData(requestBytes, privateKey, null);
                         if (signature == null) {
                             System.out.println("Erreur : La signature des données a échoué.");
                             return;
@@ -216,7 +220,7 @@ public class MainWindow extends JFrame{
                         ResponseSecure responseSecure = (ResponseSecure) ois.readObject();
                         ResponsePayCaddy response = (ResponsePayCaddy) responseSecure.getResponse();
                         byte[] serverHMAC = responseSecure.getHmac();
-                        byte[] recalculatedHMAC = CryptoHelper.createHMAC(CryptoHelper.convertToBytes(response, logger), storedSessionKey.get(socket), logger);
+                        byte[] recalculatedHMAC = CryptoHelper.createHMAC(CryptoHelper.convertToBytes(response, null), sessionKey, null);
                         boolean isHMACValid = Arrays.equals(serverHMAC, recalculatedHMAC);
 
 
@@ -255,18 +259,18 @@ public class MainWindow extends JFrame{
 
                 if (confirmation == JOptionPane.YES_OPTION) {
                     try {
-                        PrivateKey privateKey = clientHelper.getPrivateKey(logger); // Pour signer
+                        PrivateKey privateKey = clientHelper.getPrivateKey(null); // Pour signer
 
                         RequestCancelCaddy request = new RequestCancelCaddy(idClient);
-                        byte[] requestBytes = CryptoHelper.convertToBytes(request, logger);
+                        byte[] requestBytes = CryptoHelper.convertToBytes(request, null);
 
                         if (requestBytes == null || requestBytes.length == 0) {System.out.println("requestBytes is null or empty");}
 
                         System.out.println("requestBytes length " + requestBytes.length);
-                        byte[] signature = CryptoHelper.signData(requestBytes, privateKey, logger);
+                        byte[] signature = CryptoHelper.signData(requestBytes, privateKey, null);
 
                         byte[] Iv = CryptoHelper.generateIV();
-                        byte [] cryptedRequest = CryptoHelper.CryptSymDESede(storedSessionKey.get(socket), requestBytes, logger, Iv);
+                        byte [] cryptedRequest = CryptoHelper.CryptSymDESede(sessionKey, requestBytes, null, Iv);
 
                         RequestSecure initialSecureRequest  = new RequestSecure(request, cryptedRequest, null, null, signature, null);
 
@@ -275,7 +279,7 @@ public class MainWindow extends JFrame{
                         ResponseCancelCaddy response = (ResponseCancelCaddy) responseSecure.getResponse();
 
                         byte[] serverHMAC = responseSecure.getHmac();
-                        byte[] recalculatedHMAC = CryptoHelper.createHMAC(CryptoHelper.convertToBytes(response, logger), storedSessionKey.get(socket), logger);
+                        byte[] recalculatedHMAC = CryptoHelper.createHMAC(CryptoHelper.convertToBytes(response, null),sessionKey, null);
                         boolean isHMACValid = Arrays.equals(serverHMAC, recalculatedHMAC);
 
 
@@ -361,14 +365,14 @@ public class MainWindow extends JFrame{
 
 
                         RequestEmptyCaddy request = new RequestEmptyCaddy(idClient);
-                        byte[] requestBytes = CryptoHelper.convertToBytes(request, logger);
+                        byte[] requestBytes = CryptoHelper.convertToBytes(request, null);
                         if (requestBytes == null || requestBytes.length == 0) {
                             System.out.println("Erreur : La conversion de la requête en octets a échoué.");
                             return;
                         }
 
                         byte[] Iv = CryptoHelper.generateIV();
-                        byte[] encryptedRequest = CryptoHelper.CryptSymDESede(storedSessionKey.get(socket), requestBytes, logger, Iv);
+                        byte[] encryptedRequest = CryptoHelper.CryptSymDESede(sessionKey, requestBytes, null, Iv);
                         if (encryptedRequest == null) {
                             System.out.println("Erreur : Chiffrement de la requête échoué.");
                             return;
@@ -382,7 +386,7 @@ public class MainWindow extends JFrame{
                         ResponseSecure responseSecure = (ResponseSecure) ois.readObject();
                         ResponseEmptyCaddy response = (ResponseEmptyCaddy) responseSecure.getResponse();
                         byte[] serverHMAC = responseSecure.getHmac();
-                        byte[] recalculatedHMAC = CryptoHelper.createHMAC(CryptoHelper.convertToBytes(response, logger), storedSessionKey.get(socket), logger);
+                        byte[] recalculatedHMAC = CryptoHelper.createHMAC(CryptoHelper.convertToBytes(response, null), sessionKey, null);
                         boolean isHMACValid = Arrays.equals(serverHMAC, recalculatedHMAC);
 
 
@@ -421,12 +425,24 @@ public class MainWindow extends JFrame{
         try {
 
             RequestAddCaddyItem request = new RequestAddCaddyItem(book.getId(), quantity);
-            byte[] requestBytes = CryptoHelper.convertToBytes(request, logger);
+            System.out.println( "book.getId()  : " + book.getId());
+            System.out.println("quantity :  "+ quantity);
+            byte[] requestBytes = CryptoHelper.convertToBytes(request, null);
             if (requestBytes == null || requestBytes.length == 0) {System.out.println("requestBytes is null or empty");}
             System.out.println("requestBytes length " + requestBytes.length);
 
             byte[] Iv = CryptoHelper.generateIV();
-            byte [] cryptedRequest = CryptoHelper.CryptSymDESede(storedSessionKey.get(socket), requestBytes, logger, Iv);
+            if (sessionKey == null) {System.out.println("sessionKey is null");}
+
+            System.out.println("Session Key: " + sessionKey);
+            System.out.println("Request Bytes: " + Arrays.toString(requestBytes));
+            System.out.println("IV: " + Arrays.toString(Iv));
+
+            byte [] cryptedRequest = CryptoHelper.CryptSymDESede(sessionKey, requestBytes, null, Iv);
+            if (cryptedRequest == null || cryptedRequest.length == 0) {System.out.println("cryptedRequest is null or empty");}
+            System.out.println("cryptedRequest length " + cryptedRequest.length);
+
+
 
             RequestSecure initialSecureRequest  = new RequestSecure(request, cryptedRequest, null, null, null, null);
             oos.writeObject(initialSecureRequest);
@@ -456,7 +472,7 @@ public class MainWindow extends JFrame{
     private boolean restoreBookStock(Book book, int quantity) {
         try {
             RequestDeleteCaddyItem request = new RequestDeleteCaddyItem(book.getId(), quantity);
-            byte[] requestBytes = CryptoHelper.convertToBytes(request, logger);
+            byte[] requestBytes = CryptoHelper.convertToBytes(request, null);
             if (requestBytes == null || requestBytes.length == 0)
             {
                 System.out.println("requestBytes is null or empty");
@@ -464,7 +480,7 @@ public class MainWindow extends JFrame{
             System.out.println("requestBytes length " + requestBytes.length);
 
             byte[] Iv = CryptoHelper.generateIV();
-            byte [] cryptedRequest = CryptoHelper.CryptSymDESede(storedSessionKey.get(socket), requestBytes, logger, Iv);
+            byte [] cryptedRequest = CryptoHelper.CryptSymDESede(sessionKey, requestBytes, null, Iv);
             RequestSecure initialSecureRequest  = new RequestSecure(request, cryptedRequest, null, null, null, null);
             oos.writeObject(initialSecureRequest);
 

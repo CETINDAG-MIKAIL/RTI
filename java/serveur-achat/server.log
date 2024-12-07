@@ -4,5 +4,3 @@ Connection accepted, creation TH Client
 TH Client (Request) starts...
 RequestClient received from Martin Dupont
 RequestSelectBook received
-Error while signing the data
-Error while creating the cipher

@@ -31,7 +31,11 @@ public class CryptoHelper {
         try {
             digest = MessageDigest.getInstance("SHA-256");
         } catch (NoSuchAlgorithmException e) {
-            logger.trace("Error while creating the digest");
+            if (logger != null) {
+                logger.trace("Error while creating the digest");
+            }else{
+                System.out.println("Error while creating the digest");
+            }
         }
         if (digest != null) {
             digest.update(salt); // Ajouter le sel
@@ -46,7 +50,11 @@ public class CryptoHelper {
         try {
             digest = MessageDigest.getInstance("SHA-256");
         } catch (NoSuchAlgorithmException e) {
-            logger.trace("Error while creating the digest");
+            if (logger != null) {
+                logger.trace("Error while creating the digest");
+            }else{
+                System.out.println("Error while creating the digest");
+            }
         }
         if (digest != null) {
             return digest.digest(data); // Calculer le hachage
@@ -64,7 +72,13 @@ public class CryptoHelper {
 
             return chiffrementE.doFinal(data);
         } catch (NoSuchPaddingException | NoSuchAlgorithmException | NoSuchProviderException | InvalidKeyException | IllegalBlockSizeException | BadPaddingException | InvalidAlgorithmParameterException e) {
-            logger.trace("Error while creating the cipher");
+            if (logger != null) {
+                logger.trace("Error while creating the cipher: " + e.getMessage());
+                e.printStackTrace();
+            } else {
+                System.out.println("Error while creating the cipher: " + e.getMessage());
+                e.printStackTrace();
+            }
         }
         return null;
     }
@@ -79,7 +93,11 @@ public class CryptoHelper {
 
             return chiffrementD.doFinal(data);
         } catch (NoSuchPaddingException | NoSuchAlgorithmException | NoSuchProviderException | InvalidKeyException | IllegalBlockSizeException | BadPaddingException | InvalidAlgorithmParameterException e) {
-            logger.trace("Error while creating the cipher");
+            if (logger != null) {
+                logger.trace("Error while creating the cipher");
+            }else{
+                System.out.println("Error while creating the cipher");
+            }
         }
         return null;
     }
@@ -92,7 +110,11 @@ public class CryptoHelper {
         chiffrementE.init(Cipher.ENCRYPT_MODE, cle);
         return chiffrementE.doFinal(data);
         } catch (NoSuchPaddingException | NoSuchAlgorithmException | NoSuchProviderException | InvalidKeyException | IllegalBlockSizeException | BadPaddingException e) {
-            logger.trace("Error while creating the cipher");
+            if (logger != null) {
+                logger.trace("Error while creating the cipher");
+            }else{
+                System.out.println("Error while creating the cipher");
+            }
         }
         return null;
     }
@@ -104,7 +126,11 @@ public class CryptoHelper {
         chiffrementD.init(Cipher.DECRYPT_MODE, cle);
         return chiffrementD.doFinal(data);
         } catch (NoSuchPaddingException | NoSuchAlgorithmException | NoSuchProviderException | InvalidKeyException | IllegalBlockSizeException | BadPaddingException e) {
-            logger.trace("Error while creating the cipher");
+            if (logger != null) {
+                logger.trace("Error while creating the cipher");
+            }else{
+                System.out.println("Error while creating the cipher");
+            }
         }
         return null;
     }
@@ -116,7 +142,11 @@ public class CryptoHelper {
             ois = new ObjectInputStream(bis);
             return ois.readObject();
         } catch (IOException | ClassNotFoundException e) {
-            logger.trace("Error while deserializing the object");
+            if (logger != null) {
+                logger.trace("Error while deserializing the object");
+            }else{
+                System.out.println("Error while deserializing the object");
+            }
         }
         return null;
     }
@@ -139,7 +169,11 @@ public class CryptoHelper {
             sign.update(data);
             return sign.verify(signature);
         } catch (NoSuchAlgorithmException | NoSuchProviderException | InvalidKeyException | SignatureException e) {
-            logger.trace("Error while verifying the signature");
+            if (logger != null) {
+                logger.trace("Error while verifying the signature");
+            }else{
+                System.out.println("Error while verifying the signature");
+            }
         }
         return false;
     }
@@ -153,7 +187,11 @@ public class CryptoHelper {
             objStream.flush();
             return byteStream.toByteArray();
         } catch (IOException e) {
-            logger.trace("Error while converting the object to bytes");
+            if (logger != null) {
+                logger.trace("convertToBytes Error while signing the data");
+            }else{
+                System.out.println("convertToBytes Error while signing the data");
+            }
         }
         return null;
     }
@@ -165,7 +203,11 @@ public class CryptoHelper {
             signature.update(data);
             return signature.sign();
         } catch (NoSuchAlgorithmException | NoSuchProviderException | InvalidKeyException | SignatureException e) {
-            logger.trace("Error while signing the data");
+            if (logger != null) {
+                logger.trace("Error while signing the data");
+            }else{
+                System.out.println("Error while signing the data");
+            }
         }
         return null;
     }

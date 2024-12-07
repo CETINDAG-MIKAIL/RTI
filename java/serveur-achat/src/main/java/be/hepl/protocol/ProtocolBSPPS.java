@@ -120,7 +120,7 @@ public class ProtocolBSPPS implements Protocol {
     private synchronized Response ProcessingDigestAndSessionKey(RequestSecure request, Socket socket) throws EndConnexionException {
 
         byte[] recalculatedDigest = CryptoHelper.generateDigest(getConnectedClients().get(socket), storedSalt.get(socket), logger);
-
+        System.out.println("ProcessingDigestAndSessionKey");
         // Check if the digest is valid
         boolean isSameDigest = Arrays.equals(recalculatedDigest, request.getDigest());
 
@@ -133,7 +133,7 @@ public class ProtocolBSPPS implements Protocol {
                 logger.trace("Error while creating the session key");
             }
             if (genKey != null) {
-                genKey.init(168);
+                genKey.init(128);
                 SecretKey sessionKey = genKey.generateKey();
 
                 storedSessionKey.put(socket, sessionKey);
