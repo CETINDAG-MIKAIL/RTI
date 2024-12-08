@@ -201,19 +201,20 @@ public class ProtocolBSPPS implements Protocol {
             try {
                 ResponseCancelCaddy responseCancelCaddy = (ResponseCancelCaddy) pBSPP.processingRequest(requestCancelCaddy, socket);
                 System.out.println("Réponse reçue : " + responseCancelCaddy);
-            } catch (Exception e) {
-                System.out.println("Erreur dans le traitement de la requête : " + e.getMessage());
+            } catch (EndConnexionException e) {
+                System.out.println("EndConnexionException catched in ProcessingCancelCaddy BSPPS");
 
-                e.printStackTrace();
+                ResponseCancelCaddy responseCancelCaddy = (ResponseCancelCaddy) e.getResponse();
+                System.out.println("ProcessingCancelCaddy 5");
+                byte[] HMAC = CryptoHelper.createHMAC(convertToBytes(responseCancelCaddy, logger), storedSessionKey.get(socket), logger);
+                System.out.println("ProcessingCancelCaddy 6");
+                ResponseSecure responseSecure =  new ResponseSecure(responseCancelCaddy, null, null, null, HMAC, null);
+
+                throw new EndConnexionException(responseSecure);
             }
-            ResponseCancelCaddy responseCancelCaddy = (ResponseCancelCaddy) pBSPP.processingRequest(requestCancelCaddy, socket);
-            System.out.println("ProcessingCancelCaddy 5");
-            byte[] HMAC = CryptoHelper.createHMAC(convertToBytes(responseCancelCaddy, logger), storedSessionKey.get(socket), logger);
-            System.out.println("ProcessingCancelCaddy 6");
-            return new ResponseSecure(responseCancelCaddy, null, null, null, HMAC, null);
         }
         System.out.println("ProcessingCancelCaddy 7");
-        return new ResponseSecure(new ResponseCancelCaddy(false), null, null, null, null, null);
+        throw new EndConnexionException(new ResponseSecure(new ResponseCancelCaddy(false), null, null, null, null, null));
     }
 
     private synchronized Response ProcessingPayCaddy(RequestSecure request, Socket socket) throws EndConnexionException {

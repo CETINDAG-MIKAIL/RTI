@@ -57,6 +57,9 @@ public class ProtocolBSPP implements Protocol {
         if(request instanceof RequestPayCaddy) {
             return ProcessingPayCaddy((RequestPayCaddy) request);
         }
+        if(request instanceof RequestPayCaddyWithVisa) {
+            return ProcessingPayCaddyWithVisa((RequestPayCaddyWithVisa) request);
+        }
         if(request instanceof RequestEmptyCaddy) {
             return ProcessingEmptyCaddy((RequestEmptyCaddy) request);
         }
@@ -83,10 +86,7 @@ public class ProtocolBSPP implements Protocol {
         logger.trace("RequestClient received from " + request.getFirstName() + " " + request.getLastName());
         ClientDAO dao = new ClientDAO();
 
-        System.out.println("PSBP-------------------------------1");
         if(request.isNewClient()) {
-
-            System.out.println("PSBP-------------------------------2");
             Client client = new Client();
             client.setId(null);
             client.setLastName(request.getLastName());
@@ -96,27 +96,17 @@ public class ProtocolBSPP implements Protocol {
 
             connectedClients.put(socket, client.getId());
 
-            System.out.println("1---- id du client que je vais mettre dans la HashMap");
-
             return new ResponseClient(client.getId());
         }
-
-        System.out.println("PSBP-------------------------------3");
 
         ClientSearchVM vm = new ClientSearchVM();
         vm.setLastName(request.getLastName());
         vm.setFirstName(request.getFirstName());
         ArrayList<Client> clients = dao.read(vm);
 
-        System.out.println("PSBP-------------------------------4");
         if(clients.isEmpty()) {
-
-            System.out.println("PSBP-------------------------------5");
             throw new EndConnexionException(new ResponseClient(null));
         }
-
-        System.out.println("PSBP-------------------------------6");
-        System.out.println("2--- id du client que je vais mettre dans la HashMap, idclient = " + clients.getFirst().getId());
 
         connectedClients.put(socket, clients.getFirst().getId());
 
@@ -236,6 +226,26 @@ public class ProtocolBSPP implements Protocol {
 
     private synchronized ResponsePayCaddy ProcessingPayCaddy(RequestPayCaddy request) {
         logger.trace("RequestPayCaddy received");
+
+        CaddySearchVM cvm = new CaddySearchVM();
+        cvm.setClientId(request.getIdClient());
+        CaddyDAO dao = new CaddyDAO();
+        ArrayList<Caddy> caddies = dao.read(cvm);
+
+        if(caddies.isEmpty()) {
+            return new ResponsePayCaddy(false);
+        }
+
+        Caddy caddy = caddies.getFirst();
+        caddy.setPayed(true);
+
+        dao.update(caddy);
+
+        return new ResponsePayCaddy(true);
+    }
+
+    private synchronized ResponsePayCaddy ProcessingPayCaddyWithVisa(RequestPayCaddyWithVisa request) {
+        logger.trace("RequestPayCaddyWithVisa received");
 
         CaddySearchVM cvm = new CaddySearchVM();
         cvm.setClientId(request.getIdClient());

@@ -4,6 +4,8 @@ import be.hepl.CertificateHelper;
 import be.hepl.CryptoHelper;
 import be.hepl.request.RequestClient;
 import be.hepl.request.RequestSecure;
+import be.hepl.response.Response;
+import be.hepl.response.ResponseClient;
 import be.hepl.response.ResponseSecure;
 import be.hepl.trace.Logger;
 import be.hepl.trace.MyLogger;
@@ -83,12 +85,29 @@ public class ConnectClient extends JDialog {
         String IdClientText = textFieldIdClient.getText();
         boolean newClient = false;
 
+        System.out.println("\n\n-------------------------1-------------------------");
         try {
+            System.out.println("-------------------------2-------------------------");
+            System.out.println("loginLastName: " + loginLastName);
+            System.out.println("loginFirstName: " + loginFirstName);
+            System.out.println("newClient: " + newClient);
             RequestClient requete = new RequestClient(loginLastName, loginFirstName, newClient);
             RequestSecure initialSecureRequest = new RequestSecure(requete, null, null, null, null, null);
+            System.out.println("-------------------------3-------------------------");
             oos.writeObject(initialSecureRequest);
+            System.out.println("-------------------------4-------------------------");
 
-            ResponseSecure responseSecure = (ResponseSecure) ois.readObject();
+            Response response = (Response) ois.readObject();
+            System.out.println("-------------------------5-------------------------");
+            if(response instanceof ResponseClient) {
+                JOptionPane.showMessageDialog(this, "Mauvais identifiants.", "Erreur", JOptionPane.ERROR_MESSAGE);
+                System.out.println("-------------------------6-------------------------");
+                return;
+            }
+            System.out.println("-------------------------7-------------------------");
+
+
+            ResponseSecure responseSecure = (ResponseSecure) response;
 
             byte[] sel = responseSecure.getSel();
 
@@ -106,6 +125,7 @@ public class ConnectClient extends JDialog {
             MessageDigest digest = MessageDigest.getInstance("SHA-256");
             digest.update(sel);
             byte[] clientDigest = digest.digest(clientNumber);
+
 
             X509Certificate clientCertificate = clientHelper.getCertificate(logger);
             if (clientCertificate == null) {
