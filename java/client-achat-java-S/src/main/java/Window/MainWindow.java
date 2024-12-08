@@ -279,15 +279,12 @@ public class MainWindow extends JFrame{
 
                         if (object instanceof ResponseSecure) {
                             ResponseSecure responseSecure = (ResponseSecure) object;
-                            // Continuez le traitement
+
                         } else {
                             System.out.println("Objet reçu de type inattendu : " + object.getClass().getName());
-
-                            // Traitez l'erreur ou terminez le programme
                         }
                         ResponseSecure responseSecure = (ResponseSecure) object;
                         if (responseSecure.getResponse() instanceof ResponseCancelCaddy) {
-                            // Vous êtes sûr que la réponse est de type ResponseCancelCaddy
                             ResponseCancelCaddy responseCancelCaddy = (ResponseCancelCaddy) responseSecure.getResponse();
 
                             byte[] serverHMAC = responseSecure.getHmac();
