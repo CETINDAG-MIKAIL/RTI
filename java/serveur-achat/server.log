@@ -4,3 +4,9 @@ Connection accepted, creation TH Client
 TH Client (Request) starts...
 RequestClient received from Martin Dupont
 RequestSelectBook received
+RequestCancelCaddy received
+RequestCancelCaddy received
+Erreur I/O
+TH Client (Request) ends.
+Connection accepted, creation TH Client
+TH Client (Request) starts...

@@ -215,20 +215,23 @@ public class ProtocolBSPP implements Protocol {
         return new ResponseDeleteCaddyItem(true);
     }
 
-    private synchronized ResponseCancelCaddy ProcessingCancelCaddy(RequestCancelCaddy request) throws EndConnexionException {
+    private synchronized ResponseCancelCaddy ProcessingCancelCaddy(RequestCancelCaddy request){
         logger.trace("RequestCancelCaddy received");
-
+        System.out.println("ProcessingCancelCaddy 0");
         CaddySearchVM cvm = new CaddySearchVM();
         cvm.setClientId(request.getIdClient());
         CaddyDAO dao = new CaddyDAO();
         ArrayList<Caddy> caddies = dao.read(cvm);
 
+        System.out.println("ProcessingCancelCaddy 1");
         if(caddies.isEmpty()) {
-            throw new EndConnexionException(new ResponseCancelCaddy(true));
+            System.out.println("ProcessingCancelCaddy 2");
+            return new ResponseCancelCaddy(true);
         }
-
+        System.out.println("ProcessingCancelCaddy 3");
         dao.delete(caddies.getFirst().getId());
-        throw new EndConnexionException(new ResponseCancelCaddy(true));
+        System.out.println("ProcessingCancelCaddy 4");
+        return new ResponseCancelCaddy(true);
     }
 
     private synchronized ResponsePayCaddy ProcessingPayCaddy(RequestPayCaddy request) {

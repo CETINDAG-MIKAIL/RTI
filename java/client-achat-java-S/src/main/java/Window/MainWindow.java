@@ -86,7 +86,6 @@ public class MainWindow extends JFrame{
         this.oos = myInstance.getOutputStream();
         this.ois = myInstance.getInputStream();
         CertificateHelper clientHelper = new CertificateHelper("./client.jks", "PassClient", "client");
-        Security.addProvider(new BouncyCastleProvider());
 
         setContentPane(MainPanel);
         setTitle("MainWindow");
@@ -213,7 +212,7 @@ public class MainWindow extends JFrame{
                             return;
                         }
 
-                        RequestSecure secureRequest = new RequestSecure(request, encryptedRequest, null, null, signature, null);
+                        RequestSecure secureRequest = new RequestSecure(request, encryptedRequest, null, null, signature, Iv);
 
                         oos.writeObject(secureRequest);
 
@@ -272,27 +271,40 @@ public class MainWindow extends JFrame{
                         byte[] Iv = CryptoHelper.generateIV();
                         byte [] cryptedRequest = CryptoHelper.CryptSymDESede(sessionKey, requestBytes, null, Iv);
 
-                        RequestSecure initialSecureRequest  = new RequestSecure(request, cryptedRequest, null, null, signature, null);
+                        RequestSecure initialSecureRequest  = new RequestSecure(request, cryptedRequest, null, null, signature, Iv);
 
                         oos.writeObject(initialSecureRequest);
-                        ResponseSecure responseSecure = (ResponseSecure) ois.readObject();
-                        ResponseCancelCaddy response = (ResponseCancelCaddy) responseSecure.getResponse();
+                        Object object = ois.readObject();
+                        System.out.println("Type d'objet reçu : " + object.getClass().getName());
 
-                        byte[] serverHMAC = responseSecure.getHmac();
-                        byte[] recalculatedHMAC = CryptoHelper.createHMAC(CryptoHelper.convertToBytes(response, null),sessionKey, null);
-                        boolean isHMACValid = Arrays.equals(serverHMAC, recalculatedHMAC);
-
-
-                        if (isHMACValid) {
-                            JOptionPane.showMessageDialog(null, "Déconnexion effectué avec succès !", "Succès", JOptionPane.INFORMATION_MESSAGE);
-                            dispose();
-
-                            MySocket.closeSocket();
-
-                            ConnectClient connectClientDialog = new ConnectClient();
-                            connectClientDialog.setVisible(true);
+                        if (object instanceof ResponseSecure) {
+                            ResponseSecure responseSecure = (ResponseSecure) object;
+                            // Continuez le traitement
                         } else {
-                            JOptionPane.showMessageDialog(null, "Erreur lors de la déconnexion. Veuillez réessayer.", "Erreur", JOptionPane.ERROR_MESSAGE);
+                            System.out.println("Objet reçu de type inattendu : " + object.getClass().getName());
+
+                            // Traitez l'erreur ou terminez le programme
+                        }
+                        ResponseSecure responseSecure = (ResponseSecure) object;
+                        if (responseSecure.getResponse() instanceof ResponseCancelCaddy) {
+                            // Vous êtes sûr que la réponse est de type ResponseCancelCaddy
+                            ResponseCancelCaddy responseCancelCaddy = (ResponseCancelCaddy) responseSecure.getResponse();
+
+                            byte[] serverHMAC = responseSecure.getHmac();
+                            byte[] recalculatedHMAC = CryptoHelper.createHMAC(CryptoHelper.convertToBytes(responseCancelCaddy, null), sessionKey, null);
+                            boolean isHMACValid = Arrays.equals(serverHMAC, recalculatedHMAC);
+
+                            if (isHMACValid) {
+                                JOptionPane.showMessageDialog(null, "Déconnexion effectuée avec succès !", "Succès", JOptionPane.INFORMATION_MESSAGE);
+                                dispose();
+                                MySocket.closeSocket();
+                                ConnectClient connectClientDialog = new ConnectClient();
+                                connectClientDialog.setVisible(true);
+                            } else {
+                                JOptionPane.showMessageDialog(null, "Erreur lors de la déconnexion. Veuillez réessayer.", "Erreur", JOptionPane.ERROR_MESSAGE);
+                            }
+                        } else {
+                            JOptionPane.showMessageDialog(null, "Réponse invalide reçue du serveur.", "Erreur", JOptionPane.ERROR_MESSAGE);
                         }
 
                     } catch (IOException | ClassNotFoundException ex) {
@@ -378,7 +390,7 @@ public class MainWindow extends JFrame{
                             return;
                         }
 
-                        RequestSecure secureRequest = new RequestSecure(request, encryptedRequest, null, null, null, null);
+                        RequestSecure secureRequest = new RequestSecure(request, encryptedRequest, null, null, null, Iv);
 
                         oos.writeObject(secureRequest);
 
@@ -444,7 +456,7 @@ public class MainWindow extends JFrame{
 
 
 
-            RequestSecure initialSecureRequest  = new RequestSecure(request, cryptedRequest, null, null, null, null);
+            RequestSecure initialSecureRequest  = new RequestSecure(request, cryptedRequest, null, null, null, Iv);
             oos.writeObject(initialSecureRequest);
 
 
@@ -481,7 +493,7 @@ public class MainWindow extends JFrame{
 
             byte[] Iv = CryptoHelper.generateIV();
             byte [] cryptedRequest = CryptoHelper.CryptSymDESede(sessionKey, requestBytes, null, Iv);
-            RequestSecure initialSecureRequest  = new RequestSecure(request, cryptedRequest, null, null, null, null);
+            RequestSecure initialSecureRequest  = new RequestSecure(request, cryptedRequest, null, null, null, Iv);
             oos.writeObject(initialSecureRequest);
 
             ResponseDeleteCaddyItem response = (ResponseDeleteCaddyItem) ois.readObject();

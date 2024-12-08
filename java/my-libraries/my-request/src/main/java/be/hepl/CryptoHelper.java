@@ -66,6 +66,11 @@ public class CryptoHelper {
     {
         Cipher chiffrementE = null;
         try {
+            if (cle.getEncoded().length != 16 && cle.getEncoded().length != 24) {
+
+                System.out.println(("Invalid key size: " + cle.getEncoded().length + ". Key must be 16 or 24 bytes."));
+            }
+
             chiffrementE = Cipher.getInstance("DESede/CBC/PKCS5Padding", "BC");
             IvParameterSpec ivSpec = new IvParameterSpec(iv);
             chiffrementE.init(Cipher.ENCRYPT_MODE, cle, ivSpec);

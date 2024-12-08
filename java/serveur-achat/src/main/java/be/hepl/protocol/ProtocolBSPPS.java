@@ -183,40 +183,50 @@ public class ProtocolBSPPS implements Protocol {
     }
 
     private synchronized Response ProcessingCancelCaddy(RequestSecure request, Socket socket) throws EndConnexionException {
-        //System.out.println("ProcessingCancelCaddy 0 ");
+        System.out.println("ProcessingCancelCaddy 0 ");
         byte[] iv = request.getIV();
         byte[] decryptedRequest = CryptoHelper.DecryptSymDESede(storedSessionKey.get(socket), request.getRequestEncrypted(), logger, iv);
 
 
-        //System.out.println("ProcessingCancelCaddy 1");
+        System.out.println("ProcessingCancelCaddy 1");
         boolean isSignatureVerified = CryptoHelper.verifySignature(decryptedRequest, request.getSignature(), storedCertificate.get(socket).getPublicKey(), logger);
-        //System.out.println("ProcessingCancelCaddy 2");
+        System.out.println("ProcessingCancelCaddy 2");
         // Check if the digest is valid, if they are the same, the signature is valid
         //boolean isSameDigest = Arrays.equals(recalculatedDigest, decryptedDigest);
 
         if (isSignatureVerified) {
-            //System.out.println("ProcessingCancelCaddy 3");
+            System.out.println("ProcessingCancelCaddy 3");
             RequestCancelCaddy requestCancelCaddy = (RequestCancelCaddy)CryptoHelper.deserializeObject(decryptedRequest, logger);
-            //System.out.println("ProcessingCancelCaddy 4");
-            ResponseCancelCaddy responseCancelCaddy = (ResponseCancelCaddy)pBSPP.processingRequest(requestCancelCaddy, socket);
-            //System.out.println("ProcessingCancelCaddy 5");
+            System.out.println("ProcessingCancelCaddy 4");
+            try {
+                ResponseCancelCaddy responseCancelCaddy = (ResponseCancelCaddy) pBSPP.processingRequest(requestCancelCaddy, socket);
+                System.out.println("Réponse reçue : " + responseCancelCaddy);
+            } catch (Exception e) {
+                System.out.println("Erreur dans le traitement de la requête : " + e.getMessage());
+
+                e.printStackTrace();
+            }
+            ResponseCancelCaddy responseCancelCaddy = (ResponseCancelCaddy) pBSPP.processingRequest(requestCancelCaddy, socket);
+            System.out.println("ProcessingCancelCaddy 5");
             byte[] HMAC = CryptoHelper.createHMAC(convertToBytes(responseCancelCaddy, logger), storedSessionKey.get(socket), logger);
-            //System.out.println("ProcessingCancelCaddy 6");
+            System.out.println("ProcessingCancelCaddy 6");
             return new ResponseSecure(responseCancelCaddy, null, null, null, HMAC, null);
         }
-        //System.out.println("ProcessingCancelCaddy 7");
+        System.out.println("ProcessingCancelCaddy 7");
         return new ResponseSecure(new ResponseCancelCaddy(false), null, null, null, null, null);
     }
 
     private synchronized Response ProcessingPayCaddy(RequestSecure request, Socket socket) throws EndConnexionException {
+        System.out.println("ProcessingPayCaddy 0 ");
+
         byte[] iv = request.getIV();
         byte[] decryptedRequest = CryptoHelper.DecryptSymDESede(storedSessionKey.get(socket), request.getRequestEncrypted(), logger, iv);
 
         boolean isSignatureVerified = CryptoHelper.verifySignature(decryptedRequest, request.getSignature(), storedCertificate.get(socket).getPublicKey(), logger);
-
         if (isSignatureVerified) {
-            RequestPayCaddy requestPayCaddy = (RequestPayCaddy)CryptoHelper.deserializeObject(decryptedRequest, logger);
-            ResponsePayCaddy responsePayCaddy = (ResponsePayCaddy)pBSPP.processingRequest(requestPayCaddy, socket);
+            // au lieu de desiralise en requestPayCaddy je le fais en visa puis ensuite je le caste
+            RequestPayCaddyWithVisa RequestPayCaddyWithVisa = (RequestPayCaddyWithVisa)CryptoHelper.deserializeObject(decryptedRequest, logger);
+            ResponsePayCaddy responsePayCaddy = (ResponsePayCaddy) pBSPP.processingRequest(RequestPayCaddyWithVisa, socket);
 
             byte[] HMAC = CryptoHelper.createHMAC(convertToBytes(responsePayCaddy, logger), storedSessionKey.get(socket), logger);
 
