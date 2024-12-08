@@ -1,11 +1,8 @@
 package Window;
 
 import be.hepl.CertificateHelper;
-import be.hepl.CryptoHelper;
 import be.hepl.request.RequestClient;
 import be.hepl.request.RequestSecure;
-import be.hepl.response.Response;
-import be.hepl.response.ResponseClient;
 import be.hepl.response.ResponseSecure;
 import be.hepl.trace.Logger;
 import be.hepl.trace.MyLogger;
@@ -28,7 +25,6 @@ import java.security.MessageDigest;
 
 public class ConnectClient extends JDialog {
     private Socket socket;
-    private String login;
     private ObjectOutputStream oos;
     private ObjectInputStream ois;
     private JPanel contentPane;
@@ -42,11 +38,6 @@ public class ConnectClient extends JDialog {
 
 
     public ConnectClient() throws IOException {
-        MySocket myInstance = MySocket.getInstance();
-
-        this.socket = myInstance.getMySocket();
-        this.oos = myInstance.getOutputStream();
-        this.ois = myInstance.getInputStream();
         setContentPane(contentPane);
         setTitle("Client");
         setSize(300, 250);
@@ -55,7 +46,11 @@ public class ConnectClient extends JDialog {
 
         buttonOK.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                onOK();
+                try {
+                    onOK();
+                } catch (IOException ex) {
+                    throw new RuntimeException(ex);
+                }
             }
         });
 
@@ -79,37 +74,37 @@ public class ConnectClient extends JDialog {
         }, KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
     }
 
-    private void onOK() {
+    private void onOK() throws IOException {
+        MySocket myInstance = MySocket.getInstance();
+
+        this.socket = myInstance.getMySocket();
+        this.oos = myInstance.getOutputStream();
+        this.ois = myInstance.getInputStream();
+
         String loginLastName = textFieldLastNameClient.getText();
         String loginFirstName = textFieldFirstNameClient.getText();
         String IdClientText = textFieldIdClient.getText();
         boolean newClient = false;
 
-        System.out.println("\n\n-------------------------1-------------------------");
         try {
-            System.out.println("-------------------------2-------------------------");
-            System.out.println("loginLastName: " + loginLastName);
-            System.out.println("loginFirstName: " + loginFirstName);
-            System.out.println("newClient: " + newClient);
             RequestClient requete = new RequestClient(loginLastName, loginFirstName, newClient);
             RequestSecure initialSecureRequest = new RequestSecure(requete, null, null, null, null, null);
-            System.out.println("-------------------------3-------------------------");
             oos.writeObject(initialSecureRequest);
-            System.out.println("-------------------------4-------------------------");
 
             ResponseSecure responseSecure = (ResponseSecure) ois.readObject();
-            System.out.println("-------------------------5-------------------------");
-
 
             byte[] sel = responseSecure.getSel();
 
             if (sel == null) {
                 JOptionPane.showMessageDialog(this, "Erreur lors de la réception du sel.", "Erreur", JOptionPane.ERROR_MESSAGE);
+
+                MySocket.closeSocket();
                 return;
             }
 
             if (IdClientText == null || IdClientText.isEmpty()) {
                 JOptionPane.showMessageDialog(this, "Veuillez entrer un ID valide (entier).", "Erreur", JOptionPane.ERROR_MESSAGE);
+                MySocket.closeSocket();
                 return;
             }
 
@@ -122,6 +117,7 @@ public class ConnectClient extends JDialog {
             X509Certificate clientCertificate = clientHelper.getCertificate(logger);
             if (clientCertificate == null) {
                 JOptionPane.showMessageDialog(this, "Certificat du client introuvable ou invalide.", "Erreur", JOptionPane.ERROR_MESSAGE);
+                MySocket.closeSocket();
                 return;
             }
 
@@ -159,10 +155,6 @@ public class ConnectClient extends JDialog {
             } else {
                 JOptionPane.showMessageDialog(this, "Erreur de login !", "Erreur...", JOptionPane.ERROR_MESSAGE);
                 MySocket.closeSocket();
-                MySocket myInstance = MySocket.getInstance();
-                this.socket = myInstance.getMySocket();
-                this.oos = myInstance.getOutputStream();
-                this.ois = myInstance.getInputStream();
             }
 
         } catch (IOException | ClassNotFoundException ex) {
