@@ -100,14 +100,17 @@ public class ProtocolBSPPS implements Protocol {
         //System.out.println("pBSPP : "+ pBSPP);
         //System.out.println("requestClient : " + requestClient);
         //System.out.println("socket : " + socket);
-        ResponseClient response = (ResponseClient)pBSPP.processingRequest(requestClient, socket);
-        //System.out.println("ProcessingClient 2");
+        try {
+            ResponseClient response = (ResponseClient)pBSPP.processingRequest(requestClient, socket);
 
-        if(!response.isValide()) {
-            //System.out.println("ProcessingClient 3 ");
-            return new ResponseSecure(null, null, null, null, null, null);
+            if(!response.isValide()) {
+                //System.out.println("ProcessingClient 3 ");
+                return new ResponseSecure(null, null, null, null, null, null);
+            }
+        } catch (EndConnexionException e) {
+            ResponseSecure response = new ResponseSecure(e.getResponse(), null, null, null, null, null);
+            throw new EndConnexionException(response);
         }
-        //System.out.println("ProcessingClient 4");
 
         byte[] salt = CryptoHelper.generateSalt();
 
@@ -117,7 +120,7 @@ public class ProtocolBSPPS implements Protocol {
         return new ResponseSecure(null, null, salt, null, null, null);
     }
 
-    private synchronized Response ProcessingDigestAndSessionKey(RequestSecure request, Socket socket) throws EndConnexionException {
+    private synchronized Response ProcessingDigestAndSessionKey(RequestSecure request, Socket socket) {
 
         byte[] recalculatedDigest = CryptoHelper.generateDigest(getConnectedClients().get(socket), storedSalt.get(socket), logger);
         System.out.println("ProcessingDigestAndSessionKey");
@@ -197,17 +200,17 @@ public class ProtocolBSPPS implements Protocol {
         if (isSignatureVerified) {
             System.out.println("ProcessingCancelCaddy 3");
             RequestCancelCaddy requestCancelCaddy = (RequestCancelCaddy)CryptoHelper.deserializeObject(decryptedRequest, logger);
-            System.out.println("ProcessingCancelCaddy 4");
+            //System.out.println("ProcessingCancelCaddy 4");
             try {
                 ResponseCancelCaddy responseCancelCaddy = (ResponseCancelCaddy) pBSPP.processingRequest(requestCancelCaddy, socket);
-                System.out.println("Réponse reçue : " + responseCancelCaddy);
+                //System.out.println("Réponse reçue : " + responseCancelCaddy);
             } catch (EndConnexionException e) {
-                System.out.println("EndConnexionException catched in ProcessingCancelCaddy BSPPS");
+                //System.out.println("EndConnexionException catched in ProcessingCancelCaddy BSPPS");
 
                 ResponseCancelCaddy responseCancelCaddy = (ResponseCancelCaddy) e.getResponse();
-                System.out.println("ProcessingCancelCaddy 5");
+                //System.out.println("ProcessingCancelCaddy 5");
                 byte[] HMAC = CryptoHelper.createHMAC(convertToBytes(responseCancelCaddy, logger), storedSessionKey.get(socket), logger);
-                System.out.println("ProcessingCancelCaddy 6");
+                //System.out.println("ProcessingCancelCaddy 6");
                 ResponseSecure responseSecure =  new ResponseSecure(responseCancelCaddy, null, null, null, HMAC, null);
 
                 throw new EndConnexionException(responseSecure);
@@ -227,12 +230,12 @@ public class ProtocolBSPPS implements Protocol {
         if (isSignatureVerified) {
             // au lieu de desiralise en requestPayCaddy je le fais en visa puis ensuite je le caste
             RequestPayCaddyWithVisa RequestPayCaddyWithVisa = (RequestPayCaddyWithVisa)CryptoHelper.deserializeObject(decryptedRequest, logger);
-            ResponsePayCaddy responsePayCaddy = (ResponsePayCaddy) pBSPP.processingRequest(RequestPayCaddyWithVisa, socket);
 
-            byte[] HMAC = CryptoHelper.createHMAC(convertToBytes(responsePayCaddy, logger), storedSessionKey.get(socket), logger);
+                ResponsePayCaddy responsePayCaddy = (ResponsePayCaddy) pBSPP.processingRequest(RequestPayCaddyWithVisa, socket);
 
+                byte[] HMAC = CryptoHelper.createHMAC(convertToBytes(responsePayCaddy, logger), storedSessionKey.get(socket), logger);
 
-            return new ResponseSecure(responsePayCaddy, null, null, null, HMAC, null);
+                return new ResponseSecure(responsePayCaddy, null, null, null, HMAC, null);
         }
 
         return new ResponseSecure(new ResponseCancelCaddy(false), null, null, null, null, null);

@@ -97,17 +97,9 @@ public class ConnectClient extends JDialog {
             oos.writeObject(initialSecureRequest);
             System.out.println("-------------------------4-------------------------");
 
-            Response response = (Response) ois.readObject();
+            ResponseSecure responseSecure = (ResponseSecure) ois.readObject();
             System.out.println("-------------------------5-------------------------");
-            if(response instanceof ResponseClient) {
-                JOptionPane.showMessageDialog(this, "Mauvais identifiants.", "Erreur", JOptionPane.ERROR_MESSAGE);
-                System.out.println("-------------------------6-------------------------");
-                return;
-            }
-            System.out.println("-------------------------7-------------------------");
 
-
-            ResponseSecure responseSecure = (ResponseSecure) response;
 
             byte[] sel = responseSecure.getSel();
 
