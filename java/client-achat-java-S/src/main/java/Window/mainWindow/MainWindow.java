@@ -1,25 +1,20 @@
-package Window;
+package Window.mainWindow;
 
-import Window.table.BookColumnModelAchatClient;
+import Window.mainWindow.helper.ButtonManager;
+import Window.mainWindow.helper.TableManager;
+import Window.mainWindow.helper.buttonSearch;
+import Window.mainWindow.helper.initClear;
 import Window.table.BookModelAchatClient;
+import Window.MySocket;
+import Window.ConnectClient;
 import be.hepl.CertificateHelper;
 import be.hepl.CryptoHelper;
-import be.hepl.model.entity.Author;
 import be.hepl.model.entity.Book;
-import be.hepl.model.entity.Subject;
-import be.hepl.model.viewmodel.BookSearchVM;
 import be.hepl.request.*;
 import be.hepl.response.*;
-import be.hepl.trace.Logger;
-import be.hepl.trace.MyLogger;
-import org.bouncycastle.jce.provider.BouncyCastleProvider;
-
 import javax.crypto.SecretKey;
 import javax.swing.*;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
 import javax.swing.table.AbstractTableModel;
-import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
@@ -27,38 +22,27 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.security.PrivateKey;
-import java.security.Security;
-import java.security.cert.X509Certificate;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
-
 
 public class MainWindow extends JFrame{
-
-
     private ObjectOutputStream oos;
     private ObjectInputStream ois;
     private Socket socket;
-
     private JTable tableStock;
     private JTable tableBasket;
-
     private JButton ajouterButton;
     private JButton viderLePanierButton;
     private JButton supprimerButton;
     private JButton payerButton;
     private JButton annulerButton;
-
+    private ButtonManager buttonManager;
     private JTextField textFieldTitle;
     private JTextField textFieldSubject;
     private JTextField textFieldLastNameAuthor;
     private JTextField textFieldFirstNameAuthor;
-
     private JSpinner spinnerMaxPrice;
     private JSpinner spinnerMaxPageCount;
     private JSpinner spinnerQuantite;
-
     private JButton rechercheButton;
     private JButton xButtonTitle;
     private JButton xButtonLastName;
@@ -66,7 +50,6 @@ public class MainWindow extends JFrame{
     private JButton xButtonSubject;
     private JButton xButtonFirstName;
     private JButton xButtonMaxPageCount;
-
     private JPanel MainPanel;
     private JLabel labelTitle;
     private JLabel labelLastName;
@@ -74,12 +57,12 @@ public class MainWindow extends JFrame{
     private JLabel labelFirstName;
     private JLabel labelPageCount;
     private JLabel labelMaxPrice;
-
     private SecretKey sessionKey;
-
+    private TableManager tableManager;
     public MainWindow(Integer idClient, SecretKey sessionKey) throws IOException {
 
         MySocket myInstance = MySocket.getInstance();
+
 
         this.sessionKey = sessionKey;
         this.socket = myInstance.getMySocket();
@@ -92,16 +75,21 @@ public class MainWindow extends JFrame{
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(1000, 700);
 
-        initClearButton(xButtonTitle, textFieldTitle, labelTitle);
-        initClearButton(xButtonSubject, textFieldSubject, labelSubject);
-        initClearButton(xButtonLastName, textFieldLastNameAuthor, labelLastName);
-        initClearButton(xButtonFirstName, textFieldFirstNameAuthor, labelFirstName);
-        initClearButtonForSpinner(xButtonMaxPrice, spinnerMaxPrice, labelMaxPrice);
-        initClearButtonForSpinner(xButtonMaxPageCount, spinnerMaxPageCount, labelPageCount);
-        initTable();
-        buttonSearch(rechercheButton);
-        clearBooksTable( tableBasket );
+        tableManager = new TableManager(oos, ois);
+        initClear helper = new initClear(this);
+        helper.initClearButton(xButtonTitle, textFieldTitle, labelTitle);
+        helper.initClearButton(xButtonSubject, textFieldSubject, labelSubject);
+        helper.initClearButton(xButtonLastName, textFieldLastNameAuthor, labelLastName);
+        helper.initClearButton(xButtonFirstName, textFieldFirstNameAuthor, labelFirstName);
+        helper.initClearButtonForSpinner(xButtonMaxPrice, spinnerMaxPrice, labelMaxPrice);
+        helper.initClearButtonForSpinner(xButtonMaxPageCount, spinnerMaxPageCount, labelPageCount);
+        tableManager.initTable(tableStock);
+        tableManager.clearBooksTable(tableBasket);
+        buttonManager = new ButtonManager();
+        buttonVisibility();
         tableStock.setFillsViewportHeight(true);
+        buttonSearch buttonSearch = new buttonSearch();
+        buttonSearch.buttonSearch(rechercheButton, textFieldTitle, textFieldSubject, textFieldFirstNameAuthor, textFieldLastNameAuthor, spinnerMaxPageCount, spinnerMaxPrice, oos, ois, tableManager, tableStock);
 
         ajouterButton.addActionListener(new ActionListener() {
             @Override
@@ -211,7 +199,6 @@ public class MainWindow extends JFrame{
                             System.out.println("Erreur : La signature des données a échoué.");
                             return;
                         }
-
                         RequestSecure secureRequest = new RequestSecure(request, encryptedRequest, null, null, signature, Iv);
 
                         oos.writeObject(secureRequest);
@@ -221,7 +208,6 @@ public class MainWindow extends JFrame{
                         byte[] serverHMAC = responseSecure.getHmac();
                         byte[] recalculatedHMAC = CryptoHelper.createHMAC(CryptoHelper.convertToBytes(response, null), sessionKey, null);
                         boolean isHMACValid = Arrays.equals(serverHMAC, recalculatedHMAC);
-
 
                         if (isHMACValid) {
                             JOptionPane.showMessageDialog(null, "Paiement effectué avec succès !", "Succès", JOptionPane.INFORMATION_MESSAGE);
@@ -254,8 +240,6 @@ public class MainWindow extends JFrame{
                         "Deconnexion",
                         JOptionPane.YES_NO_OPTION
                 );
-
-
                 if (confirmation == JOptionPane.YES_OPTION) {
                     try {
                         PrivateKey privateKey = clientHelper.getPrivateKey(null); // Pour signer
@@ -265,7 +249,6 @@ public class MainWindow extends JFrame{
 
                         if (requestBytes == null || requestBytes.length == 0) {System.out.println("requestBytes is null or empty");}
 
-                        System.out.println("requestBytes length " + requestBytes.length);
                         byte[] signature = CryptoHelper.signData(requestBytes, privateKey, null);
 
                         byte[] Iv = CryptoHelper.generateIV();
@@ -275,14 +258,6 @@ public class MainWindow extends JFrame{
 
                         oos.writeObject(initialSecureRequest);
                         Object object = ois.readObject();
-                        System.out.println("Type d'objet reçu : " + object.getClass().getName());
-
-                        if (object instanceof ResponseSecure) {
-                            ResponseSecure responseSecure = (ResponseSecure) object;
-
-                        } else {
-                            System.out.println("Objet reçu de type inattendu : " + object.getClass().getName());
-                        }
                         ResponseSecure responseSecure = (ResponseSecure) object;
                         if (responseSecure.getResponse() instanceof ResponseCancelCaddy) {
                             ResponseCancelCaddy responseCancelCaddy = (ResponseCancelCaddy) responseSecure.getResponse();
@@ -303,18 +278,17 @@ public class MainWindow extends JFrame{
                         } else {
                             JOptionPane.showMessageDialog(null, "Réponse invalide reçue du serveur.", "Erreur", JOptionPane.ERROR_MESSAGE);
                         }
-
                     } catch (IOException | ClassNotFoundException ex) {
                         ex.printStackTrace();
                         JOptionPane.showMessageDialog(null, "Erreur le la déconnexion : " + ex.getMessage(),
                                 "Erreur", JOptionPane.ERROR_MESSAGE);
                     }
                 } else {
-
                     JOptionPane.showMessageDialog(null, "Déconnexion annulé.", "Annulation", JOptionPane.INFORMATION_MESSAGE);
                 }
             }
         });
+
         supprimerButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -323,11 +297,7 @@ public class MainWindow extends JFrame{
                 if (selectedRow != -1) {
                     BookModelAchatClient basketModel = (BookModelAchatClient) tableBasket.getModel();
                     Book bookInBasket = basketModel.getBook(selectedRow);
-
-
                     int quantityInBasket = bookInBasket.getStockQuantity();
-
-
                     boolean stockRestored = restoreBookStock(bookInBasket, quantityInBasket);
                     if (stockRestored) {
                         basketModel.removeRow(selectedRow);
@@ -343,7 +313,6 @@ public class MainWindow extends JFrame{
                 }
             }
         });
-
 
         viderLePanierButton.addActionListener(new ActionListener() {
             @Override
@@ -372,7 +341,6 @@ public class MainWindow extends JFrame{
                             }
                         }
 
-
                         RequestEmptyCaddy request = new RequestEmptyCaddy(idClient);
                         byte[] requestBytes = CryptoHelper.convertToBytes(request, null);
                         if (requestBytes == null || requestBytes.length == 0) {
@@ -388,19 +356,16 @@ public class MainWindow extends JFrame{
                         }
 
                         RequestSecure secureRequest = new RequestSecure(request, encryptedRequest, null, null, null, Iv);
-
                         oos.writeObject(secureRequest);
-
-
                         ResponseSecure responseSecure = (ResponseSecure) ois.readObject();
                         ResponseEmptyCaddy response = (ResponseEmptyCaddy) responseSecure.getResponse();
                         byte[] serverHMAC = responseSecure.getHmac();
                         byte[] recalculatedHMAC = CryptoHelper.createHMAC(CryptoHelper.convertToBytes(response, null), sessionKey, null);
                         boolean isHMACValid = Arrays.equals(serverHMAC, recalculatedHMAC);
 
-
                         if (isHMACValid) {
-                            clearBooksTable(tableBasket);
+                            tableManager.clearBooksTable(tableBasket);
+
                             JOptionPane.showMessageDialog(null, "Le panier a été vidé avec succès !", "Succès", JOptionPane.INFORMATION_MESSAGE);
                         } else {
                             JOptionPane.showMessageDialog(null, "Erreur lors du vidage du panier. Veuillez réessayer.", "Erreur", JOptionPane.ERROR_MESSAGE);
@@ -417,55 +382,24 @@ public class MainWindow extends JFrame{
 
         setVisible(true);
     }
-
-    private void initClearButton(JButton button, JTextField textField, JLabel label) {
-        button.setVisible(false);
-        button.setEnabled(false);
-        addFilterListener(textField, button, label);
-        button.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                textField.setText("");
-                buttonVisibility();
-            }
-        });
-    }
     private boolean updateBookStock(Book book, int quantity) {
         try {
-
             RequestAddCaddyItem request = new RequestAddCaddyItem(book.getId(), quantity);
-            System.out.println( "book.getId()  : " + book.getId());
-            System.out.println("quantity :  "+ quantity);
             byte[] requestBytes = CryptoHelper.convertToBytes(request, null);
             if (requestBytes == null || requestBytes.length == 0) {System.out.println("requestBytes is null or empty");}
-            System.out.println("requestBytes length " + requestBytes.length);
-
             byte[] Iv = CryptoHelper.generateIV();
             if (sessionKey == null) {System.out.println("sessionKey is null");}
-
-            System.out.println("Session Key: " + sessionKey);
-            System.out.println("Request Bytes: " + Arrays.toString(requestBytes));
-            System.out.println("IV: " + Arrays.toString(Iv));
-
             byte [] cryptedRequest = CryptoHelper.CryptSymDESede(sessionKey, requestBytes, null, Iv);
             if (cryptedRequest == null || cryptedRequest.length == 0) {System.out.println("cryptedRequest is null or empty");}
-            System.out.println("cryptedRequest length " + cryptedRequest.length);
-
-
 
             RequestSecure initialSecureRequest  = new RequestSecure(request, cryptedRequest, null, null, null, Iv);
             oos.writeObject(initialSecureRequest);
-
-
             ResponseAddCaddyItem response = (ResponseAddCaddyItem) ois.readObject();
 
             if (response.isSuccess()) {
                 return true;
             } else {
-
-                JOptionPane.showMessageDialog(null,
-                        "Échec de la mise à jour du stock : ",
-                        "Erreur de mise à jour", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(null, "Échec de la mise à jour du stock : ", "Erreur de mise à jour", JOptionPane.ERROR_MESSAGE);
             }
         } catch (IOException | ClassNotFoundException ex) {
 
@@ -476,8 +410,6 @@ public class MainWindow extends JFrame{
 
         return false;
     }
-
-
     private boolean restoreBookStock(Book book, int quantity) {
         try {
             RequestDeleteCaddyItem request = new RequestDeleteCaddyItem(book.getId(), quantity);
@@ -486,7 +418,6 @@ public class MainWindow extends JFrame{
             {
                 System.out.println("requestBytes is null or empty");
             }
-            System.out.println("requestBytes length " + requestBytes.length);
 
             byte[] Iv = CryptoHelper.generateIV();
             byte [] cryptedRequest = CryptoHelper.CryptSymDESede(sessionKey, requestBytes, null, Iv);
@@ -504,164 +435,14 @@ public class MainWindow extends JFrame{
         }
         return false;
     }
-    private void buttonSearch(JButton button) {
-        button.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                try {
-                    BookSearchVM searchFilters = new BookSearchVM();
-
-                    if (!textFieldTitle.getText().isEmpty()) {
-                        searchFilters.setTitle(textFieldTitle.getText());
-                    }
-                    if (!textFieldSubject.getText().isEmpty()) {
-                        Subject subject = new Subject();
-                        subject.setName(textFieldSubject.getText());
-                        searchFilters.setSubject(subject);
-                    }
-                    if (!textFieldFirstNameAuthor.getText().isEmpty() || !textFieldLastNameAuthor.getText().isEmpty()) {
-                        Author author = new Author();
-                        if (!textFieldFirstNameAuthor.getText().isEmpty()) {
-                            author.setFirstName(textFieldFirstNameAuthor.getText());
-                        }
-                        if (!textFieldLastNameAuthor.getText().isEmpty()) {
-                            author.setLastName(textFieldLastNameAuthor.getText());
-                        }
-                        searchFilters.setAuthor(author);
-                    }
-                    if ((Integer) spinnerMaxPageCount.getValue() != 0) {
-                        searchFilters.setMaxPageCount((Integer) spinnerMaxPageCount.getValue());
-                    }
-                    if ((Integer) spinnerMaxPrice.getValue() != 0) {
-                        searchFilters.setMaxPrice(((Number) spinnerMaxPrice.getValue()).floatValue());
-                    }
-                    RequestSelectBook request = new RequestSelectBook(searchFilters);
-                    try {
-                        oos.writeObject(request);
-                    } catch (IOException ex) {
-                        ex.printStackTrace();
-                        JOptionPane.showMessageDialog(null, "Erreur de connexion : " + ex.getMessage(),
-                                "Erreur", JOptionPane.ERROR_MESSAGE);
-                    }
-                    System.out.println("Requête envoyée : " + request);
-                    ResponseSelectBook response = (ResponseSelectBook) ois.readObject();
-                    if (response != null && response.getBooks() != null && !response.getBooks().isEmpty()) {
-                        System.out.println("Livres reçus : ");
-                        for (Book book : response.getBooks()) {
-                            System.out.println(book);
-                        }
-                        UpdateSearch(tableStock, response);
-
-                    } else {
-                        clearBooksTable(tableStock);
-                        System.out.println("Aucun livre trouvé ou erreur de serveur.");
-                    }
-
-                } catch (IOException | ClassNotFoundException ex) {
-
-                    ex.printStackTrace();
-                    JOptionPane.showMessageDialog(null, "Erreur lors de la communication avec le serveur : " + ex.getMessage(),
-                            "Erreur", JOptionPane.ERROR_MESSAGE);
-                }
-            }
-        });
-    }
-    private void initClearButtonForSpinner(JButton button, JSpinner spinner, JLabel label) {
-        button.setEnabled(false);
-        spinner.addChangeListener(e -> buttonVisibility());
-
-        button.addActionListener(e -> {
-            spinner.setValue(0);
-            buttonVisibility();
-        });
-    }
-    private void UpdateSearch(JTable tableStock, ResponseSelectBook response) {
-        clearBooksTable(tableStock);
-        BookModelAchatClient model = (BookModelAchatClient) tableStock.getModel();
-
-        for (Book book : response.getBooks()) {
-            model.addRow(book, book.getStockQuantity());
-        }
-
-    }
-
-    public void clearBooksTable( JTable tableStock ) {
-        BookModelAchatClient model = new BookModelAchatClient(new ArrayList<>());
-        tableStock.setModel(model);
-        tableStock.setColumnModel(new BookColumnModelAchatClient());
-    }
-
-    private void addFilterListener(JTextField textField, JButton button, JLabel label) {
-        textField.getDocument().addDocumentListener(new DocumentListener() {
-            @Override
-            public void insertUpdate(DocumentEvent e) {
-                buttonVisibility();
-            }
-
-            @Override
-            public void removeUpdate(DocumentEvent e) {
-                buttonVisibility();
-            }
-
-            @Override
-            public void changedUpdate(DocumentEvent e) {
-                buttonVisibility();
-            }
-        });
-    }
-
-    private void buttonVisibility() {
-        updateButtonAndLabelVisibility(textFieldTitle, xButtonTitle, labelTitle);
-        updateButtonAndLabelVisibility(textFieldSubject, xButtonSubject, labelSubject);
-        updateButtonAndLabelVisibility(textFieldLastNameAuthor, xButtonLastName, labelLastName);
-        updateButtonAndLabelVisibility(textFieldFirstNameAuthor, xButtonFirstName, labelFirstName);
-
-        //Spinners
-        updateButtonAndLabelVisibilityForSpinner(spinnerMaxPrice, xButtonMaxPrice, labelMaxPrice);
-        updateButtonAndLabelVisibilityForSpinner(spinnerMaxPageCount, xButtonMaxPageCount, labelPageCount);
-    }
-
-    private void updateButtonAndLabelVisibility(JTextField textField, JButton button, JLabel label) {
-        boolean TextBool = !textField.getText().trim().isEmpty();
-        button.setVisible(TextBool);
-        button.setEnabled(TextBool);
-        label.setForeground(TextBool ? Color.WHITE : Color.GRAY);
-    }
-
-    private void updateButtonAndLabelVisibilityForSpinner(JSpinner spinner, JButton button, JLabel label) {
-        boolean ValueBool = (Integer) spinner.getValue() != 0;
-        button.setEnabled(ValueBool);
-        label.setForeground(ValueBool ? Color.WHITE : Color.GRAY);
-    }
-    private void initTable() {
-        try {
-            BookSearchVM searchFilters = new BookSearchVM();
-            RequestSelectBook request = new RequestSelectBook(searchFilters);
-            try {
-                oos.writeObject(request);
-            } catch (IOException ex) {
-                ex.printStackTrace();
-                JOptionPane.showMessageDialog(null, "Erreur de connexion : " + ex.getMessage(),
-                        "Erreur", JOptionPane.ERROR_MESSAGE);
-            }
-            System.out.println("Requête envoyée : " + request);
-            ResponseSelectBook response = (ResponseSelectBook) ois.readObject();
-
-            if (response != null && response.getBooks() != null && !response.getBooks().isEmpty()) {
-                System.out.println("Livres reçus : ");
-                for (Book book : response.getBooks()) {
-                    System.out.println(book);
-                }
-                UpdateSearch(tableStock, response);
-
-            } else {
-                clearBooksTable(tableStock);
-                System.out.println("Aucun livre trouvé ou erreur de serveur.");
-            }
-        } catch (IOException | ClassNotFoundException ex) {
-            ex.printStackTrace();
-            JOptionPane.showMessageDialog(null, "Erreur lors de la communication avec le serveur : " + ex.getMessage(),
-                    "Erreur", JOptionPane.ERROR_MESSAGE);
-        }
+public void buttonVisibility() {
+        buttonManager.buttonVisibility(
+                textFieldTitle, xButtonTitle, labelTitle,
+                textFieldSubject, xButtonSubject, labelSubject,
+                textFieldLastNameAuthor, xButtonLastName, labelLastName,
+                textFieldFirstNameAuthor, xButtonFirstName, labelFirstName,
+                spinnerMaxPrice, xButtonMaxPrice, labelMaxPrice,
+                spinnerMaxPageCount, xButtonMaxPageCount, labelPageCount
+        );
     }
 }

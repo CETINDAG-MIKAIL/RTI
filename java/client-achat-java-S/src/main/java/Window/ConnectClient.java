@@ -1,5 +1,6 @@
 package Window;
 
+import Window.mainWindow.MainWindow;
 import be.hepl.CertificateHelper;
 import be.hepl.request.RequestClient;
 import be.hepl.request.RequestSecure;
