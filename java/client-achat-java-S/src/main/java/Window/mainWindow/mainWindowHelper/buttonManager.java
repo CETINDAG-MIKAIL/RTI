@@ -1,22 +1,16 @@
-package Window.mainWindow.helper;
+package Window.mainWindow.mainWindowHelper;
 
 import javax.swing.*;
 import java.awt.*;
 
-public class ButtonManager {
+public class buttonManager {
 
-    public void buttonVisibility(JTextField textFieldTitle, JButton xButtonTitle, JLabel labelTitle,
-                                 JTextField textFieldSubject, JButton xButtonSubject, JLabel labelSubject,
-                                 JTextField textFieldLastNameAuthor, JButton xButtonLastName, JLabel labelLastName,
-                                 JTextField textFieldFirstNameAuthor, JButton xButtonFirstName, JLabel labelFirstName,
-                                 JSpinner spinnerMaxPrice, JButton xButtonMaxPrice, JLabel labelMaxPrice,
-                                 JSpinner spinnerMaxPageCount, JButton xButtonMaxPageCount, JLabel labelPageCount) {
+    public void buttonVisibility(JTextField textFieldTitle, JButton xButtonTitle, JLabel labelTitle, JTextField textFieldSubject, JButton xButtonSubject, JLabel labelSubject, JTextField textFieldLastNameAuthor, JButton xButtonLastName, JLabel labelLastName, JTextField textFieldFirstNameAuthor, JButton xButtonFirstName, JLabel labelFirstName, JSpinner spinnerMaxPrice, JButton xButtonMaxPrice, JLabel labelMaxPrice, JSpinner spinnerMaxPageCount, JButton xButtonMaxPageCount, JLabel labelPageCount) {
         updateButtonAndLabelVisibility(textFieldTitle, xButtonTitle, labelTitle);
         updateButtonAndLabelVisibility(textFieldSubject, xButtonSubject, labelSubject);
         updateButtonAndLabelVisibility(textFieldLastNameAuthor, xButtonLastName, labelLastName);
         updateButtonAndLabelVisibility(textFieldFirstNameAuthor, xButtonFirstName, labelFirstName);
 
-        // Spinners
         updateButtonAndLabelVisibilityForSpinner(spinnerMaxPrice, xButtonMaxPrice, labelMaxPrice);
         updateButtonAndLabelVisibilityForSpinner(spinnerMaxPageCount, xButtonMaxPageCount, labelPageCount);
     }

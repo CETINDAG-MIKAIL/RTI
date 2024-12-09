@@ -5,6 +5,32 @@ TH Client (Request) starts...
 RequestClient received from Martin Dupont
 RequestSelectBook received
 RequestAddCaddyItem received
+RequestDeleteCaddyItem received
+RequestAddCaddyItem received
+RequestEmptyCaddy received
+RequestAddCaddyItem received
+RequestCancelCaddy received
+TH Client (Request) ends.
+Connection accepted, creation TH Client
+TH Client (Request) starts...
+RequestClient received from azd Dupont
+TH Client (Request) ends.
+Connection accepted, creation TH Client
+TH Client (Request) starts...
+RequestClient received from Martin Dupont
+RequestSelectBook received
+RequestAddCaddyItem received
 RequestPayCaddyWithVisa received
+Erreur I/O
+TH Client (Request) ends.
+Connection accepted, creation TH Client
+TH Client (Request) starts...
+RequestClient received from Martin Dupont
+RequestSelectBook received
+RequestSelectBook received
+RequestSelectBook received
+RequestSelectBook received
+RequestSelectBook received
+RequestSelectBook received
 Erreur I/O
 TH Client (Request) ends.

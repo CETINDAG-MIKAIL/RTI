@@ -1,4 +1,4 @@
-package Window.mainWindow.helper;
+package Window.mainWindow.mainWindowHelper;
 
 import Window.table.*;
 import be.hepl.model.entity.Book;
@@ -12,12 +12,12 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 
-public class TableManager {
+public class tableManager {
 
     private final ObjectOutputStream oos;
     private final ObjectInputStream ois;
 
-    public TableManager(ObjectOutputStream oos, ObjectInputStream ois) {
+    public tableManager(ObjectOutputStream oos, ObjectInputStream ois) {
         this.oos = oos;
         this.ois = ois;
     }

@@ -1,4 +1,4 @@
-package Window.mainWindow.helper;
+package Window.mainWindow.mainWindowHelper;
 
 import Window.mainWindow.MainWindow;
 

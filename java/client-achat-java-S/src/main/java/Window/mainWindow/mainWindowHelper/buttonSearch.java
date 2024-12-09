@@ -1,4 +1,4 @@
-package Window.mainWindow.helper;
+package Window.mainWindow.mainWindowHelper;
 
 import be.hepl.model.entity.*;
 import be.hepl.model.viewmodel.*;
@@ -14,17 +14,7 @@ import java.io.ObjectOutputStream;
 
 public class buttonSearch {
 
-    public void buttonSearch(JButton button, 
-                             JTextField textFieldTitle, 
-                             JTextField textFieldSubject, 
-                             JTextField textFieldFirstNameAuthor, 
-                             JTextField textFieldLastNameAuthor, 
-                             JSpinner spinnerMaxPageCount, 
-                             JSpinner spinnerMaxPrice, 
-                             ObjectOutputStream oos,
-                             ObjectInputStream ois,
-                             TableManager tableManager, 
-                             JTable tableStock) {
+    public void buttonSearch(JButton button, JTextField textFieldTitle, JTextField textFieldSubject, JTextField textFieldFirstNameAuthor, JTextField textFieldLastNameAuthor, JSpinner spinnerMaxPageCount, JSpinner spinnerMaxPrice, ObjectOutputStream oos, ObjectInputStream ois, tableManager tableManager, JTable tableStock) {
         button.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
