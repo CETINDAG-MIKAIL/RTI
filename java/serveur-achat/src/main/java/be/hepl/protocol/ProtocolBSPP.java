@@ -210,6 +210,7 @@ public class ProtocolBSPP implements Protocol {
         System.out.println("ProcessingCancelCaddy 0");
         CaddySearchVM cvm = new CaddySearchVM();
         cvm.setClientId(request.getIdClient());
+        cvm.setPayed(false);
         CaddyDAO dao = new CaddyDAO();
         ArrayList<Caddy> caddies = dao.read(cvm);
 
