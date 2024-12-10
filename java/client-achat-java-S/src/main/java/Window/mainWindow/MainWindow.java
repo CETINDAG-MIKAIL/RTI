@@ -1,9 +1,6 @@
 package Window.mainWindow;
 
-import Window.mainWindow.mainWindowHelper.buttonManager;
-import Window.mainWindow.mainWindowHelper.tableManager;
-import Window.mainWindow.mainWindowHelper.buttonSearch;
-import Window.mainWindow.mainWindowHelper.initClear;
+import Window.mainWindow.mainWindowHelper.*;
 import Window.MySocket;
 import be.hepl.CertificateHelper;
 import javax.crypto.SecretKey;
@@ -47,6 +44,8 @@ public class MainWindow extends JFrame{
     private JLabel labelPageCount;
     private JLabel labelMaxPrice;
     public SecretKey sessionKey;
+    public MainWindow mainWindow;
+
     public Window.mainWindow.mainWindowHelper.tableManager tableManager;
     public MainWindow(Integer idClient, SecretKey sessionKey) throws IOException {
 
@@ -79,6 +78,13 @@ public class MainWindow extends JFrame{
         tableStock.setFillsViewportHeight(true);
         buttonSearch buttonSearch = new buttonSearch();
         buttonSearch.buttonSearch(rechercheButton, textFieldTitle, textFieldSubject, textFieldFirstNameAuthor, textFieldLastNameAuthor, spinnerMaxPageCount, spinnerMaxPrice, oos, ois, tableManager, tableStock);
+        mainListeners listeners = new mainListeners(this, tableStock, tableBasket, spinnerQuantite, idClient, oos, ois);
+
+        ajouterButton.addActionListener(listeners.ajouterButtonListener());
+        payerButton.addActionListener(listeners.payerButtonListener());
+        annulerButton.addActionListener(listeners.annulerButtonListener());
+        supprimerButton.addActionListener(listeners.supprimerButton());
+        viderLePanierButton.addActionListener(listeners.viderLePanierButtonListener());
         setVisible(true);
     }
 public void buttonVisibility() {
