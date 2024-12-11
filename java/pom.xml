@@ -16,6 +16,8 @@
         <module>my-libraries</module>
         <module>client-achat-java</module>
         <module>client-achat-java-S</module>
+        <module>serveur-http</module>
+        <module>api-rest</module>
     </modules>
 
     <artifactId>java</artifactId>
