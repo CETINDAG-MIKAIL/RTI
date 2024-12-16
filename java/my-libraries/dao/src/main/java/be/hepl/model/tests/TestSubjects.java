@@ -36,6 +36,7 @@ public class TestSubjects {
         System.out.println("\n--- SELECT BY name ---");
         vm.setId(null);
         vm.setName("Romance");
+        System.out.println("\n--- vm ---" + vm);
         subjects = dao.read(vm);
         for (Subject s : subjects) {
             System.out.println(s);

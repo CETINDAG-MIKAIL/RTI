@@ -118,6 +118,23 @@ public class BookSearchVM implements Serializable {
     public void setTitle(String title) {
         this.title = title;
     }
+    @Override
+    public String toString() {
+        return "BookSearchVM{" +
+                "id=" + id +
+                ", title='" + title + '\'' +
+                ", author=" + (author != null ? author.toString() : "null") +
+                ", subject=" + (subject != null ? subject.toString() : "null") +
+                ", isbn='" + isbn + '\'' +
+                ", maxPageCount=" + maxPageCount +
+                ", minPageCount=" + minPageCount +
+                ", minStockQuantity=" + minStockQuantity +
+                ", minPrice=" + minPrice +
+                ", maxPrice=" + maxPrice +
+                ", minPublishYear=" + minPublishYear +
+                ", maxPublishYear=" + maxPublishYear +
+                '}';
+    }
 
 
 }
