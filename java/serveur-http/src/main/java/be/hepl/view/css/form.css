@@ -1,0 +1,85 @@
+form {
+    margin: 30px;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    background-color: #f9f9f9;
+}
+
+label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: bold;
+}
+
+input {
+    display: block;
+    width: calc(100% - 20px);
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 16px;
+    transition: border 0.2s ease, background 0.2s ease;
+}
+
+.input-error {
+    border: 2px solid red;
+}
+
+.error-message {
+    color: red;
+    font-size: 0.9em;
+    min-height: 20px;
+}
+
+#info-message {
+    color: #3498db;
+    font-size: 1.1em;
+    min-height: 20px;
+}
+
+button {
+    margin: 10px 5px 0 0;
+    padding: 10px 15px;
+    font-size: 16px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    color: white;
+}
+
+#add-button {
+    background-color: #4CAF50;
+}
+#add-button:hover {
+    background-color: #45a049;
+}
+
+#edit-button {
+    background-color: #f1c40f;
+}
+#edit-button:hover {
+    background-color: #f39c12;
+}
+
+#delete-button {
+    background-color: #f44336;
+}
+#delete-button:hover {
+    background-color: #d32f2f;
+}
+
+#search-button {
+    background-color: #3498db;
+}
+#search-button:hover {
+    background-color: #2980b9;
+}
+
+#empty-button {
+    background-color: #95a5a6;
+}
+#empty-button:hover {
+    background-color: #7f8c8d;
+}

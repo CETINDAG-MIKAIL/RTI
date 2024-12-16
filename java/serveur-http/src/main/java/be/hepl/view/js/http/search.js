@@ -1,0 +1,28 @@
+function searchRows(table, criteria) {
+    let url = `http://localhost:8080/api/${table}?`;
+
+    const queryParams = new URLSearchParams(criteria).toString();
+    url += queryParams;
+
+    if (queryParams === "" || queryParams === null) {
+        url = `http://localhost:8080/api/${table}`;
+    }
+
+    console.log("-------Recherche des données------- queryParams : ", queryParams);
+    console.log("-------Recherche des données------- url : -", url, "-");
+
+    return fetch(url)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`Erreur : ${response.status} - ${response.statusText}`);
+            }
+            console.log("-------Récupération des données réussie-------");
+            console.log(response.json());
+
+            return response.json();
+        })
+        .catch(error => {
+            console.error("Erreur lors de la récupération des données :", error);
+            throw error;
+        });
+}

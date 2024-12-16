@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Authors</title>
+    <link rel="stylesheet" href="../css/top-nav-bar.css">
+    <link rel="stylesheet" href="../css/table.css">
+    <link rel="stylesheet" href="../css/form.css">
+    <link rel="stylesheet" href="../css/general.css">
+    <link rel="stylesheet" href="../css/footer.css">
+
+    <script src="../js/authors.js" defer></script>
+    <script src="../js/http/add.js" defer></script>
+    <script src="../js/http/update.js" defer></script>
+    <script src="../js/http/delete.js" defer></script>
+    <script src="../js/http/search.js" defer></script>
+</head>
+<body>
+    <div id="navbar">
+        <a href="index.html">Accueil</a>
+        <a href="books.html">Livres</a>
+        <a href="" id="active">Auteurs</a>
+        <a href="subjects.html">Sujets</a>
+    </div>
+
+    <h1>Gestion des auteurs</h1>
+
+    <table id="table-authors">
+        <tr>
+            <th>Id</th>
+            <th>Prénom</th>
+            <th>Nom</th>
+            <th>Date de naissance</th>
+        </tr>
+        <tr>
+            <td>1</td>
+            <td>John</td>
+            <td>Doe</td>
+            <td>01-01-1970</td>
+        </tr>
+        <tr>
+            <td>2</td>
+            <td>Jane</td>
+            <td>Doe</td>
+            <td>02-01-1970</td>
+        </tr>
+        <tr>
+            <td>3</td>
+            <td>Foo</td>
+            <td>Bar</td>
+            <td>03-01-1970</td>
+        </tr>
+    </table>
+
+    <form action="/submit" method="POST">
+        <label for="id">Id :</label>
+        <input type="number" id="id" name="id" placeholder="Id de l'auteur">
+        <div id="id-error" class="error-message"></div>
+
+        <label for="firstname">Prénom :</label>
+        <input type="text" id="firstname" name="firstname" placeholder="Prénom de l'auteur">
+        <div id="firstname-error" class="error-message"></div>
+
+        <label for="lastname">Nom :</label>
+        <input type="text" id="lastname" name="lastname" placeholder="Nom de l'auteur">
+        <div id="lastname-error" class="error-message"></div>
+
+        <label for="date-of-birth">Date de naissance :</label>
+        <input type="date" id="date-of-birth" name="date-of-birth" placeholder="Date de naissance">
+        <div id="date-of-birth-error" class="error-message"></div>
+
+        <div id="info-message"></div>
+
+        <button type="button" id="add-button">Ajouter</button>
+        <button type="button" id="edit-button">Modifier</button>
+        <button type="button" id="delete-button">Supprimer</button>
+        <button type="button" id="search-button">Rechercher</button>
+        <button type="button" id="empty-button">Vider les champs</button>
+    </form>
+
+    <footer>
+        <span>&copy; 2024 Projet RTI. Tous droits réservés.</span>
+    </footer>
+</body>
+</html>
