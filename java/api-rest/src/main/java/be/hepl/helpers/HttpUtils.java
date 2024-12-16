@@ -35,19 +35,31 @@ public class HttpUtils {
         }
         return null; // Si le paramètre n'existe pas
     }
-    public static Map<String, String> parseQueryParams(String query) {
-        Map<String, String> queryParams = new HashMap<>();
+    public static Map<String, Object> parseQueryParams(String query) {
+        Map<String, Object> queryParams = new HashMap<>();
         if (query != null && !query.isEmpty()) {
             String[] pairs = query.split("&");
             for (String pair : pairs) {
                 String[] keyValue = pair.split("=");
                 if (keyValue.length == 2) {
-                    queryParams.put(keyValue[0], keyValue[1]);
+                    String key = keyValue[0];
+                    String value = keyValue[1];
+
+                    // Détection des objets imbriqués avec "."
+                    if (key.contains(".")) {
+                        String[] nestedKeys = key.split("\\.");
+                        queryParams.computeIfAbsent(nestedKeys[0], k -> new HashMap<String, String>());
+                        Map<String, String> nestedMap = (Map<String, String>) queryParams.get(nestedKeys[0]);
+                        nestedMap.put(nestedKeys[1], value);
+                    } else {
+                        queryParams.put(key, value);
+                    }
                 }
             }
         }
-        System.out.println("queryParams" + queryParams);
         return queryParams;
     }
+
+
 
 }

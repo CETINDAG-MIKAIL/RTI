@@ -7,6 +7,7 @@ import be.hepl.model.dao.CRUD;
 import be.hepl.model.entity.Author;
 import be.hepl.model.entity.Book;
 import be.hepl.model.entity.Subject;
+import be.hepl.model.viewmodel.BookSearchVM;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import java.io.IOException;
@@ -68,8 +69,21 @@ public class handler<T, S> implements HttpHandler {
         String query = exchange.getRequestURI().getQuery();
         String requestBody = HttpUtils.readRequestBody(exchange);
 
-        Map<String, String> queryParams = HttpUtils.parseQueryParams(query);
-        Integer id = queryParams.containsKey("id") ? Integer.parseInt(queryParams.get("id")) : null;
+        Map<String, Object> queryParams = HttpUtils.parseQueryParams(query);
+
+        Integer id = null;
+        if (queryParams.containsKey("id")) {
+            Object idValue = queryParams.get("id");
+            if (idValue instanceof String) {
+                try {
+                    id = Integer.parseInt((String) idValue); // Casting explicite vers String
+                } catch (NumberFormatException e) {
+                    throw new IllegalArgumentException("ID invalide : " + idValue);
+                }
+            } else {
+                throw new IllegalArgumentException("ID doit être une chaîne de caractères");
+            }
+        }
 
         if (id == null) throw new IllegalArgumentException("ID manquant dans les paramètres de requête");
 
@@ -78,6 +92,7 @@ public class handler<T, S> implements HttpHandler {
 
         T updatedEntity = JsonUtils.fromJson(requestBody, entityClass);
         if (updatedEntity == null) throw new IllegalArgumentException("Données JSON invalides");
+
         dao.update(updatedEntity);
 
         ResponseHelper.sendSuccessResponse(exchange, "Entité mise à jour avec succès");
@@ -85,14 +100,29 @@ public class handler<T, S> implements HttpHandler {
 
     private void handleDelete(HttpExchange exchange) throws IOException {
         String query = exchange.getRequestURI().getQuery();
-        Map<String, String> queryParams = HttpUtils.parseQueryParams(query);
+        Map<String, Object> queryParams = HttpUtils.parseQueryParams(query);
 
-        Integer id = queryParams.containsKey("id") ? Integer.parseInt(queryParams.get("id")) : null;
+        Integer id = null;
+        if (queryParams.containsKey("id")) {
+            Object idValue = queryParams.get("id");
+            if (idValue instanceof String) {
+                try {
+                    id = Integer.parseInt((String) idValue); // Casting explicite vers String
+                } catch (NumberFormatException e) {
+                    throw new IllegalArgumentException("ID invalide : " + idValue);
+                }
+            } else {
+                throw new IllegalArgumentException("ID doit être une chaîne de caractères");
+            }
+        }
+
         if (id == null) throw new IllegalArgumentException("ID manquant dans les paramètres de requête");
 
+        // Suppression de l'entité
         dao.delete(id);
         ResponseHelper.sendSuccessResponse(exchange, "Entité supprimée avec succès");
     }
+
     private <T> String convertToJsonList(List<T> myList) {
         StringBuilder json = new StringBuilder("[");
         for (int i = 0; i < myList.size(); i++) {
@@ -145,14 +175,12 @@ public class handler<T, S> implements HttpHandler {
         return input != null ? input.trim() : "";
     }
 
-
-
     private S parseSearchParams(String query) {
         System.out.println("parseSearchParams: " + query);
         if (query == null || query.isEmpty()) return null;
         query = query.replaceAll("[\n\r\t]", "").trim();
 
-        Map<String, String> queryParams = HttpUtils.parseQueryParams(query); // Obtient le Map des paramètres
+        Map<String, Object> queryParams = HttpUtils.parseQueryParams(query); // Obtient le Map des paramètres
         System.out.println("queryParams: " + queryParams);
 
         try {
@@ -160,131 +188,104 @@ public class handler<T, S> implements HttpHandler {
             S searchVM = searchClass.getDeclaredConstructor().newInstance();
             System.out.println("searchVM initial: " + searchVM);
 
-            // Utiliser les valeurs du Map pour définir les propriétés de searchVM
-            if (queryParams.containsKey("name")) {
-                String rawName = queryParams.get("name");
-                searchClass.getMethod("setName", String.class).invoke(searchVM, rawName);
-            }
+            // Parcourir les paramètres et définir les valeurs dynamiquement
+            for (Map.Entry<String, Object> entry : queryParams.entrySet()) {
+                String key = entry.getKey();
+                Object value = entry.getValue();
 
-            if (queryParams.containsKey("id")) {
-                try {
-                    String rawId = queryParams.get("id");
-                    Integer idValue = Integer.valueOf(rawId);
+                System.out.println("Checking key: " + key);
+
+                // Vérifier si la clé est 'author', qui contient un sous-objet
+                if (key.equals("author")) {
+                    // Ici, 'author' est un Map contenant une ou plusieurs clés (ex: firstName, lastName, etc.)
+                    Map<String, Object> authorParams = (Map<String, Object>) value; // Cela donne {firstName=Dan, lastName=Brown, id=1}
+
+                    // Créer un nouvel auteur à chaque fois qu'on entre dans ce bloc
+                    Author author = new Author();
+
+                    // Extraire les différents paramètres de l'auteur et les affecter à l'objet author
+                    String firstName = (String) authorParams.get("firstName");
+                    String lastName = (String) authorParams.get("lastName");
+                    String birthDate = (String) authorParams.get("birthDate");
+                    String id = (String) authorParams.get("id");
+
+                    if (searchVM instanceof BookSearchVM) {
+                        BookSearchVM bookSearchVM = (BookSearchVM) searchVM;
+
+                        // Assigner les valeurs à l'auteur
+                        if (firstName != null) {
+                            System.out.println("firstName: " + firstName);
+                            author.setFirstName(firstName);
+                        }
+                        if (id != null) {
+                            System.out.println("id: " + id);
+                            author.setId(Integer.parseInt(id));
+                        }
+                        if (lastName != null) {
+                            System.out.println("lastName: " + lastName);
+                            author.setLastName(lastName);
+                        }
+                        if (birthDate != null) {
+                            System.out.println("birthDate: " + birthDate);
+                            author.setBirthDate(birthDate);
+                        }
+
+                        // Toujours assigner un nouvel auteur
+                        bookSearchVM.setAuthor(author);
+                    }
+                }
+                // Cas du champ 'subject'...
+                else if (key.equals("subject")) {
+                    System.out.println("Processing subject field: " + key);
+
+                    if (searchVM instanceof BookSearchVM) {
+                        BookSearchVM bookSearchVM = (BookSearchVM) searchVM;
+
+                        // Créer un nouvel objet Subject à chaque fois qu'on entre dans ce bloc
+                        Subject subject = new Subject();
+
+                        // On suppose que 'value' pour 'subject' est un Map comme pour 'author'
+                        if (value instanceof Map) {
+                            Map<String, Object> subjectParams = (Map<String, Object>) value;
+
+                            // Extraire les sous-clés de "subject" (par exemple "Id" et "name")
+                            String subjectId = (String) subjectParams.get("id");  // "id" pour l'identifiant du sujet
+                            String subjectName = (String) subjectParams.get("name");  // "name" pour le nom du sujet
+
+                            // Assigner les valeurs extraites à l'objet subject
+                            if (subjectId != null) {
+                                System.out.println("subjectId: " + subjectId);
+                                subject.setId(Integer.valueOf(subjectId));  // Assigner à subject.id
+                            }
+                            if (subjectName != null) {
+                                System.out.println("subjectName: " + subjectName);
+                                subject.setName(subjectName);  // Assigner à subject.name
+                            }
+
+                            // Toujours assigner un nouvel objet subject
+                            bookSearchVM.setSubject(subject);
+                        }
+                    }
+                } else if ("id".equals(key)) {
+                    Integer idValue = Integer.valueOf(value.toString());
                     searchClass.getMethod("setId", Integer.class).invoke(searchVM, idValue);
-                } catch (NumberFormatException e) {
-                    throw new IllegalArgumentException("ID invalide : " + queryParams.get("id"));
-                }
-            }
-
-            if (queryParams.containsKey("FirstName")) {
-                String rawFirstName = queryParams.get("FirstName");
-                searchClass.getMethod("setFirstName", String.class).invoke(searchVM, rawFirstName);
-            }
-
-            if (queryParams.containsKey("LastName")) {
-                String rawLastName = queryParams.get("LastName");
-                searchClass.getMethod("setLastName", String.class).invoke(searchVM, rawLastName);
-            }
-
-            if (queryParams.containsKey("BirthDate")) {
-                String rawBirthDate = queryParams.get("BirthDate");
-                searchClass.getMethod("setBirthDate", String.class).invoke(searchVM, rawBirthDate);
-            }
-
-            // Ajout des paramètres spécifiques à Book
-            if (queryParams.containsKey("isbn")) {
-                try {
-                    String rawIsbn = queryParams.get("isbn");
-                    searchClass.getMethod("setIsbn", String.class).invoke(searchVM, rawIsbn);
-                } catch (NumberFormatException e) {
-                    throw new IllegalArgumentException("ISBN invalide : " + queryParams.get("isbn"));
-                }
-            }
-
-            if (queryParams.containsKey("minPrice")) {
-                try {
-                    String rawMinPrice = queryParams.get("minPrice");
-                    Float minPrice = Float.valueOf(rawMinPrice);
+                } else if ("title".equals(key)) {
+                    searchClass.getMethod("setTitle", String.class).invoke(searchVM, value);
+                } else if ("isbn".equals(key)) {
+                    searchClass.getMethod("setIsbn", String.class).invoke(searchVM, value);
+                } else if ("minPrice".equals(key)) {
+                    Float minPrice = Float.valueOf(value.toString());
                     searchClass.getMethod("setMinPrice", Float.class).invoke(searchVM, minPrice);
-                } catch (NumberFormatException e) {
-                    throw new IllegalArgumentException("minPrice invalide : " + queryParams.get("minPrice"));
-                }
-            }
-
-            if (queryParams.containsKey("maxPrice")) {
-                try {
-                    String rawMaxPrice = queryParams.get("maxPrice");
-                    Float maxPrice = Float.valueOf(rawMaxPrice);
+                } else if ("maxPrice".equals(key)) {
+                    Float maxPrice = Float.valueOf(value.toString());
                     searchClass.getMethod("setMaxPrice", Float.class).invoke(searchVM, maxPrice);
-                } catch (NumberFormatException e) {
-                    throw new IllegalArgumentException("maxPrice invalide : " + queryParams.get("maxPrice"));
+                } else if ("FirstName".equals(key)) {
+                    searchClass.getMethod("setFirstName", String.class).invoke(searchVM, value);
+                } else if ("LastName".equals(key)) {
+                    searchClass.getMethod("setLastName", String.class).invoke(searchVM, value);
+                } else if ("BirthDate".equals(key)) {
+                    searchClass.getMethod("setBirthDate", String.class).invoke(searchVM, value);
                 }
-            }
-
-            if (queryParams.containsKey("title")) {
-                String rawTitle = queryParams.get("title");
-                searchClass.getMethod("setTitle", String.class).invoke(searchVM, rawTitle);
-            }
-
-            if (queryParams.containsKey("minStockQuantity")) {
-                try {
-                    String rawMinStockQuantity = queryParams.get("minStockQuantity");
-                    Integer minStockQuantity = Integer.valueOf(rawMinStockQuantity);
-                    searchClass.getMethod("setMinStockQuantity", Integer.class).invoke(searchVM, minStockQuantity);
-                } catch (NumberFormatException e) {
-                    throw new IllegalArgumentException("minStockQuantity invalide : " + queryParams.get("minStockQuantity"));
-                }
-            }
-
-
-            if (queryParams.containsKey("minPublishYear")) {
-                try {
-                    String rawMinPublishYear = queryParams.get("minPublishYear");
-                    Integer minPublishYear = Integer.valueOf(rawMinPublishYear);
-                    searchClass.getMethod("setMinPublishYear", Integer.class).invoke(searchVM, minPublishYear);
-                } catch (NumberFormatException e) {
-                    throw new IllegalArgumentException("minPublishYear invalide : " + queryParams.get("minPublishYear"));
-                }
-            }
-
-            if (queryParams.containsKey("maxPublishYear")) {
-                try {
-                    String rawMaxPublishYear = queryParams.get("maxPublishYear");
-                    Integer maxPublishYear = Integer.valueOf(rawMaxPublishYear);
-                    searchClass.getMethod("setMaxPublishYear", Integer.class).invoke(searchVM, maxPublishYear);
-                } catch (NumberFormatException e) {
-                    throw new IllegalArgumentException("maxPublishYear invalide : " + queryParams.get("maxPublishYear"));
-                }
-            }
-
-            if (queryParams.containsKey("minPageCount")) {
-                try {
-                    String rawMinPageCount = queryParams.get("minPageCount");
-                    Integer minPageCount = Integer.valueOf(rawMinPageCount);
-                    searchClass.getMethod("setMinPageCount", Integer.class).invoke(searchVM, minPageCount);
-                } catch (NumberFormatException e) {
-                    throw new IllegalArgumentException("minPageCount invalide : " + queryParams.get("minPageCount"));
-                }
-            }
-
-            if (queryParams.containsKey("maxPageCount")) {
-                try {
-                    String rawMaxPageCount = queryParams.get("maxPageCount");
-                    Integer maxPageCount = Integer.valueOf(rawMaxPageCount);
-                    searchClass.getMethod("setMaxPageCount", Integer.class).invoke(searchVM, maxPageCount);
-                } catch (NumberFormatException e) {
-                    throw new IllegalArgumentException("maxPageCount invalide : " + queryParams.get("maxPageCount"));
-                }
-            }
-
-            if (queryParams.containsKey("author")) {
-                String rawAuthor = queryParams.get("author");
-                searchClass.getMethod("setAuthor", String.class).invoke(searchVM, rawAuthor);
-            }
-
-            if (queryParams.containsKey("subject")) {
-                String rawSubject = queryParams.get("subject");
-                searchClass.getMethod("setSubject", String.class).invoke(searchVM, rawSubject);
             }
 
             System.out.println("searchVM final: " + searchVM);
@@ -294,6 +295,11 @@ public class handler<T, S> implements HttpHandler {
             return null;
         }
     }
+
+
+
+
+
 
 
 
