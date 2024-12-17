@@ -4,8 +4,11 @@ function searchRows(table, criteria) {
     const queryParams = new URLSearchParams(criteria).toString();
     url += queryParams;
 
+    console.log("AVANT-------Recherche des données------- queryParams : ", queryParams);
+    console.log("AVANT-------Recherche des données------- url : -", url, "-");
+
     if (queryParams === "" || queryParams === null) {
-        url = `http://localhost:8080/api/${table}`;
+        url = url.slice(0, -1);
     }
 
     console.log("-------Recherche des données------- queryParams : ", queryParams);
@@ -17,7 +20,6 @@ function searchRows(table, criteria) {
                 throw new Error(`Erreur : ${response.status} - ${response.statusText}`);
             }
             console.log("-------Récupération des données réussie-------");
-            console.log(response.json());
 
             return response.json();
         })

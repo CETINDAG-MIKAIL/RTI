@@ -19,25 +19,23 @@ const publishYearError = document.getElementById("publish-year-error");
 
 const infoMessage = document.getElementById("info-message");
 
-document.addEventListener("DOMContentLoaded", () => {
-    const rows = document.querySelectorAll("table tr:not(:first-child)");
 
-    rows.forEach(row => {
-        row.addEventListener("click", () => {
-            const cells = row.querySelectorAll("td");
+function addRowListeners(row) {
+    row.addEventListener("click", () => {
+        const cells = row.querySelectorAll("td");
 
-            idField.value = cells[0].textContent.trim();
-            titleField.value = cells[1].textContent.trim();
-            idAuthorField.value = cells[2].textContent.trim();
-            idSubjectField.value = cells[3].textContent.trim();
-            isbnField.value = cells[4].textContent.trim();
-            pageCountField.value = cells[5].textContent.trim();
-            stockQuantityField.value = cells[6].textContent.trim();
-            priceField.value = cells[7].textContent.trim();
-            publishYearField.value = cells[8].textContent.trim();
-        });
+        idField.value = cells[0].textContent.trim();
+        titleField.value = cells[1].textContent.trim();
+        idAuthorField.value = cells[2].textContent.trim();
+        idSubjectField.value = cells[5].textContent.trim();
+        isbnField.value = cells[7].textContent.trim();
+        pageCountField.value = cells[8].textContent.trim();
+        stockQuantityField.value = cells[9].textContent.trim();
+        priceField.value = cells[10].textContent.trim();
+        publishYearField.value = cells[11].textContent.trim();
     });
-});
+}
+
 
 const addButton = document.getElementById("add-button");
 const editButton = document.getElementById("edit-button");
@@ -268,8 +266,41 @@ deleteButton.addEventListener("click", () => {
         });
 });
 
+
+const pageCountSelect = document.getElementById("page-count-select");
+const stockQuantitySelect = document.getElementById("stock-quantity-select");
+const priceSelect = document.getElementById("price-select");
+const publishYearSelect = document.getElementById("publish-year-select");
+
 searchButton.addEventListener("click", () => {
     deleteFieldsErrors();
+
+    let pageCountKey, stockQuantityKey, priceKey, publishYearKey;
+
+    if (pageCountSelect.value === "minPageCount") {
+        pageCountKey = "minPageCount";
+    } else {
+        pageCountKey = "maxPageCount";
+    }
+
+    if (stockQuantitySelect.value === "minStockQuantity") {
+        stockQuantityKey = "minStockQuantity";
+    } else {
+        stockQuantityKey = "maxStockQuantity";
+    }
+
+    if (priceSelect.value === "minPrice") {
+        priceKey = "minPrice";
+    } else {
+        priceKey = "maxPrice";
+    }
+
+    if (publishYearSelect.value === "minPublishYear") {
+        publishYearKey = "minPublishYear";
+    } else {
+        publishYearKey = "maxPublishYear";
+    }
+
 
     const criteria = {
         id: idField.value.trim(),
@@ -277,10 +308,10 @@ searchButton.addEventListener("click", () => {
         idAuthor: idAuthorField.value.trim(),
         idSubject: idSubjectField.value.trim(),
         isbn: isbnField.value.trim(),
-        pageCount: pageCountField.value.trim(),
-        stockQuantity: stockQuantityField.value.trim(),
-        price: priceField.value.trim(),
-        publishYear: publishYearField.value.trim()
+        [pageCountKey]: pageCountField.value.trim(),
+        [stockQuantityKey]: stockQuantityField.value.trim(),
+        [priceKey]: priceField.value.trim(),
+        [publishYearKey]: publishYearField.value.trim()
     };
 
     const filteredCriteria = Object.fromEntries(
@@ -289,6 +320,10 @@ searchButton.addEventListener("click", () => {
 
     searchRows("books", filteredCriteria)
         .then(data => {
+            console.log("Contenu complet de data :", data);
+            console.log("Type de data :", typeof data);
+            console.log("Est-ce un tableau ?", Array.isArray(data));
+
             const tableBooks = document.getElementById("table-books");
 
             tableBooks.innerHTML = "";
@@ -303,10 +338,19 @@ searchButton.addEventListener("click", () => {
                 titleCell.textContent = book.title;
 
                 const idAuthorCell = document.createElement("td");
-                idAuthorCell.textContent = book.idAuthor;
+                idAuthorCell.textContent = book.author.id;
+
+                const lastNameAuthorCell = document.createElement("td");
+                lastNameAuthorCell.textContent = book.author.lastName;
+
+                const firstNameAuthorCell = document.createElement("td");
+                firstNameAuthorCell.textContent = book.author.firstName;
 
                 const idSubjectCell = document.createElement("td");
-                idSubjectCell.textContent = book.idSubject;
+                idSubjectCell.textContent = book.subject.id;
+
+                const nameSubjectCell = document.createElement("td");
+                nameSubjectCell.textContent = book.subject.name;
 
                 const isbnCell = document.createElement("td");
                 isbnCell.textContent = book.isbn;
@@ -326,7 +370,10 @@ searchButton.addEventListener("click", () => {
                 row.appendChild(idCell);
                 row.appendChild(titleCell);
                 row.appendChild(idAuthorCell);
+                row.appendChild(lastNameAuthorCell);
+                row.appendChild(firstNameAuthorCell);
                 row.appendChild(idSubjectCell);
+                row.appendChild(nameSubjectCell);
                 row.appendChild(isbnCell);
                 row.appendChild(pageCountCell);
                 row.appendChild(stockQuantityCell);
@@ -334,6 +381,8 @@ searchButton.addEventListener("click", () => {
                 row.appendChild(publishYearCell);
 
                 tableBooks.appendChild(row);
+
+                addRowListeners(row);
             });
         })
         .catch(error => {
@@ -341,6 +390,7 @@ searchButton.addEventListener("click", () => {
             infoMessage.textContent = error.message || "Erreur lors du chargement des données.";
             console.error("Erreur :", error);
         });
+
 });
 
 emptyButton.addEventListener("click", () => {

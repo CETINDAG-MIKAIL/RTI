@@ -26,6 +26,7 @@ public class Author implements Entity, Serializable {
     public Author() {
 
     }
+
     @Override
     public String toString() {
         return "Author{" +
@@ -40,12 +41,21 @@ public class Author implements Entity, Serializable {
     //*********************** GET ***********************
     //***************************************************
     @Override
-    public Integer getId() {return id;}
-    public String getFirstName() {return firstName;}
-    public String getLastName() {return lastName;}
-    public String getBirthDate() {return birthDate;}
+    public Integer getId() {
+        return id;
+    }
 
+    public String getFirstName() {
+        return firstName;
+    }
 
+    public String getLastName() {
+        return lastName;
+    }
+
+    public String getBirthDate() {
+        return birthDate;
+    }
 
 
     //***************************************************
@@ -53,9 +63,19 @@ public class Author implements Entity, Serializable {
     //***************************************************
 
 
-    public void setBirthDate(String birthDate) {this.birthDate = birthDate;}
-    public void setLastName(String lastName) {this.lastName = lastName;}
-    public void setFirstName(String firstName) {this.firstName = firstName;}
+    public void setBirthDate(String birthDate) {
+        this.birthDate = birthDate;
+    }
 
-    public void setId(Integer id) { this.id = id;}
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
 }

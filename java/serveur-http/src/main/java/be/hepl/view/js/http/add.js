@@ -12,7 +12,7 @@ function addRow(table, data) {
             if (!response.ok) {
                 throw new Error(`Erreur : ${response.status} - ${response.statusText}`);
             }
-            return response.json();
+            return response.text();
         })
         .catch(error => {
             console.error("Erreur lors de l'ajout des données :", error);

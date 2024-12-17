@@ -1,31 +1,27 @@
 const idField = document.getElementById("id");
 const idError = document.getElementById("id-error");
-const firstnameField = document.getElementById("firstname");
-const firstnameError = document.getElementById("firstname-error");
-const lastnameField = document.getElementById("lastname");
-const lastnameError = document.getElementById("lastname-error");
+const firstNameField = document.getElementById("firstName");
+const firstNameError = document.getElementById("firstName-error");
+const lastNameField = document.getElementById("lastName");
+const lastNameError = document.getElementById("lastName-error");
 const dateOfBirthField = document.getElementById("date-of-birth");
 const dateOfBirthError = document.getElementById("date-of-birth-error");
 
 const infoMessage = document.getElementById("info-message");
 
-document.addEventListener("DOMContentLoaded", () => {
-    const rows = document.querySelectorAll("table tr:not(:first-child)");
+function addRowListeners(row) {
+    row.addEventListener("click", () => {
+        const cells = row.querySelectorAll("td");
 
-    rows.forEach(row => {
-        row.addEventListener("click", () => {
-            const cells = row.querySelectorAll("td");
+        idField.value = cells[0].textContent.trim();
+        firstNameField.value = cells[1].textContent.trim();
+        lastNameField.value = cells[2].textContent.trim();
 
-            idField.value = cells[0].textContent.trim();
-            firstnameField.value = cells[1].textContent.trim();
-            lastnameField.value = cells[2].textContent.trim();
-
-            let [day, month, year] = cells[3].textContent.split('-');
-            let formattedDate = `${year}-${month}-${day}`;
-            dateOfBirthField.value = formattedDate.trim();
-        });
+        let [day, month, year] = cells[3].textContent.split('-');
+        let formattedDate = `${year}-${month}-${day}`;
+        dateOfBirthField.value = formattedDate.trim();
     });
-});
+}
 
 const addButton = document.getElementById("add-button");
 const editButton = document.getElementById("edit-button");
@@ -38,15 +34,15 @@ addButton.addEventListener("click", () => {
 
     let error = false;
 
-    if (firstnameField.value === "") {
-        firstnameField.classList.add("input-error");
-        firstnameError.textContent = "Ce champ est obligatoire pour l'ajout.";
+    if (firstNameField.value === "") {
+        firstNameField.classList.add("input-error");
+        firstNameError.textContent = "Ce champ est obligatoire pour l'ajout.";
         error = true;
     }
 
-    if (lastnameField.value === "") {
-        lastnameField.classList.add("input-error");
-        lastnameError.textContent = "Ce champ est obligatoire pour l'ajout.";
+    if (lastNameField.value === "") {
+        lastNameField.classList.add("input-error");
+        lastNameError.textContent = "Ce champ est obligatoire pour l'ajout.";
         error = true;
     }
 
@@ -61,8 +57,8 @@ addButton.addEventListener("click", () => {
     }
 
     const newRowData = {
-        firstname: firstnameField.value,
-        lastname: lastnameField.value,
+        firstName: firstNameField.value,
+        lastName: lastNameField.value,
         dateOfBirth: dateOfBirthField.value
     };
 
@@ -88,17 +84,17 @@ editButton.addEventListener("click", () => {
         error = true;
     }
 
-    if (firstnameField.value === "") {
-        firstnameField.classList.add("input-error");
-        firstnameError.textContent = "Un de ces champs est obligatoire pour la modification.";
+    if (firstNameField.value === "") {
+        firstNameField.classList.add("input-error");
+        firstNameError.textContent = "Un de ces champs est obligatoire pour la modification.";
         error = true;
     } else {
         hasInAField = true;
     }
 
-    if (lastnameField.value === "") {
-        lastnameField.classList.add("input-error");
-        lastnameError.textContent = "Un de ces champs est obligatoire pour la modification.";
+    if (lastNameField.value === "") {
+        lastNameField.classList.add("input-error");
+        lastNameError.textContent = "Un de ces champs est obligatoire pour la modification.";
         error = true;
     } else {
         hasInAField = true;
@@ -113,10 +109,10 @@ editButton.addEventListener("click", () => {
     }
 
     if (hasInAField) {
-        firstnameField.classList.remove("input-error");
-        firstnameError.textContent = "";
-        lastnameField.classList.remove("input-error");
-        lastnameError.textContent = "";
+        firstNameField.classList.remove("input-error");
+        firstNameError.textContent = "";
+        lastNameField.classList.remove("input-error");
+        lastNameError.textContent = "";
         dateOfBirthField.classList.remove("input-error");
         dateOfBirthError.textContent = "";
     }
@@ -126,8 +122,8 @@ editButton.addEventListener("click", () => {
 
     const criteria = {
         id: idField.value.trim(),
-        firstname: firstnameField.value.trim(),
-        lastname: lastnameField.value.trim(),
+        firstName: firstNameField.value.trim(),
+        lastName: lastNameField.value.trim(),
         dateOfBirth: dateOfBirthField.value.trim()
     };
 
@@ -171,8 +167,8 @@ searchButton.addEventListener("click", () => {
 
     const criteria = {
         id: idField.value.trim(),
-        firstname: firstnameField.value.trim(),
-        lastname: lastnameField.value.trim(),
+        firstName: firstNameField.value.trim(),
+        lastName: lastNameField.value.trim(),
         dateOfBirth: dateOfBirthField.value.trim()
     };
 
@@ -180,8 +176,14 @@ searchButton.addEventListener("click", () => {
         Object.entries(criteria).filter(([key, value]) => value !== null && value !== "")
     );
 
+    console.log("filteredCriteria : ", filteredCriteria);
+
     searchRows("authors", filteredCriteria)
         .then(data => {
+            console.log("Contenu complet de data :", data);
+            console.log("Type de data :", typeof data);
+            console.log("Est-ce un tableau ?", Array.isArray(data));
+
             const tableAuthors = document.getElementById("table-authors");
 
             tableAuthors.innerHTML = "";
@@ -192,21 +194,23 @@ searchButton.addEventListener("click", () => {
                 const idCell = document.createElement("td");
                 idCell.textContent = author.id;
 
-                const firstnameCell = document.createElement("td");
-                firstnameCell.textContent = author.firstname;
+                const lastNameCell = document.createElement("td");
+                lastNameCell.textContent = author.lastName;
 
-                const lastnameCell = document.createElement("td");
-                lastnameCell.textContent = author.lastname;
+                const firstNameCell = document.createElement("td");
+                firstNameCell.textContent = author.firstName;
 
                 const dateOfBirthCell = document.createElement("td");
-                dateOfBirthCell.textContent = author.dateOfBirth;
+                dateOfBirthCell.textContent = author.birthDate;
 
                 row.appendChild(idCell);
-                row.appendChild(firstnameCell);
-                row.appendChild(lastnameCell);
+                row.appendChild(lastNameCell);
+                row.appendChild(firstNameCell);
                 row.appendChild(dateOfBirthCell);
 
                 tableAuthors.appendChild(row);
+
+                addRowListeners(row);
             });
         })
         .catch(error => {
@@ -220,8 +224,8 @@ searchButton.addEventListener("click", () => {
 emptyButton.addEventListener("click", () => {
     deleteFieldsErrors();
     idField.value = "";
-    firstnameField.value = "";
-    lastnameField.value = "";
+    firstNameField.value = "";
+    lastNameField.value = "";
     dateOfBirthField.value = "";
 
     infoMessage.textContent = "";
@@ -230,10 +234,10 @@ emptyButton.addEventListener("click", () => {
 function deleteFieldsErrors() {
     idField.classList.remove("input-error");
     idError.textContent = "";
-    firstnameField.classList.remove("input-error");
-    firstnameError.textContent = "";
-    lastnameField.classList.remove("input-error");
-    lastnameError.textContent = "";
+    firstNameField.classList.remove("input-error");
+    firstNameError.textContent = "";
+    lastNameField.classList.remove("input-error");
+    lastNameError.textContent = "";
     dateOfBirthField.classList.remove("input-error");
     dateOfBirthError.textContent = "";
 

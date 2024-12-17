@@ -1,5 +1,5 @@
 function updateRow(table, id, data) {
-    const url = `http://localhost:8080/api/${table}/${id}`;
+    const url = `http://localhost:8080/api/${table}?id=${id}`;
 
     return fetch(url, {
         method: "PUT",
@@ -12,7 +12,7 @@ function updateRow(table, id, data) {
             if (!response.ok) {
                 throw new Error(`Erreur : ${response.status} - ${response.statusText}`);
             }
-            return response.json();
+            return response.text();
         })
         .catch(error => {
             console.error("Erreur lors de la mise à jour des données :", error);

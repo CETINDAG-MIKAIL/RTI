@@ -5,18 +5,14 @@ const nameError = document.getElementById("name-error");
 
 const infoMessage = document.getElementById("info-message");
 
-document.addEventListener("DOMContentLoaded", () => {
-    const rows = document.querySelectorAll("table tr:not(:first-child)");
+function addRowListeners(row) {
+    row.addEventListener("click", () => {
+        const cells = row.querySelectorAll("td");
 
-    rows.forEach(row => {
-        row.addEventListener("click", () => {
-            const cells = row.querySelectorAll("td");
-
-            idField.value = cells[0].textContent.trim();
-            nameField.value = cells[1].textContent.trim();
-        });
+        idField.value = cells[0].textContent.trim();
+        nameField.value = cells[1].textContent.trim();
     });
-});
+}
 
 const addButton = document.getElementById("add-button");
 const editButton = document.getElementById("edit-button");
@@ -134,26 +130,41 @@ searchButton.addEventListener("click", () => {
         Object.entries(criteria).filter(([key, value]) => value !== null && value !== "")
     );
 
+    console.log("filteredCriteria : ", filteredCriteria);
+
     searchRows("subjects", filteredCriteria)
         .then(data => {
+            console.log("Contenu complet de data :", data);
+            console.log("Type de data :", typeof data);
+            console.log("Est-ce un tableau ?", Array.isArray(data));
+
             const tableSubjects = document.getElementById("table-subjects");
 
             tableSubjects.innerHTML = "";
 
-            data.forEach(book => {
-                const row = document.createElement("tr");
+            if (Array.isArray(data)) {
+                const tableSubjects = document.getElementById("table-subjects");
+                tableSubjects.innerHTML = "";  // Réinitialiser le contenu de la table
 
-                const idCell = document.createElement("td");
-                idCell.textContent = book.id;
+                data.forEach(subject => {
+                    const row = document.createElement("tr");
 
-                const nameCell = document.createElement("td");
-                nameCell.textContent = book.name;
+                    const idCell = document.createElement("td");
+                    idCell.textContent = subject.id;
 
-                row.appendChild(idCell);
-                row.appendChild(nameCell);
+                    const nameCell = document.createElement("td");
+                    nameCell.textContent = subject.name;
 
-                tableSubjects.appendChild(row);
-            });
+                    row.appendChild(idCell);
+                    row.appendChild(nameCell);
+
+                    tableSubjects.appendChild(row);
+
+                    addRowListeners(row);
+                });
+            } else {
+                console.error("Les données ne sont pas un tableau valide.");
+            }
         })
         .catch(error => {
             infoMessage.style.color = "red";

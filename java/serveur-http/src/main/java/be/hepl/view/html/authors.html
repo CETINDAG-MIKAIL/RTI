@@ -25,31 +25,17 @@
 
     <h1>Gestion des auteurs</h1>
 
-    <table id="table-authors">
-        <tr>
-            <th>Id</th>
-            <th>Prénom</th>
-            <th>Nom</th>
-            <th>Date de naissance</th>
-        </tr>
-        <tr>
-            <td>1</td>
-            <td>John</td>
-            <td>Doe</td>
-            <td>01-01-1970</td>
-        </tr>
-        <tr>
-            <td>2</td>
-            <td>Jane</td>
-            <td>Doe</td>
-            <td>02-01-1970</td>
-        </tr>
-        <tr>
-            <td>3</td>
-            <td>Foo</td>
-            <td>Bar</td>
-            <td>03-01-1970</td>
-        </tr>
+    <table>
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Nom</th>
+                <th>Prénom</th>
+                <th>Date de naissance</th>
+            </tr>
+        </thead>
+        <tbody id="table-authors">
+        </tbody>
     </table>
 
     <form action="/submit" method="POST">
@@ -57,13 +43,13 @@
         <input type="number" id="id" name="id" placeholder="Id de l'auteur">
         <div id="id-error" class="error-message"></div>
 
-        <label for="firstname">Prénom :</label>
-        <input type="text" id="firstname" name="firstname" placeholder="Prénom de l'auteur">
-        <div id="firstname-error" class="error-message"></div>
+        <label for="lastName">Nom :</label>
+        <input type="text" id="lastName" name="lastName" placeholder="Nom de l'auteur">
+        <div id="lastName-error" class="error-message"></div>
 
-        <label for="lastname">Nom :</label>
-        <input type="text" id="lastname" name="lastname" placeholder="Nom de l'auteur">
-        <div id="lastname-error" class="error-message"></div>
+        <label for="firstName">Prénom :</label>
+        <input type="text" id="firstName" name="firstName" placeholder="Prénom de l'auteur">
+        <div id="firstName-error" class="error-message"></div>
 
         <label for="date-of-birth">Date de naissance :</label>
         <input type="date" id="date-of-birth" name="date-of-birth" placeholder="Date de naissance">
