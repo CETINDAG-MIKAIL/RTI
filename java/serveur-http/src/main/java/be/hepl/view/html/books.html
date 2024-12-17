@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Books</title>
+    <link rel="stylesheet" href="../css/top-nav-bar.css">
+    <link rel="stylesheet" href="../css/table.css">
+    <link rel="stylesheet" href="../css/form.css">
+    <link rel="stylesheet" href="../css/general.css">
+    <link rel="stylesheet" href="../css/footer.css">
+
+    <script src="../js/books.js" defer></script>
+    <script src="../js/http/add.js" defer></script>
+    <script src="../js/http/update.js" defer></script>
+    <script src="../js/http/delete.js" defer></script>
+    <script src="../js/http/search.js" defer></script>
+</head>
+<body>
+    <div id="navbar">
+        <a href="index.html">Accueil</a>
+        <a href="" id="active">Livres</a>
+        <a href="authors.html">Auteurs</a>
+        <a href="subjects.html">Sujets</a>
+    </div>
+
+    <h1>Gestion des livres</h1>
+
+    <table id="table-books">
+        <tr>
+            <th>Id</th>
+            <th>Titre</th>
+            <th>Id auteur</th>
+            <th>Id sujet</th>
+            <th>ISBN</th>
+            <th>Nombre de pages</th>
+            <th>Quantité</th>
+            <th>Prix</th>
+            <th>Année</th>
+        </tr>
+        <tr>
+            <td>1</td>
+            <td>Le seigneur des anneaux</td>
+            <td>1</td>
+            <td>1</td>
+            <td>978-2-226-13116-1</td>
+            <td>1216</td>
+            <td>5</td>
+            <td>25.00</td>
+            <td>1954</td>
+        </tr>
+        <tr>
+            <td>2</td>
+            <td>La chanson de tous</td>
+            <td>2</td>
+            <td>3</td>
+            <td>111-2-243-7394-3</td>
+            <td>352</td>
+            <td>3</td>
+            <td>15.00</td>
+            <td>2019</td>
+        </tr>
+    </table>
+
+    <form action="/submit" method="POST">
+        <label for="id">Id :</label>
+        <input type="number" id="id" name="id" placeholder="Id du livre">
+        <div id="id-error" class="error-message"></div>
+
+        <label for="title">Titre :</label>
+        <input type="text" id="title" name="title" placeholder="Titre du livre">
+        <div id="title-error" class="error-message"></div>
+
+        <label for="author-id">Id auteur :</label>
+        <input type="number" id="author-id" name="author-id" placeholder="Id de l'auteur">
+        <div id="author-id-error" class="error-message"></div>
+
+        <label for="subject-id">Id sujet :</label>
+        <input type="number" id="subject-id" name="subject-id" placeholder="Id du sujet">
+        <div id="subject-id-error" class="error-message"></div>
+
+        <label for="isbn">ISBN :</label>
+        <input type="text" id="isbn" name="isbn" placeholder="ISBN du livre">
+        <div id="isbn-error" class="error-message"></div>
+
+        <label for="page-count">Nombre de pages :</label>
+        <input type="text" id="page-count" name="page-count" placeholder="Nombre de pages">
+        <div id="page-count-error" class="error-message"></div>
+
+        <label for="stock-quantity">Stock :</label>
+        <input type="text" id="stock-quantity" name="stock-quantity" placeholder="Quantité en stock">
+        <div id="stock-quantity-error" class="error-message"></div>
+
+        <label for="price">Prix :</label>
+        <input type="text" id="price" name="price" placeholder="Prix du livre">
+        <div id="price-error" class="error-message"></div>
+
+        <label for="publish-year">Année de publication :</label>
+        <input type="text" id="publish-year" name="publish-year" placeholder="Année de publication">
+        <div id="publish-year-error" class="error-message"></div>
+
+        <div id="info-message"></div>
+
+        <button type="button" id="add-button">Ajouter</button>
+        <button type="button" id="edit-button">Modifier</button>
+        <button type="button" id="delete-button">Supprimer</button>
+        <button type="button" id="search-button">Rechercher</button>
+        <button type="button" id="empty-button">Vider les champs</button>
+    </form>
+
+    <footer>
+        <span>&copy; 2024 Projet RTI. Tous droits réservés.</span>
+    </footer>
+</body>
+</html>

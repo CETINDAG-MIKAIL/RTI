@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Subjects</title>
+    <link rel="stylesheet" href="../css/top-nav-bar.css">
+    <link rel="stylesheet" href="../css/table.css">
+    <link rel="stylesheet" href="../css/form.css">
+    <link rel="stylesheet" href="../css/general.css">
+    <link rel="stylesheet" href="../css/footer.css">
+
+    <script src="../js/subjects.js" defer></script>
+    <script src="../js/http/add.js" defer></script>
+    <script src="../js/http/update.js" defer></script>
+    <script src="../js/http/delete.js" defer></script>
+    <script src="../js/http/search.js" defer></script>
+</head>
+<body>
+    <div id="navbar">
+        <a href="index.html">Accueil</a>
+        <a href="books.html">Livres</a>
+        <a href="authors.html">Auteurs</a>
+        <a href="" id="active">Sujets</a>
+    </div>
+
+    <h1>Gestion des subjets</h1>
+
+    <table id="table-subjects">
+        <tr>
+            <th>Id</th>
+            <th>Nom</th>
+        </tr>
+        <tr>
+            <td>1</td>
+            <td>Science</td>
+        </tr>
+        <tr>
+            <td>2</td>
+            <td>Mathématiques</td>
+        </tr>
+        <tr>
+            <td>3</td>
+            <td>Philosophie</td>
+        </tr>
+    </table>
+
+    <form action="/submit" method="POST">
+        <label for="id">Id :</label>
+        <input type="number" id="id" name="id" placeholder="Id du sujet">
+        <div id="id-error" class="error-message"></div>
+
+        <label for="name">Nom :</label>
+        <input type="text" id="name" name="name" placeholder="Nom du sujet">
+        <div id="name-error" class="error-message"></div>
+
+        <div id="info-message"></div>
+
+        <button type="button" id="add-button">Ajouter</button>
+        <button type="button" id="edit-button">Modifier</button>
+        <button type="button" id="delete-button">Supprimer</button>
+        <button type="button" id="search-button">Rechercher</button>
+        <button type="button" id="empty-button">Vider les champs</button>
+    </form>
+
+    <footer>
+        <span>&copy; 2024 Projet RTI. Tous droits réservés.</span>
+    </footer>
+</body>
+</html>
