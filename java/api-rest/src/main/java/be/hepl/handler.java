@@ -8,6 +8,8 @@ import be.hepl.model.entity.Author;
 import be.hepl.model.entity.Book;
 import be.hepl.model.entity.Subject;
 import be.hepl.model.viewmodel.BookSearchVM;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import java.io.IOException;
@@ -43,6 +45,8 @@ public class handler<T, S> implements HttpHandler {
 
         try {
             System.out.println("handle switch: " + method);
+            System.out.println(exchange);
+            System.out.println(exchange.getRequestURI());
             switch (method) {
                 case "GET" -> handleGet(exchange);
                 case "POST" -> handlePost(exchange);
@@ -64,14 +68,22 @@ public class handler<T, S> implements HttpHandler {
         System.out.println("query: " + query);
         S search = parseSearchParams(query); // Conversion query string -> SearchVM
         List<T> myList = dao.read(search); // Dao attend un SubjectSearchVM
-        System.out.println("myList: " + myList);
-        String response = convertToJsonList(myList); // Convertit les sujets récupérés en JSON
-        ResponseHelper.sendSuccessResponse(exchange, JsonUtils.convertToJson(response)); // Envoi de la réponse
+        JsonArray jsonArray = new JsonArray(); // Créer un tableau JSON
+
+        // Pour chaque objet dans la liste, convertissez-le en JsonObject et ajoutez-le au JsonArray
+        for (T item : myList) {
+            JsonObject jsonObject = JsonUtils.convertToJsonObject(item); // Convertissez chaque item en JsonObject
+            jsonArray.add(jsonObject); // Ajoutez l'objet JSON au tableau
+        }
+        ResponseHelper.sendSuccessResponse(exchange, jsonArray.toString()); // Envoi de la réponse
     }
 
     private void handlePost(HttpExchange exchange) throws IOException {
+        System.out.println("handle post");
         String requestBody = HttpUtils.readRequestBody(exchange);
+        System.out.println("requestBody: " + requestBody);
         T entity = JsonUtils.fromJson(requestBody, entityClass);
+        System.out.println("entity: " + entity);
         if (entity == null) throw new IllegalArgumentException("Données JSON invalides");
         dao.create(entity);
         ResponseHelper.sendSuccessResponse(exchange, "Entité créée avec succès");

@@ -13,11 +13,13 @@ public class HttpUtils {
     // Lire le corps de la requête HTTP (par exemple, pour POST ou PUT)
     public static String readRequestBody(HttpExchange exchange) throws IOException {
         InputStream body = exchange.getRequestBody();
+        System.out.println("body : "+ body);
         StringBuilder stringBuilder = new StringBuilder();
         int byteRead;
         while ((byteRead = body.read()) != -1) {
             stringBuilder.append((char) byteRead);
         }
+        System.out.println("stringBuilder : "+ stringBuilder);
         return stringBuilder.toString();
     }
 

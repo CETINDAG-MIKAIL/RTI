@@ -1,6 +1,7 @@
 package be.hepl.helpers;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
 
 public class JsonUtils {
@@ -10,14 +11,28 @@ public class JsonUtils {
     // Convertir un objet Java en JSON
     public static String convertToJson(Object object) {
         System.out.println("Converting object to json" + object);
+        System.out.println(gson.toJson(object));
+        System.out.println("Type de entier : " + ((Object)gson.toJson(object)).getClass().getName());  // Utilisation de wrapper
+        System.out.println("Type de decimale : " + ((Object) gson.toJson(object)).getClass().getName());
         return gson.toJson(object);
     }
+
+    public static JsonObject convertToJsonObject(Object object) {
+        System.out.println("Converting object to JsonObject");
+        JsonObject jsonObject = gson.toJsonTree(object).getAsJsonObject();
+        System.out.println("Type  : " + ((Object) jsonObject).getClass().getName());
+        System.out.println(jsonObject);
+        return jsonObject;
+    }
+
 
     // Convertir une chaîne JSON en objet Java
     public static <T> T fromJson(String json, Class<T> classOfT) {
         try {
+            System.out.println("Converting json to " + classOfT);
             return gson.fromJson(json, classOfT);
         } catch (JsonSyntaxException e) {
+            System.out.println("Json syntax exception");
             return null; // Si la syntaxe JSON est invalide, renvoie null
         }
     }
