@@ -97,7 +97,7 @@ public class AuthorDAO implements CRUD<Author, AuthorSearchVM> {
                 if (search.getBirthDate() != null && search.getBirthDate().length() > 0) {
                     where += "AND authors.birth_date = ? ";
                 }
-                sql += where + "ORDER BY authors.last_name ASC;";
+                sql += where + "ORDER BY authors.id ASC;";
             }
 
             PreparedStatement stmt = connectDB.getConn().prepareStatement(sql);
