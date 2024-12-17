@@ -81,7 +81,7 @@ public class SubjectDAO implements CRUD<Subject, SubjectSearchVM> {
                 if (search.getName() != null && !search.getName().isEmpty()) {
                     where += "AND subjects.name LIKE ? ";
                 }
-                sql += where + " ORDER BY subjects.name ASC;";
+                sql += where + " ORDER BY subjects.id ASC;";
             }
 
             PreparedStatement stmt = connectDB.getConn().prepareStatement(sql);

@@ -151,8 +151,6 @@ public class BookDAO implements CRUD<Book, BookSearchVM> {
                 if (search.getMaxPublishYear() != null) {
                     sql.append(" AND books.publish_year <= ?");
                 }
-
-                sql.append(" ORDER BY books.title ASC");
             }
 
             PreparedStatement stmt = connectDB.getConn().prepareStatement(sql.toString());
