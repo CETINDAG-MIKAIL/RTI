@@ -237,6 +237,12 @@ public class handler<T, S> implements HttpHandler {
                     searchClass.getMethod("setId", Integer.class).invoke(searchVM, idValue);
                 } else if ("title".equals(key)) {
                     searchClass.getMethod("setTitle", String.class).invoke(searchVM, value);
+                } else if ("lastName".equals(key)) {
+                    searchClass.getMethod("setLastName", String.class).invoke(searchVM, value);
+                }else if ("firstName".equals(key)) {
+                    searchClass.getMethod("setFirstName", String.class).invoke(searchVM, value);
+                }else if ("birthDate".equals(key)) {
+                    searchClass.getMethod("setBirthDate", String.class).invoke(searchVM, value);
                 } else if ("isbn".equals(key)) {
                     searchClass.getMethod("setIsbn", String.class).invoke(searchVM, value);
                 } else if ("minPrice".equals(key)) {
