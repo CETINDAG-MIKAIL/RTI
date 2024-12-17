@@ -50,7 +50,6 @@ public class handler<T, S> implements HttpHandler {
         String query = exchange.getRequestURI().getQuery();
         System.out.println("query: " + query);
         S search = parseSearchParams(query); // Conversion query string -> SearchVM
-        //System.out.println("search: " + search.toString());
         List<T> myList = dao.read(search); // Dao attend un SubjectSearchVM
         System.out.println("myList: " + myList);
         String response = convertToJsonList(myList); // Convertit les sujets récupérés en JSON
@@ -69,7 +68,7 @@ public class handler<T, S> implements HttpHandler {
         String query = exchange.getRequestURI().getQuery();
         String requestBody = HttpUtils.readRequestBody(exchange);
 
-        Map<String, Object> queryParams = HttpUtils.parseQueryParams(query);
+        Map<String, String> queryParams = HttpUtils.parseQueryParams(query);
 
         Integer id = null;
         if (queryParams.containsKey("id")) {
@@ -100,7 +99,7 @@ public class handler<T, S> implements HttpHandler {
 
     private void handleDelete(HttpExchange exchange) throws IOException {
         String query = exchange.getRequestURI().getQuery();
-        Map<String, Object> queryParams = HttpUtils.parseQueryParams(query);
+        Map<String, String> queryParams = HttpUtils.parseQueryParams(query);
 
         Integer id = null;
         if (queryParams.containsKey("id")) {
@@ -174,120 +173,55 @@ public class handler<T, S> implements HttpHandler {
     private String cleanString(String input) {
         return input != null ? input.trim() : "";
     }
-
     private S parseSearchParams(String query) {
         System.out.println("parseSearchParams: " + query);
         if (query == null || query.isEmpty()) return null;
         query = query.replaceAll("[\n\r\t]", "").trim();
 
-        Map<String, Object> queryParams = HttpUtils.parseQueryParams(query); // Obtient le Map des paramètres
+        // Remplacement par Map<String, String>
+        Map<String, String> queryParams = HttpUtils.parseQueryParams(query);
         System.out.println("queryParams: " + queryParams);
 
         try {
-            // Créer une instance de S via la réflexion
             S searchVM = searchClass.getDeclaredConstructor().newInstance();
             System.out.println("searchVM initial: " + searchVM);
 
-            // Parcourir les paramètres et définir les valeurs dynamiquement
-            for (Map.Entry<String, Object> entry : queryParams.entrySet()) {
+            for (Map.Entry<String, String> entry : queryParams.entrySet()) {
                 String key = entry.getKey();
-                Object value = entry.getValue();
-
+                String value = entry.getValue(); // Directement une chaîne
                 System.out.println("Checking key: " + key);
+                if (searchVM instanceof BookSearchVM) {
+                    BookSearchVM bookSearchVM = (BookSearchVM) searchVM;
+                    if ("idAuthor".equals(key)) {
+                        System.out.println("idAuthor: " + value);
+                        Author author = new Author();
+                        author.setId(Integer.parseInt(value));
 
-                // Vérifier si la clé est 'author', qui contient un sous-objet
-                if (key.equals("author")) {
-                    // Ici, 'author' est un Map contenant une ou plusieurs clés (ex: firstName, lastName, etc.)
-                    Map<String, Object> authorParams = (Map<String, Object>) value; // Cela donne {firstName=Dan, lastName=Brown, id=1}
-
-                    // Créer un nouvel auteur à chaque fois qu'on entre dans ce bloc
-                    Author author = new Author();
-
-                    // Extraire les différents paramètres de l'auteur et les affecter à l'objet author
-                    String firstName = (String) authorParams.get("firstName");
-                    String lastName = (String) authorParams.get("lastName");
-                    String birthDate = (String) authorParams.get("birthDate");
-                    String id = (String) authorParams.get("id");
-
-                    if (searchVM instanceof BookSearchVM) {
-                        BookSearchVM bookSearchVM = (BookSearchVM) searchVM;
-
-                        // Assigner les valeurs à l'auteur
-                        if (firstName != null) {
-                            System.out.println("firstName: " + firstName);
-                            author.setFirstName(firstName);
-                        }
-                        if (id != null) {
-                            System.out.println("id: " + id);
-                            author.setId(Integer.parseInt(id));
-                        }
-                        if (lastName != null) {
-                            System.out.println("lastName: " + lastName);
-                            author.setLastName(lastName);
-                        }
-                        if (birthDate != null) {
-                            System.out.println("birthDate: " + birthDate);
-                            author.setBirthDate(birthDate);
-                        }
-
-                        // Toujours assigner un nouvel auteur
                         bookSearchVM.setAuthor(author);
                     }
-                }
-                // Cas du champ 'subject'...
-                else if (key.equals("subject")) {
-                    System.out.println("Processing subject field: " + key);
-
-                    if (searchVM instanceof BookSearchVM) {
-                        BookSearchVM bookSearchVM = (BookSearchVM) searchVM;
-
-                        // Créer un nouvel objet Subject à chaque fois qu'on entre dans ce bloc
+                    else if ("idSubject".equals(key)) {
+                        System.out.println("idSubject: " + value);
                         Subject subject = new Subject();
+                        subject.setId(Integer.parseInt(value));
 
-                        // On suppose que 'value' pour 'subject' est un Map comme pour 'author'
-                        if (value instanceof Map) {
-                            Map<String, Object> subjectParams = (Map<String, Object>) value;
-
-                            // Extraire les sous-clés de "subject" (par exemple "Id" et "name")
-                            String subjectId = (String) subjectParams.get("id");  // "id" pour l'identifiant du sujet
-                            String subjectName = (String) subjectParams.get("name");  // "name" pour le nom du sujet
-
-                            // Assigner les valeurs extraites à l'objet subject
-                            if (subjectId != null) {
-                                System.out.println("subjectId: " + subjectId);
-                                subject.setId(Integer.valueOf(subjectId));  // Assigner à subject.id
-                            }
-                            if (subjectName != null) {
-                                System.out.println("subjectName: " + subjectName);
-                                subject.setName(subjectName);  // Assigner à subject.name
-                            }
-
-                            // Toujours assigner un nouvel objet subject
-                            bookSearchVM.setSubject(subject);
-                        }
+                        bookSearchVM.setSubject(subject);
                     }
-                } else if ("id".equals(key)) {
-                    Integer idValue = Integer.valueOf(value.toString());
+                }
+                if ("id".equals(key)) {
+                    Integer idValue = Integer.valueOf(value);
                     searchClass.getMethod("setId", Integer.class).invoke(searchVM, idValue);
                 } else if ("title".equals(key)) {
                     searchClass.getMethod("setTitle", String.class).invoke(searchVM, value);
                 } else if ("isbn".equals(key)) {
                     searchClass.getMethod("setIsbn", String.class).invoke(searchVM, value);
                 } else if ("minPrice".equals(key)) {
-                    Float minPrice = Float.valueOf(value.toString());
+                    Float minPrice = Float.valueOf(value);
                     searchClass.getMethod("setMinPrice", Float.class).invoke(searchVM, minPrice);
                 } else if ("maxPrice".equals(key)) {
-                    Float maxPrice = Float.valueOf(value.toString());
+                    Float maxPrice = Float.valueOf(value);
                     searchClass.getMethod("setMaxPrice", Float.class).invoke(searchVM, maxPrice);
-                } else if ("FirstName".equals(key)) {
-                    searchClass.getMethod("setFirstName", String.class).invoke(searchVM, value);
-                } else if ("LastName".equals(key)) {
-                    searchClass.getMethod("setLastName", String.class).invoke(searchVM, value);
-                } else if ("BirthDate".equals(key)) {
-                    searchClass.getMethod("setBirthDate", String.class).invoke(searchVM, value);
                 }
             }
-
             System.out.println("searchVM final: " + searchVM);
             return searchVM;
         } catch (Exception e) {
@@ -295,6 +229,7 @@ public class handler<T, S> implements HttpHandler {
             return null;
         }
     }
+
 
 
 

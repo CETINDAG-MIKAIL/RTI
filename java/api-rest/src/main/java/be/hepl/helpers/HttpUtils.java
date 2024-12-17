@@ -35,8 +35,8 @@ public class HttpUtils {
         }
         return null; // Si le paramètre n'existe pas
     }
-    public static Map<String, Object> parseQueryParams(String query) {
-        Map<String, Object> queryParams = new HashMap<>();
+    public static Map<String, String> parseQueryParams(String query) {
+        Map<String, String> queryParams = new HashMap<>();
         if (query != null && !query.isEmpty()) {
             String[] pairs = query.split("&");
             for (String pair : pairs) {
@@ -44,21 +44,14 @@ public class HttpUtils {
                 if (keyValue.length == 2) {
                     String key = keyValue[0];
                     String value = keyValue[1];
-
-                    // Détection des objets imbriqués avec "."
-                    if (key.contains(".")) {
-                        String[] nestedKeys = key.split("\\.");
-                        queryParams.computeIfAbsent(nestedKeys[0], k -> new HashMap<String, String>());
-                        Map<String, String> nestedMap = (Map<String, String>) queryParams.get(nestedKeys[0]);
-                        nestedMap.put(nestedKeys[1], value);
-                    } else {
-                        queryParams.put(key, value);
-                    }
+                    queryParams.put(key, value); // Stocker la clé et la valeur
                 }
             }
         }
         return queryParams;
     }
+
+
 
 
 
