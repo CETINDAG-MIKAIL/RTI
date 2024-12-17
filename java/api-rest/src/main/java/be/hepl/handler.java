@@ -28,6 +28,19 @@ public class handler<T, S> implements HttpHandler {
     @Override
     public void handle(HttpExchange exchange) throws IOException {
         String method = exchange.getRequestMethod();
+
+        // Ajouter les en-têtes CORS pour autoriser les requêtes depuis n'importe quelle origine
+        exchange.getResponseHeaders().set("Access-Control-Allow-Origin", "*");  // Autorise toutes les origines
+        exchange.getResponseHeaders().set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");  // Autorise ces méthodes HTTP
+        exchange.getResponseHeaders().set("Access-Control-Allow-Headers", "Content-Type");  // Autorise l'en-tête Content-Type
+        exchange.getResponseHeaders().set("Access-Control-Allow-Credentials", "true");  // Permet les cookies (si nécessaire)
+
+        // Si la requête est une demande de pré-vol (OPTIONS), envoyer une réponse vide
+        if ("OPTIONS".equals(method)) {
+            exchange.sendResponseHeaders(200, -1);  // Répondre avec un code 200 pour OPTIONS
+            return;
+        }
+
         try {
             System.out.println("handle switch: " + method);
             switch (method) {
@@ -221,6 +234,26 @@ public class handler<T, S> implements HttpHandler {
                     Float maxPrice = Float.valueOf(value);
                     searchClass.getMethod("setMaxPrice", Float.class).invoke(searchVM, maxPrice);
                 }
+                else if ("maxPageCount".equals(key)) {
+                    Integer maxPageCount = Integer.valueOf(value);
+                    searchClass.getMethod("setMaxPageCount", Integer.class).invoke(searchVM, maxPageCount);
+                }
+                else if ("minPageCount".equals(key)) {
+                    Integer minPageCount = Integer.valueOf(value);
+                    searchClass.getMethod("setMinPageCount", Integer.class).invoke(searchVM, minPageCount);
+                }
+                else if ("minPublishYear".equals(key)) {
+                    Integer minPublishYear = Integer.valueOf(value);
+                    searchClass.getMethod("setMinPublishYear", Integer.class).invoke(searchVM, minPublishYear);
+                }
+                else if ("maxPublishYear".equals(key)) {
+                    Integer maxPublishYear = Integer.valueOf(value);
+                    searchClass.getMethod("setMaxPublishYear", Integer.class).invoke(searchVM, maxPublishYear);
+                }
+                else if ("minStockQuantity".equals(key)) {
+                    Integer minStockQuantity = Integer.valueOf(value);
+                    searchClass.getMethod("setMinStockQuantity", Integer.class).invoke(searchVM, minStockQuantity);
+                }
             }
             System.out.println("searchVM final: " + searchVM);
             return searchVM;
@@ -229,8 +262,6 @@ public class handler<T, S> implements HttpHandler {
             return null;
         }
     }
-
-
 
 
 
