@@ -67,7 +67,9 @@ public class handler<T, S> implements HttpHandler {
         String query = exchange.getRequestURI().getQuery();
         System.out.println("query: " + query);
         S search = parseSearchParams(query); // Conversion query string -> SearchVM
+        System.out.println("search: " + search);
         List<T> myList = dao.read(search); // Dao attend un SubjectSearchVM
+        System.out.println(myList);
         JsonArray jsonArray = new JsonArray(); // Créer un tableau JSON
 
         // Pour chaque objet dans la liste, convertissez-le en JsonObject et ajoutez-le au JsonArray
@@ -75,6 +77,7 @@ public class handler<T, S> implements HttpHandler {
             JsonObject jsonObject = JsonUtils.convertToJsonObject(item); // Convertissez chaque item en JsonObject
             jsonArray.add(jsonObject); // Ajoutez l'objet JSON au tableau
         }
+        System.out.println("jsonArray" + jsonArray);
         ResponseHelper.sendSuccessResponse(exchange, jsonArray.toString()); // Envoi de la réponse
     }
 
@@ -209,7 +212,6 @@ public class handler<T, S> implements HttpHandler {
 
         try {
             S searchVM = searchClass.getDeclaredConstructor().newInstance();
-            System.out.println("searchVM initial: " + searchVM);
 
             for (Map.Entry<String, String> entry : queryParams.entrySet()) {
                 String key = entry.getKey();
