@@ -15,16 +15,24 @@ th, td {
 }
 
 th {
-    background-color: #4CAF50;
+    background-color: var(--green-bg-color);
     color: white;
     font-weight: bold;
 }
 
+tr {
+    color: var(--text-color);
+}
+
 tr:nth-child(even) {
-    background-color: #f2f2f2;
+    background-color: var(--table-even-row-color);
+}
+
+tr:nth-child(odd) {
+    background-color: var(--table-uneven-row-color);
 }
 
 tr:hover {
-    background-color: #e1f5fe;
+    background-color: var(--table-row-selected-color);
     cursor: pointer;
 }

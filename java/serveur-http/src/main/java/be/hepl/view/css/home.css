@@ -3,7 +3,7 @@ html {
 }
 
 #container {
-    background-image: url(../images/welcome.png);
+    background-image: var(--bg-image);
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
@@ -13,6 +13,7 @@ html {
 #introduction {
     padding: 180px 15px 400px;
     text-align: center;
+    color: var(--text-color);
 }
 
 #introduction h1 {
@@ -20,10 +21,10 @@ html {
     font-size: 3em;
     font-weight: bold;
     text-shadow:
-            2px 2px 0 white,
-            -2px 2px 0 white,
-            2px -2px 0 white,
-            -2px -2px 0 white;
+            2px 2px 0 var(--h1-text-shadow-color),
+            -2px 2px 0 var(--h1-text-shadow-color),
+            2px -2px 0 var(--h1-text-shadow-color),
+            -2px -2px 0 var(--h1-text-shadow-color);
 }
 
 #introduction p {
@@ -38,6 +39,10 @@ html {
     transform: translateX(-50%);
 }
 
+#label-switch {
+    color: var(--text-color);
+}
+
 #little-container {
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
@@ -47,9 +52,10 @@ main {
     max-width: 900px;
     margin: 170px auto;
     padding: 25px;
-    background: white;
+    background-color: var(--lighter-bg-color);
     border-radius: 12px;
     box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+    color: var(--text-color);
 }
 
 main h2 {

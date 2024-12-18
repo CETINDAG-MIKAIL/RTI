@@ -1,5 +1,5 @@
 #navbar {
-    background-color: #4CAF50;
+    background-color: var(--green-bg-color);
     margin: 30px;
     overflow: hidden;
     display: flex;

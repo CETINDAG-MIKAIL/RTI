@@ -5,10 +5,12 @@
     <title>Home</title>
     <link rel="stylesheet" href="../css/top-nav-bar.css">
     <link rel="stylesheet" href="../css/home.css">
+    <link rel="stylesheet" href="../css/toggle-button.css">
+    <link rel="stylesheet" href="../css/theme.css">
     <link rel="stylesheet" href="../css/general.css">
     <link rel="stylesheet" href="../css/footer.css">
 
-    <script src="../js/home.js" defer></script>
+    <script src="../js/theme.js" defer></script>
 </head>
 <body>
     <div id="container">
@@ -19,6 +21,11 @@
                 <img id="down-arrow-gif" src="../images/down-arrow.gif" alt="Down arrow gif">
             </a>
         </div>
+
+        <form class="toggles flip">
+            <input type="checkbox" name="switch" id="switch">
+            <label for="switch" id="label-switch">Dark Mode</label>
+        </form>
 
         <div id="little-container">
             <div id="navbar">
