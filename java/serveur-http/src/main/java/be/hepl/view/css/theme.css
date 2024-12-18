@@ -1,0 +1,27 @@
+:root {
+    --bg-color: #ffffff;
+    --lighter-bg-color: #f9f9f9;
+    --bg-image: url(../images/welcome.png);
+    --h1-text-shadow-color: white;
+    --text-color: #000000;
+    --green-bg-color: #4CAF50;
+    --bg-input: #f9f9f9;
+    --form-border-color: #ccc;
+    --table-even-row-color: #f2f2f2;
+    --table-uneven-row-color: #ffffff;
+    --table-row-selected-color: #e1f5fe;
+}
+
+.dark-mode {
+    --bg-color: #3c3c3c;
+    --lighter-bg-color: #606060;
+    --bg-image: url(../images/welcome-dark.png);
+    --h1-text-shadow-color: transparent;
+    --text-color: #d1d3d6;
+    --green-bg-color: #255e27;
+    --bg-input: #c4c8cc;
+    --form-border-color: #606060;
+    --table-even-row-color: #656565;
+    --table-uneven-row-color: #575757;
+    --table-row-selected-color: #6d767c;
+}

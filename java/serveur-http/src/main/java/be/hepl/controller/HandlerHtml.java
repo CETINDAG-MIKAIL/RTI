@@ -14,11 +14,17 @@ public class HandlerHtml implements HttpHandler {
     {
         String requestPath = exchange.getRequestURI().getPath();
         String requestMethod = exchange.getRequestMethod();
+
+        File file = new File(requestPath);
+        if (file.isDirectory()) {
+            requestPath += "index.html";
+        }
+
         System.out.print("HandlerHtml (methode " + requestMethod + ")   = " + requestPath + " --> ");
 
-        String fichier = "java/serveur-http/src/main/java/be/hepl/view/html" + requestPath;
+        requestPath = "java/serveur-http/src/main/java/be/hepl/view/html" + requestPath;
 
-        File file = new File(fichier);
+        file = new File(requestPath);
         if (file.exists())
         {
             exchange.sendResponseHeaders(200, file.length());
