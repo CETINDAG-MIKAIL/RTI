@@ -35,11 +35,11 @@ public class MySocket {
     private static void createSocket() throws IOException {
         // Chargement de la configuration si nécessaire
         if (ipServer == null) {
-            ipServer = FileHelper.getSettingString("./config.txt", "IP_PURCHASE");
+            ipServer = FileHelper.getSettingString("./config.properties", "IP_PURCHASE");
         }
 
         if (portServer == null) {
-            portServer = FileHelper.getSettingInt("./config.txt", "PORT_PURCHASE");
+            portServer = FileHelper.getSettingInt("./config.properties", "PORT_PURCHASE");
         }
 
         // Création de la socket si elle n'est pas encore initialisée

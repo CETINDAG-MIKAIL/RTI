@@ -11,9 +11,10 @@ public class Main {
         HttpServer serveur = null;
         try
         {
-            serveur = HttpServer.create(new InetSocketAddress(8085),0);
+            int portServer = FileHelper.getSettingInt("./config.properties", "PORT_ADMIN_HTTP");
+            serveur = HttpServer.create(new InetSocketAddress(portServer),0);
             serveur.createContext("/",new HandlerRoot());
-            System.out.println("Demarrage du serveur HTTP...");
+            System.out.println("Demarrage du serveur HTTP sur le port " + portServer + "...");
             serveur.start();
         }
         catch (IOException e)

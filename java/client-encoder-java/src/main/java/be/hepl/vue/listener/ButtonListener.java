@@ -34,8 +34,8 @@ public class ButtonListener {
 
         setComponentsEnabled(false);
 
-        int portServeur = getSettingInt("./config.txt", "PORT_ENCODING");
-        String ipServ = getSettingString("./config.txt", "IP_ENCODING");
+        int portServeur = getSettingInt("./config.properties", "PORT_ENCODING");
+        String ipServ = getSettingString("./config.properties", "IP_ENCODING");
 
         sClient = clientSocket(ipServ, portServeur);
 

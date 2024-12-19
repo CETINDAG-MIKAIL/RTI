@@ -17,9 +17,10 @@ public class api {
         AuthorDAO authorDAO = new AuthorDAO();
         BookDAO bookDAO = new BookDAO();
 
+        int portServer = FileHelper.getSettingInt("./config.properties", "PORT_ADMIN_API");
 
         System.out.println("Création du serveur HTTP");
-        HttpServer server = HttpServer.create(new InetSocketAddress(8080), 0);
+        HttpServer server = HttpServer.create(new InetSocketAddress(portServer), 0);
 
 
         System.out.println("Mapping des chemins aux handlers avec DAO et mappers appropriés");
@@ -28,6 +29,6 @@ public class api {
         server.createContext("/api/books", new handler<>(bookDAO, Book.class, BookSearchVM.class));
 
         server.start();
-        System.out.println("Serveur démarré sur le port 8080");
+        System.out.println("Serveur démarré sur le port " + portServer);
     }
 }
