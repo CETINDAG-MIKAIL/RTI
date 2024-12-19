@@ -41,7 +41,7 @@ public class handler<T, S> implements HttpHandler {
 
         // Si la requête est une demande de pré-vol (OPTIONS), envoyer une réponse vide
         if ("OPTIONS".equals(method)) {
-            exchange.sendResponseHeaders(200, -1);
+            exchange.sendResponseHeaders(204, -1);
             return;
         }
 
@@ -57,6 +57,7 @@ public class handler<T, S> implements HttpHandler {
                 default -> ResponseHelper.sendErrorResponse(exchange, 405, "Méthode non autorisée");
             }
         } catch (IllegalArgumentException e) {
+            System.out.println(e.getMessage());
             ResponseHelper.sendErrorResponse(exchange, 400, e.getMessage());
         } catch (Exception e) {
             e.printStackTrace();
@@ -150,21 +151,18 @@ public class handler<T, S> implements HttpHandler {
             }
         }
         if (id == null) throw new IllegalArgumentException("ID manquant dans les paramètres de requête");
-        System.out.println("11111111111111111111");
-        dao.read();
-        System.out.println("dao.read()" + dao.read());
-        T existingEntity = dao.getById(id);
-        System.out.println("existingEntity: " + existingEntity);
-        System.out.println("dao " + dao.getById(id));
-        System.out.println("222222222222222222222222222");
-        if (existingEntity == null) throw new IllegalArgumentException("Entité non trouvée pour l'ID : " + id);
-        System.out.println("existingEntity: " + existingEntity);
 
+        dao.read();
+        System.out.println("dao.read()" + dao.getList());
 
         String updatedRequestBody = addIdToRequestBody(requestBody, id);
         System.out.println("updatedRequestBody: " + updatedRequestBody);
 
-        T updatedEntity = JsonUtils.fromJson(updatedRequestBody, entityClass);
+        String tmp = ForBook(updatedRequestBody);
+
+        System.out.println("tmp: " + tmp);
+
+        T updatedEntity = JsonUtils.fromJson(tmp, entityClass);
         if (updatedEntity == null) throw new IllegalArgumentException("Données JSON invalides");
         System.out.println("updatedEntity: " + updatedEntity);
 

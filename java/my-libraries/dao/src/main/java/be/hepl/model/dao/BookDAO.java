@@ -81,7 +81,7 @@ public class BookDAO implements CRUD<Book, BookSearchVM> {
     }
     @Override
     public ArrayList<Book> read(BookSearchVM search) {
-        ArrayList<Book> books = new ArrayList<>();
+        books = new ArrayList<>();
         try {
             StringBuilder sql = new StringBuilder("SELECT " +
                     "books.id AS book_id, " +
