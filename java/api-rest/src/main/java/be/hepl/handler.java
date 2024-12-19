@@ -83,39 +83,63 @@ public class handler<T, S> implements HttpHandler {
         dao.create(entity);
         ResponseHelper.sendSuccessResponse(exchange, "Entité créée avec succès");
     }
-
     private void handlePut(HttpExchange exchange) throws IOException {
+        // Récupérer la query de l'URL
         String query = exchange.getRequestURI().getQuery();
         System.out.println("query: " + query);
+
+        // Lire le corps de la requête (requestBody)
         String requestBody = HttpUtils.readRequestBody(exchange);
         System.out.println("requestBody: " + requestBody);
+
+        // Parser les paramètres de la query
         Map<String, String> queryParams = HttpUtils.parseQueryParams(query);
         System.out.println("queryParams: " + queryParams);
+
         Integer id = null;
         if (queryParams.containsKey("id")) {
-            Object idValue = queryParams.get("id");
-            if (idValue instanceof String) {
-                try {
-                    id = Integer.parseInt((String) idValue); // Casting explicite vers String
-                } catch (NumberFormatException e) {
-                    throw new IllegalArgumentException("ID invalide : " + idValue);
-                }
-            } else {
-                throw new IllegalArgumentException("ID doit être une chaîne de caractères");
+            String idValue = queryParams.get("id");
+            try {
+                // On s'assure que l'ID est valide
+                id = Integer.parseInt(idValue);
+                System.out.println("id: " + id);
+            } catch (NumberFormatException e) {
+                throw new IllegalArgumentException("ID invalide : " + idValue);
             }
         }
 
+        // Si l'ID est manquant dans les paramètres de la requête
         if (id == null) throw new IllegalArgumentException("ID manquant dans les paramètres de requête");
 
+        // Récupérer l'entité existante en fonction de l'ID
         T existingEntity = dao.getById(id);
         if (existingEntity == null) throw new IllegalArgumentException("Entité non trouvée pour l'ID : " + id);
+        System.out.println("existingEntity: " + existingEntity);
 
-        T updatedEntity = JsonUtils.fromJson(requestBody, entityClass);
+        // Ajouter l'ID au requestBody JSON pour que l'entité mise à jour ait l'ID correct
+        // Ajouter l'ID au JSON manuellement
+        String updatedRequestBody = addIdToRequestBody(requestBody, id);
+        System.out.println("updatedRequestBody: " + updatedRequestBody);
+
+        // Convertir le requestBody mis à jour (avec l'ID) en entité
+        T updatedEntity = JsonUtils.fromJson(updatedRequestBody, entityClass);
         if (updatedEntity == null) throw new IllegalArgumentException("Données JSON invalides");
+        System.out.println("updatedEntity: " + updatedEntity);
 
+        // Mettre à jour l'entité dans la base de données
         dao.update(updatedEntity);
 
+        // Répondre avec un message de succès
         ResponseHelper.sendSuccessResponse(exchange, "Entité mise à jour avec succès");
+    }
+    private String addIdToRequestBody(String requestBody, Integer id) {
+        // On suppose que le requestBody est un JSON qui contient un seul champ `name`
+        // Exemple : {"name": "Thriller"}
+
+        // Ici, on ajoute l'ID au JSON du corps de la requête
+        String updatedRequestBody = "{\"id\": " + id + ", " + requestBody.substring(1); // Ajouter l'ID au début du JSON
+
+        return updatedRequestBody;
     }
 
     private void handleDelete(HttpExchange exchange) throws IOException {

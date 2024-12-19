@@ -138,12 +138,6 @@ public class SubjectDAO implements CRUD<Subject, SubjectSearchVM> {
     public void delete(Integer id) {
         if (id != null) {
             try {
-//                String deleteBooksSQL = "DELETE FROM books WHERE subject_id = ?";
-//                PreparedStatement stmtBooks = connectDB.getConn().prepareStatement(deleteBooksSQL);
-//                stmtBooks.setInt(1, id);
-//                stmtBooks.executeUpdate();
-//                stmtBooks.close();
-
                 String sql = "DELETE FROM subjects WHERE id = ?";
                 PreparedStatement stmt = connectDB.getConn().prepareStatement(sql);
                 stmt.setInt(1, id);
