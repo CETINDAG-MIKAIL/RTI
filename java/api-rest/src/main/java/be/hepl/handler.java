@@ -3,7 +3,9 @@ package be.hepl;
 import be.hepl.helpers.HttpUtils;
 import be.hepl.helpers.JsonUtils;
 import be.hepl.helpers.ResponseHelper;
+import be.hepl.model.dao.AuthorDAO;
 import be.hepl.model.dao.CRUD;
+import be.hepl.model.dao.SubjectDAO;
 import be.hepl.model.entity.Author;
 import be.hepl.model.entity.Book;
 import be.hepl.model.entity.Subject;
@@ -64,6 +66,7 @@ public class handler<T, S> implements HttpHandler {
 
     private void handleGet(HttpExchange exchange) throws IOException {
         String query = exchange.getRequestURI().getQuery();
+
         S search = parseSearchParams(query); // Conversion query string -> SearchVM
         List<T> myList = dao.read(search); // Dao attend un SubjectSearchVM
         JsonArray jsonArray = new JsonArray(); // Créer un tableau JSON
@@ -75,14 +78,59 @@ public class handler<T, S> implements HttpHandler {
         }
         ResponseHelper.sendSuccessResponse(exchange, jsonArray.toString()); // Envoi de la réponse
     }
+    private int getElementBody(String key, String requestBody) {
+        // Exemple très simple pour extraire un paramètre par clé
+        int value = -1;
+        try {
+            int keyIndex = requestBody.indexOf(key);
+            if (keyIndex != -1) {
+                int startIndex = requestBody.indexOf(":", keyIndex) + 2; // après ": "
+                int endIndex = requestBody.indexOf("\"", startIndex);
+                value = Integer.parseInt(requestBody.substring(startIndex, endIndex));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return value;
+    }
 
     private void handlePost(HttpExchange exchange) throws IOException {
         String requestBody = HttpUtils.readRequestBody(exchange);
+        requestBody = ForBook(requestBody);
         T entity = JsonUtils.fromJson(requestBody, entityClass);
         if (entity == null) throw new IllegalArgumentException("Données JSON invalides");
         dao.create(entity);
         ResponseHelper.sendSuccessResponse(exchange, "Entité créée avec succès");
     }
+    private String ForBook(String requestBody)
+    {
+        int idAuthor = getElementBody("idAuthor", requestBody);
+        int idSubject = getElementBody("idSubject", requestBody);
+
+        if (idAuthor != -1 && idSubject != -1) {
+            AuthorDAO authorDAO = new AuthorDAO();
+            authorDAO.read();
+            Author author = authorDAO.getById(idAuthor);
+            if (author == null) {
+                throw new IllegalArgumentException("Auteur introuvable avec l'ID : " + idAuthor);
+            }
+
+            SubjectDAO subjectDAO = new SubjectDAO();
+            subjectDAO.read();
+
+            Subject subject = subjectDAO.getById(idSubject);
+            if (subject == null) {
+                throw new IllegalArgumentException("Sujet introuvable avec l'ID : " + idSubject);
+            }
+            String jsonAuthor = JsonUtils.toJson(author);
+
+            String jsonSubject = JsonUtils.toJson(subject);
+            requestBody = requestBody.replace("\"idAuthor\":\"" + idAuthor + "\"", "\"author\":" + jsonAuthor);
+            requestBody = requestBody.replace("\"idSubject\":\"" + idSubject + "\"", "\"subject\":" + jsonSubject);
+        }
+        return requestBody;
+    }
+
     private void handlePut(HttpExchange exchange) throws IOException {
         // Récupérer la query de l'URL
         String query = exchange.getRequestURI().getQuery();
