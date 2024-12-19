@@ -1,4 +1,4 @@
-function updateRow(table, id, data) {
+function updateRow(table, data) {
     const url = `http://localhost:8080/api/${table}?id=${id}`;
 
     return fetch(url, {

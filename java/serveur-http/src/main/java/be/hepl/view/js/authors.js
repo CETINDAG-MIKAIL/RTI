@@ -20,8 +20,8 @@ function addRowListeners(row) {
         const cells = row.querySelectorAll("td");
 
         idField.value = cells[0].textContent.trim();
-        firstNameField.value = cells[1].textContent.trim();
-        lastNameField.value = cells[2].textContent.trim();
+        lastNameField.value = cells[1].textContent.trim();
+        firstNameField.value = cells[2].textContent.trim();
 
         let [day, month, year] = cells[3].textContent.split('-');
         birthDateField.value = `${day}-${month}-${year}`.trim();

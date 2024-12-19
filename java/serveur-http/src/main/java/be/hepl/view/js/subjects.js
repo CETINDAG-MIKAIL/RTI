@@ -82,7 +82,7 @@ editButton.addEventListener("click", () => {
         Object.entries(criteria).filter(([key, value]) => value !== null && value !== "")
     );
 
-    updateRow("subjects",idField.value.trim(),filteredCriteria)
+    updateRow("subjects",filteredCriteria)
         .then(response => {
             infoMessage.classList.remove("error-info-message");
             infoMessage.classList.add("succes-info-message");
