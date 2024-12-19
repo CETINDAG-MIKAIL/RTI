@@ -5,8 +5,14 @@ const nameError = document.getElementById("name-error");
 
 const infoMessage = document.getElementById("info-message");
 
+fillSubjectsTableSearch({});
+
 function addRowListeners(row) {
     row.addEventListener("click", () => {
+        const allRows = document.querySelectorAll("tbody tr");
+        allRows.forEach(r => r.classList.remove("selected-row"));
+        row.classList.add("selected-row");
+
         const cells = row.querySelectorAll("td");
 
         idField.value = cells[0].textContent.trim();
@@ -29,31 +35,21 @@ addButton.addEventListener("click", () => {
         return;
     }
 
-    fetch("/subjects", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-            name: nameField.value
-        })
-    }).then(response => {
-        if (response.ok) {
-            window.location.reload();
-        }
-    });
-
     const newRowData = {
         name: nameField.value
     };
 
     addRow("subjects", newRowData)
         .then(response => {
-            infoMessage.style.color = "green";
+            infoMessage.classList.remove("error-info-message");
+            infoMessage.classList.add("succes-info-message");
             infoMessage.textContent = response;
+
+            fillSubjectsTableSearch({});
         })
         .catch(error => {
-            infoMessage.style.color = "red";
+            infoMessage.classList.remove("succes-info-message");
+            infoMessage.classList.add("error-info-message");
             infoMessage.textContent = error.message;
         });
 });
@@ -89,11 +85,15 @@ editButton.addEventListener("click", () => {
 
     updateRow("subjects", filteredCriteria)
         .then(response => {
-            infoMessage.style.color = "green";
+            infoMessage.classList.remove("error-info-message");
+            infoMessage.classList.add("succes-info-message");
             infoMessage.textContent = response;
+
+            fillSubjectsTableSearch({});
         })
         .catch(error => {
-            infoMessage.style.color = "red";
+            infoMessage.classList.remove("succes-info-message");
+            infoMessage.classList.add("error-info-message");
             infoMessage.textContent = error.message;
         });
 });
@@ -109,11 +109,15 @@ deleteButton.addEventListener("click", () => {
 
     deleteRow("subjects", idField.value)
         .then(response => {
-            infoMessage.style.color = "green";
+            infoMessage.classList.remove("error-info-message");
+            infoMessage.classList.add("succes-info-message");
             infoMessage.textContent = response;
+
+            fillSubjectsTableSearch({});
         })
         .catch(error => {
-            infoMessage.style.color = "red";
+            infoMessage.classList.remove("succes-info-message");
+            infoMessage.classList.add("error-info-message");
             infoMessage.textContent = error.message;
         });
 });
@@ -132,7 +136,28 @@ searchButton.addEventListener("click", () => {
 
     console.log("filteredCriteria : ", filteredCriteria);
 
-    searchRows("subjects", filteredCriteria)
+    fillSubjectsTableSearch(filteredCriteria);
+});
+
+emptyButton.addEventListener("click", () => {
+    deleteFieldsErrors();
+    idField.value = "";
+    nameField.value = "";
+
+    infoMessage.textContent = "";
+});
+
+function deleteFieldsErrors() {
+    idField.classList.remove("input-error");
+    idError.textContent = "";
+    nameField.classList.remove("input-error");
+    nameError.textContent = "";
+
+    infoMessage.textContent = "";
+}
+
+function fillSubjectsTableSearch(criteria) {
+    searchRows("subjects", criteria)
         .then(data => {
             console.log("Contenu complet de data :", data);
             console.log("Type de data :", typeof data);
@@ -144,7 +169,7 @@ searchButton.addEventListener("click", () => {
 
             if (Array.isArray(data)) {
                 const tableSubjects = document.getElementById("table-subjects");
-                tableSubjects.innerHTML = "";  // Réinitialiser le contenu de la table
+                tableSubjects.innerHTML = "";
 
                 data.forEach(subject => {
                     const row = document.createElement("tr");
@@ -167,25 +192,9 @@ searchButton.addEventListener("click", () => {
             }
         })
         .catch(error => {
-            infoMessage.style.color = "red";
+            infoMessage.classList.remove("succes-info-message");
+            infoMessage.classList.add("error-info-message");
             infoMessage.textContent = error.message || "Erreur lors du chargement des données.";
             console.error("Erreur :", error);
         });
-});
-
-emptyButton.addEventListener("click", () => {
-    deleteFieldsErrors();
-    idField.value = "";
-    nameField.value = "";
-
-    infoMessage.textContent = "";
-});
-
-function deleteFieldsErrors() {
-    idField.classList.remove("input-error");
-    idError.textContent = "";
-    nameField.classList.remove("input-error");
-    nameError.textContent = "";
-
-    infoMessage.textContent = "";
 }

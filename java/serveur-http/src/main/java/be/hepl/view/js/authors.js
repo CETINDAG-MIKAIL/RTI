@@ -4,13 +4,19 @@ const firstNameField = document.getElementById("firstName");
 const firstNameError = document.getElementById("firstName-error");
 const lastNameField = document.getElementById("lastName");
 const lastNameError = document.getElementById("lastName-error");
-const dateOfBirthField = document.getElementById("date-of-birth");
-const dateOfBirthError = document.getElementById("date-of-birth-error");
+const birthDateField = document.getElementById("date-of-birth");
+const birthDateError = document.getElementById("date-of-birth-error");
 
 const infoMessage = document.getElementById("info-message");
 
+fillAuthorsTableSearch({});
+
 function addRowListeners(row) {
     row.addEventListener("click", () => {
+        const allRows = document.querySelectorAll("tbody tr");
+        allRows.forEach(r => r.classList.remove("selected-row"));
+        row.classList.add("selected-row");
+
         const cells = row.querySelectorAll("td");
 
         idField.value = cells[0].textContent.trim();
@@ -18,8 +24,7 @@ function addRowListeners(row) {
         lastNameField.value = cells[2].textContent.trim();
 
         let [day, month, year] = cells[3].textContent.split('-');
-        let formattedDate = `${year}-${month}-${day}`;
-        dateOfBirthField.value = formattedDate.trim();
+        birthDateField.value = `${day}-${month}-${year}`.trim();
     });
 }
 
@@ -46,9 +51,9 @@ addButton.addEventListener("click", () => {
         error = true;
     }
 
-    if (dateOfBirthField.value === "") {
-        dateOfBirthField.classList.add("input-error");
-        dateOfBirthError.textContent = "Ce champ est obligatoire pour l'ajout.";
+    if (birthDateField.value === "") {
+        birthDateField.classList.add("input-error");
+        birthDateError.textContent = "Ce champ est obligatoire pour l'ajout.";
         return;
     }
 
@@ -59,16 +64,20 @@ addButton.addEventListener("click", () => {
     const newRowData = {
         firstName: firstNameField.value,
         lastName: lastNameField.value,
-        dateOfBirth: dateOfBirthField.value
+        birthDate: birthDateField.value
     };
 
     addRow("authors", newRowData)
         .then(response => {
-            infoMessage.style.color = "green";
+            infoMessage.classList.remove("error-info-message");
+            infoMessage.classList.add("succes-info-message");
             infoMessage.textContent = response;
+
+            fillAuthorsTableSearch({});
         })
         .catch(error => {
-            infoMessage.style.color = "red";
+            infoMessage.classList.remove("succes-info-message");
+            infoMessage.classList.add("error-info-message");
             infoMessage.textContent = error.message;
         });
 });
@@ -100,9 +109,9 @@ editButton.addEventListener("click", () => {
         hasInAField = true;
     }
 
-    if (dateOfBirthField.value === "") {
-        dateOfBirthField.classList.add("input-error");
-        dateOfBirthError.textContent = "Un de ces champs est obligatoire pour la modification.";
+    if (birthDateField.value === "") {
+        birthDateField.classList.add("input-error");
+        birthDateError.textContent = "Un de ces champs est obligatoire pour la modification.";
         error = true;
     } else {
         hasInAField = true;
@@ -113,8 +122,8 @@ editButton.addEventListener("click", () => {
         firstNameError.textContent = "";
         lastNameField.classList.remove("input-error");
         lastNameError.textContent = "";
-        dateOfBirthField.classList.remove("input-error");
-        dateOfBirthError.textContent = "";
+        birthDateField.classList.remove("input-error");
+        birthDateError.textContent = "";
     }
     if (error) {
         return;
@@ -124,7 +133,7 @@ editButton.addEventListener("click", () => {
         id: idField.value.trim(),
         firstName: firstNameField.value.trim(),
         lastName: lastNameField.value.trim(),
-        dateOfBirth: dateOfBirthField.value.trim()
+        birthDate: birthDateField.value.trim()
     };
 
     const filteredCriteria = Object.fromEntries(
@@ -133,11 +142,15 @@ editButton.addEventListener("click", () => {
 
     updateRow("authors", filteredCriteria)
         .then(response => {
-            infoMessage.style.color = "green";
+            infoMessage.classList.remove("error-info-message");
+            infoMessage.classList.add("succes-info-message");
             infoMessage.textContent = response;
+
+            fillAuthorsTableSearch({});
         })
         .catch(error => {
-            infoMessage.style.color = "red";
+            infoMessage.classList.remove("succes-info-message");
+            infoMessage.classList.add("error-info-message");
             infoMessage.textContent = error.message;
         });
 });
@@ -153,11 +166,15 @@ deleteButton.addEventListener("click", () => {
 
     deleteRow("authors", idField.value)
         .then(response => {
-            infoMessage.style.color = "green";
+            infoMessage.classList.remove("error-info-message");
+            infoMessage.classList.add("succes-info-message");
             infoMessage.textContent = response;
+
+            fillAuthorsTableSearch({});
         })
         .catch(error => {
-            infoMessage.style.color = "red";
+            infoMessage.classList.remove("succes-info-message");
+            infoMessage.classList.add("error-info-message");
             infoMessage.textContent = error.message;
         });
 });
@@ -169,7 +186,7 @@ searchButton.addEventListener("click", () => {
         id: idField.value.trim(),
         firstName: firstNameField.value.trim(),
         lastName: lastNameField.value.trim(),
-        dateOfBirth: dateOfBirthField.value.trim()
+        birthDate: birthDateField.value.trim()
     };
 
     const filteredCriteria = Object.fromEntries(
@@ -178,13 +195,41 @@ searchButton.addEventListener("click", () => {
 
     console.log("filteredCriteria : ", filteredCriteria);
 
-    searchRows("authors", filteredCriteria)
+    fillAuthorsTableSearch(filteredCriteria);
+});
+
+
+emptyButton.addEventListener("click", () => {
+    deleteFieldsErrors();
+    idField.value = "";
+    firstNameField.value = "";
+    lastNameField.value = "";
+    birthDateField.value = "";
+
+    infoMessage.textContent = "";
+});
+
+function deleteFieldsErrors() {
+    idField.classList.remove("input-error");
+    idError.textContent = "";
+    firstNameField.classList.remove("input-error");
+    firstNameError.textContent = "";
+    lastNameField.classList.remove("input-error");
+    lastNameError.textContent = "";
+    birthDateField.classList.remove("input-error");
+    birthDateError.textContent = "";
+
+    infoMessage.textContent = "";
+}
+
+const tableAuthors = document.getElementById("table-authors");
+
+function fillAuthorsTableSearch(criteria) {
+    searchRows("authors", criteria)
         .then(data => {
             console.log("Contenu complet de data :", data);
             console.log("Type de data :", typeof data);
             console.log("Est-ce un tableau ?", Array.isArray(data));
-
-            const tableAuthors = document.getElementById("table-authors");
 
             tableAuthors.innerHTML = "";
 
@@ -200,13 +245,13 @@ searchButton.addEventListener("click", () => {
                 const firstNameCell = document.createElement("td");
                 firstNameCell.textContent = author.firstName;
 
-                const dateOfBirthCell = document.createElement("td");
-                dateOfBirthCell.textContent = author.birthDate;
+                const birthDateCell = document.createElement("td");
+                birthDateCell.textContent = author.birthDate;
 
                 row.appendChild(idCell);
                 row.appendChild(lastNameCell);
                 row.appendChild(firstNameCell);
-                row.appendChild(dateOfBirthCell);
+                row.appendChild(birthDateCell);
 
                 tableAuthors.appendChild(row);
 
@@ -214,32 +259,9 @@ searchButton.addEventListener("click", () => {
             });
         })
         .catch(error => {
-            infoMessage.style.color = "red";
+            infoMessage.classList.remove("succes-info-message");
+            infoMessage.classList.add("error-info-message");
             infoMessage.textContent = error.message || "Erreur lors du chargement des données.";
             console.error("Erreur :", error);
         });
-});
-
-
-emptyButton.addEventListener("click", () => {
-    deleteFieldsErrors();
-    idField.value = "";
-    firstNameField.value = "";
-    lastNameField.value = "";
-    dateOfBirthField.value = "";
-
-    infoMessage.textContent = "";
-});
-
-function deleteFieldsErrors() {
-    idField.classList.remove("input-error");
-    idError.textContent = "";
-    firstNameField.classList.remove("input-error");
-    firstNameError.textContent = "";
-    lastNameField.classList.remove("input-error");
-    lastNameError.textContent = "";
-    dateOfBirthField.classList.remove("input-error");
-    dateOfBirthError.textContent = "";
-
-    infoMessage.textContent = "";
 }

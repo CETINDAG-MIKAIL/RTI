@@ -19,9 +19,14 @@ const publishYearError = document.getElementById("publish-year-error");
 
 const infoMessage = document.getElementById("info-message");
 
+fillBooksTableSearch({});
 
 function addRowListeners(row) {
     row.addEventListener("click", () => {
+        const allRows = document.querySelectorAll("tbody tr");
+        allRows.forEach(r => r.classList.remove("selected-row"));
+        row.classList.add("selected-row");
+
         const cells = row.querySelectorAll("td");
 
         idField.value = cells[0].textContent.trim();
@@ -113,11 +118,15 @@ addButton.addEventListener("click", () => {
 
     addRow("books", newRowData)
         .then(response => {
-            infoMessage.style.color = "green";
+            infoMessage.classList.remove("error-info-message");
+            infoMessage.classList.add("succes-info-message");
             infoMessage.textContent = response;
+
+            fillBooksTableSearch({});
         })
         .catch(error => {
-            infoMessage.style.color = "red";
+            infoMessage.classList.remove("succes-info-message");
+            infoMessage.classList.add("error-info-message");
             infoMessage.textContent = error.message;
         });
 });
@@ -237,11 +246,15 @@ editButton.addEventListener("click", () => {
 
     updateRow("books", filteredCriteria)
         .then(response => {
-            infoMessage.style.color = "green";
+            infoMessage.classList.remove("error-info-message");
+            infoMessage.classList.add("succes-info-message");
             infoMessage.textContent = response;
+
+            fillBooksTableSearch({});
         })
         .catch(error => {
-            infoMessage.style.color = "red";
+            infoMessage.classList.remove("succes-info-message");
+            infoMessage.classList.add("error-info-message");
             infoMessage.textContent = error.message;
         });
 });
@@ -257,11 +270,15 @@ deleteButton.addEventListener("click", () => {
 
     deleteRow("books", idField.value)
         .then(response => {
-            infoMessage.style.color = "green";
+            infoMessage.classList.remove("error-info-message");
+            infoMessage.classList.add("succes-info-message");
             infoMessage.textContent = response;
+
+            fillBooksTableSearch({});
         })
         .catch(error => {
-            infoMessage.style.color = "red";
+            infoMessage.classList.remove("succes-info-message");
+            infoMessage.classList.add("error-info-message");
             infoMessage.textContent = error.message;
         });
 });
@@ -318,7 +335,49 @@ searchButton.addEventListener("click", () => {
         Object.entries(criteria).filter(([key, value]) => value !== null && value !== "")
     );
 
-    searchRows("books", filteredCriteria)
+    fillBooksTableSearch(filteredCriteria);
+});
+
+emptyButton.addEventListener("click", () => {
+    deleteFieldsErrors();
+    idField.value = "";
+    titleField.value = "";
+    idAuthorField.value = "";
+    idSubjectField.value = "";
+    isbnField.value = "";
+    pageCountField.value = "";
+    stockQuantityField.value = "";
+    priceField.value = "";
+    publishYearField.value = "";
+
+    infoMessage.textContent = "";
+});
+
+function deleteFieldsErrors() {
+    idField.classList.remove("input-error");
+    idError.textContent = "";
+    titleField.classList.remove("input-error");
+    titleError.textContent = "";
+    idAuthorField.classList.remove("input-error");
+    idAuthorError.textContent = "";
+    idSubjectField.classList.remove("input-error");
+    idSubjectError.textContent = "";
+    isbnField.classList.remove("input-error");
+    isbnError.textContent = "";
+    pageCountField.classList.remove("input-error");
+    pageCountError.textContent = "";
+    stockQuantityField.classList.remove("input-error");
+    stockQuantityError.textContent = "";
+    priceField.classList.remove("input-error");
+    priceError.textContent = "";
+    publishYearField.classList.remove("input-error");
+    publishYearError.textContent = "";
+
+    infoMessage.textContent = "";
+}
+
+function fillBooksTableSearch(criteria) {
+    searchRows("books", criteria)
         .then(data => {
             console.log("Contenu complet de data :", data);
             console.log("Type de data :", typeof data);
@@ -386,47 +445,9 @@ searchButton.addEventListener("click", () => {
             });
         })
         .catch(error => {
-            infoMessage.style.color = "red";
+            infoMessage.classList.remove("succes-info-message");
+            infoMessage.classList.add("error-info-message");
             infoMessage.textContent = error.message || "Erreur lors du chargement des données.";
             console.error("Erreur :", error);
         });
-
-});
-
-emptyButton.addEventListener("click", () => {
-    deleteFieldsErrors();
-    idField.value = "";
-    titleField.value = "";
-    idAuthorField.value = "";
-    idSubjectField.value = "";
-    isbnField.value = "";
-    pageCountField.value = "";
-    stockQuantityField.value = "";
-    priceField.value = "";
-    publishYearField.value = "";
-
-    infoMessage.textContent = "";
-});
-
-function deleteFieldsErrors() {
-    idField.classList.remove("input-error");
-    idError.textContent = "";
-    titleField.classList.remove("input-error");
-    titleError.textContent = "";
-    idAuthorField.classList.remove("input-error");
-    idAuthorError.textContent = "";
-    idSubjectField.classList.remove("input-error");
-    idSubjectError.textContent = "";
-    isbnField.classList.remove("input-error");
-    isbnError.textContent = "";
-    pageCountField.classList.remove("input-error");
-    pageCountError.textContent = "";
-    stockQuantityField.classList.remove("input-error");
-    stockQuantityError.textContent = "";
-    priceField.classList.remove("input-error");
-    priceError.textContent = "";
-    publishYearField.classList.remove("input-error");
-    publishYearError.textContent = "";
-
-    infoMessage.textContent = "";
 }

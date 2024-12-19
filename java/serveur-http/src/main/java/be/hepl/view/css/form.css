@@ -44,15 +44,23 @@ input {
 }
 
 .error-message {
-    color: red;
+    color: var(--error-message-color);
     font-size: 0.9em;
     min-height: 20px;
 }
 
 #info-message {
-    color: #3498db;
+    font-weight: bold;
     font-size: 1.1em;
     min-height: 20px;
+}
+
+.succes-info-message {
+    color: var(--succes-message-color);
+}
+
+.error-info-message {
+    color: var(--error-message-color);
 }
 
 button {

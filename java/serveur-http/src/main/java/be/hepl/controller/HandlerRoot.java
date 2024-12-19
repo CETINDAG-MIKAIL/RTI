@@ -42,8 +42,9 @@ public class HandlerRoot implements HttpHandler {
         {
             HandlerJs handlerJs = new HandlerJs();
             handlerJs.handle(exchange);
+        } else if(!requestPath.endsWith("/favicon.ico")) {
+            Erreur404(exchange);
         }
-        else Erreur404(exchange);
     }
     public static void Erreur404(HttpExchange exchange) throws IOException
     {

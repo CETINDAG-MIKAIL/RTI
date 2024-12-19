@@ -4,9 +4,6 @@ function searchRows(table, criteria) {
     const queryParams = new URLSearchParams(criteria).toString();
     url += queryParams;
 
-    console.log("AVANT-------Recherche des données------- queryParams : ", queryParams);
-    console.log("AVANT-------Recherche des données------- url : -", url, "-");
-
     if (queryParams === "" || queryParams === null) {
         url = url.slice(0, -1);
     }

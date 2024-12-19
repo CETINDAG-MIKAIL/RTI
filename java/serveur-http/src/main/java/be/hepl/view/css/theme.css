@@ -10,6 +10,10 @@
     --table-even-row-color: #f2f2f2;
     --table-uneven-row-color: #ffffff;
     --table-row-selected-color: #e1f5fe;
+    --table-row-clicked-color: #b8d3ec;
+    --succes-message-color: #4CAF50;
+    --error-message-color: #cc322f;
+
 }
 
 .dark-mode {
@@ -24,4 +28,7 @@
     --table-even-row-color: #656565;
     --table-uneven-row-color: #575757;
     --table-row-selected-color: #6d767c;
+    --table-row-clicked-color: #0068bc;
+    --succes-message-color: #72ec77;
+    --error-message-color: #fd7976;
 }

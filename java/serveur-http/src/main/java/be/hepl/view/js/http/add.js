@@ -1,6 +1,8 @@
 function addRow(table, data) {
     const url = `http://localhost:8080/api/${table}`;
 
+    console.log("ADD : data = ", data);
+
     return fetch(url, {
         method: "POST",
         headers: {

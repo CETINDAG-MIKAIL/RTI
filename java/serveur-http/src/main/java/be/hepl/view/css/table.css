@@ -24,6 +24,10 @@ tr {
     color: var(--text-color);
 }
 
+tbody tr.selected-row {
+    background-color: var(--table-row-clicked-color); /* Couleur sélectionnée */
+}
+
 tr:nth-child(even) {
     background-color: var(--table-even-row-color);
 }
@@ -36,3 +40,4 @@ tr:hover {
     background-color: var(--table-row-selected-color);
     cursor: pointer;
 }
+
