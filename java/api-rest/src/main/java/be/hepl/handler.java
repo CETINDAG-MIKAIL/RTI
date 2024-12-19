@@ -4,6 +4,7 @@ import be.hepl.helpers.HttpUtils;
 import be.hepl.helpers.JsonUtils;
 import be.hepl.helpers.ResponseHelper;
 import be.hepl.model.dao.AuthorDAO;
+import be.hepl.model.dao.BookDAO;
 import be.hepl.model.dao.CRUD;
 import be.hepl.model.dao.SubjectDAO;
 import be.hepl.model.entity.Author;
@@ -20,8 +21,8 @@ import java.util.Map;
 
 public class handler<T, S> implements HttpHandler {
     private final CRUD<T, S> dao;
-    private final Class<T> entityClass; // Pour convertir JSON en entité
-    private final Class<S> searchClass; // Pour construire l'objet de recherche
+    private final Class<T> entityClass;
+    private final Class<S> searchClass;
 
     public handler(CRUD<T, S> dao, Class<T> entityClass, Class<S> searchClass) {
         this.dao = dao;
@@ -33,15 +34,14 @@ public class handler<T, S> implements HttpHandler {
     public void handle(HttpExchange exchange) throws IOException {
         String method = exchange.getRequestMethod();
 
-        // Ajouter les en-têtes CORS pour autoriser les requêtes depuis n'importe quelle origine
-        exchange.getResponseHeaders().set("Access-Control-Allow-Origin", "*");  // Autorise toutes les origines
-        exchange.getResponseHeaders().set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");  // Autorise ces méthodes HTTP
-        exchange.getResponseHeaders().set("Access-Control-Allow-Headers", "Content-Type");  // Autorise l'en-tête Content-Type
-        exchange.getResponseHeaders().set("Access-Control-Allow-Credentials", "true");  // Permet les cookies (si nécessaire)
+        exchange.getResponseHeaders().set("Access-Control-Allow-Origin", "*");
+        exchange.getResponseHeaders().set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
+        exchange.getResponseHeaders().set("Access-Control-Allow-Headers", "Content-Type");
+        exchange.getResponseHeaders().set("Access-Control-Allow-Credentials", "true");
 
         // Si la requête est une demande de pré-vol (OPTIONS), envoyer une réponse vide
         if ("OPTIONS".equals(method)) {
-            exchange.sendResponseHeaders(200, -1);  // Répondre avec un code 200 pour OPTIONS
+            exchange.sendResponseHeaders(200, -1);
             return;
         }
 
@@ -67,24 +67,22 @@ public class handler<T, S> implements HttpHandler {
     private void handleGet(HttpExchange exchange) throws IOException {
         String query = exchange.getRequestURI().getQuery();
 
-        S search = parseSearchParams(query); // Conversion query string -> SearchVM
-        List<T> myList = dao.read(search); // Dao attend un SubjectSearchVM
-        JsonArray jsonArray = new JsonArray(); // Créer un tableau JSON
+        S search = parseSearchParams(query);
+        List<T> myList = dao.read(search);
+        JsonArray jsonArray = new JsonArray();
 
-        // Pour chaque objet dans la liste, convertissez-le en JsonObject et ajoutez-le au JsonArray
         for (T item : myList) {
-            JsonObject jsonObject = JsonUtils.convertToJsonObject(item); // Convertissez chaque item en JsonObject
-            jsonArray.add(jsonObject); // Ajoutez l'objet JSON au tableau
+            JsonObject jsonObject = JsonUtils.convertToJsonObject(item);
+            jsonArray.add(jsonObject);
         }
-        ResponseHelper.sendSuccessResponse(exchange, jsonArray.toString()); // Envoi de la réponse
+        ResponseHelper.sendSuccessResponse(exchange, jsonArray.toString());
     }
     private int getElementBody(String key, String requestBody) {
-        // Exemple très simple pour extraire un paramètre par clé
         int value = -1;
         try {
             int keyIndex = requestBody.indexOf(key);
             if (keyIndex != -1) {
-                int startIndex = requestBody.indexOf(":", keyIndex) + 2; // après ": "
+                int startIndex = requestBody.indexOf(":", keyIndex) + 2;
                 int endIndex = requestBody.indexOf("\"", startIndex);
                 value = Integer.parseInt(requestBody.substring(startIndex, endIndex));
             }
@@ -132,15 +130,12 @@ public class handler<T, S> implements HttpHandler {
     }
 
     private void handlePut(HttpExchange exchange) throws IOException {
-        // Récupérer la query de l'URL
         String query = exchange.getRequestURI().getQuery();
         System.out.println("query: " + query);
 
-        // Lire le corps de la requête (requestBody)
         String requestBody = HttpUtils.readRequestBody(exchange);
         System.out.println("requestBody: " + requestBody);
 
-        // Parser les paramètres de la query
         Map<String, String> queryParams = HttpUtils.parseQueryParams(query);
         System.out.println("queryParams: " + queryParams);
 
@@ -148,45 +143,37 @@ public class handler<T, S> implements HttpHandler {
         if (queryParams.containsKey("id")) {
             String idValue = queryParams.get("id");
             try {
-                // On s'assure que l'ID est valide
                 id = Integer.parseInt(idValue);
                 System.out.println("id: " + id);
             } catch (NumberFormatException e) {
                 throw new IllegalArgumentException("ID invalide : " + idValue);
             }
         }
-
-        // Si l'ID est manquant dans les paramètres de la requête
         if (id == null) throw new IllegalArgumentException("ID manquant dans les paramètres de requête");
-
-        // Récupérer l'entité existante en fonction de l'ID
+        System.out.println("11111111111111111111");
+        dao.read();
+        System.out.println("dao.read()" + dao.read());
         T existingEntity = dao.getById(id);
+        System.out.println("existingEntity: " + existingEntity);
+        System.out.println("dao " + dao.getById(id));
+        System.out.println("222222222222222222222222222");
         if (existingEntity == null) throw new IllegalArgumentException("Entité non trouvée pour l'ID : " + id);
         System.out.println("existingEntity: " + existingEntity);
 
-        // Ajouter l'ID au requestBody JSON pour que l'entité mise à jour ait l'ID correct
-        // Ajouter l'ID au JSON manuellement
+
         String updatedRequestBody = addIdToRequestBody(requestBody, id);
         System.out.println("updatedRequestBody: " + updatedRequestBody);
 
-        // Convertir le requestBody mis à jour (avec l'ID) en entité
         T updatedEntity = JsonUtils.fromJson(updatedRequestBody, entityClass);
         if (updatedEntity == null) throw new IllegalArgumentException("Données JSON invalides");
         System.out.println("updatedEntity: " + updatedEntity);
 
-        // Mettre à jour l'entité dans la base de données
         dao.update(updatedEntity);
 
-        // Répondre avec un message de succès
         ResponseHelper.sendSuccessResponse(exchange, "Entité mise à jour avec succès");
     }
     private String addIdToRequestBody(String requestBody, Integer id) {
-        // On suppose que le requestBody est un JSON qui contient un seul champ `name`
-        // Exemple : {"name": "Thriller"}
-
-        // Ici, on ajoute l'ID au JSON du corps de la requête
-        String updatedRequestBody = "{\"id\": " + id + ", " + requestBody.substring(1); // Ajouter l'ID au début du JSON
-
+        String updatedRequestBody = "{\"id\": " + id + ", " + requestBody.substring(1);
         return updatedRequestBody;
     }
 
@@ -199,7 +186,7 @@ public class handler<T, S> implements HttpHandler {
             Object idValue = queryParams.get("id");
             if (idValue instanceof String) {
                 try {
-                    id = Integer.parseInt((String) idValue); // Casting explicite vers String
+                    id = Integer.parseInt((String) idValue);
                 } catch (NumberFormatException e) {
                     throw new IllegalArgumentException("ID invalide : " + idValue);
                 }
@@ -210,67 +197,13 @@ public class handler<T, S> implements HttpHandler {
 
         if (id == null) throw new IllegalArgumentException("ID manquant dans les paramètres de requête");
 
-        // Suppression de l'entité
         dao.delete(id);
         ResponseHelper.sendSuccessResponse(exchange, "Entité supprimée avec succès");
-    }
-
-    private <T> String convertToJsonList(List<T> myList) {
-        StringBuilder json = new StringBuilder("[");
-        for (int i = 0; i < myList.size(); i++) {
-            T myEntity = myList.get(i);
-
-            if (myEntity instanceof Subject) {
-                Subject subject = (Subject) myEntity;
-                json.append("{\"id\": ").append(subject.getId())
-                        .append(", \"name\": \"").append(cleanString(subject.getName())).append("\"}");
-            } else if (myEntity instanceof Author) {
-                Author author = (Author) myEntity;
-                json.append("{\"id\": ").append(author.getId())
-                        .append(", \"Firstname\": \"").append(cleanString(author.getFirstName())).append("\"")
-                        .append(", \"Lastname\": \"").append(cleanString(author.getLastName())).append("\"")
-                        .append(", \"BirthDate\": \"").append(cleanString(author.getBirthDate())).append("\"}");
-            } else if (myEntity instanceof Book) {
-                Book book = (Book) myEntity;
-                json.append("{\"id\": ").append(cleanString(String.valueOf(book.getId())))
-                        .append(", \"isbn\": \"").append(cleanString(book.getIsbn())).append("\"")
-                        .append(", \"price\": \"").append(cleanString(String.valueOf(book.getPrice()))).append("\"")
-                        .append(", \"stockQuantity\": \"").append(cleanString(String.valueOf(book.getStockQuantity()))).append("\"")
-                        .append(", \"publishYear\": \"").append(cleanString(String.valueOf(book.getPublishYear()))).append("\"")
-                        .append(", \"minPageCount\": \"").append(cleanString(String.valueOf(book.getPageCount()))).append("\"")
-                        .append(", \"maxPageCount\": \"").append(cleanString(String.valueOf(book.getPageCount()))).append("\"")
-                        .append(", \"title\": \"").append(cleanString(book.getTitle())).append("\"")
-                        // Object author
-                        .append(", \"author\": {")
-                        .append("\"id\": ").append(book.getAuthor().getId()).append(", ")
-                        .append("\"firstName\": \"").append(cleanString(book.getAuthor().getFirstName())).append("\", ")
-                        .append("\"lastName\": \"").append(cleanString(book.getAuthor().getLastName())).append("\"}")
-                        // Object subject
-                        .append(", \"subject\": {")
-                        .append("\"id\": ").append(book.getSubject().getId()).append(", ")
-                        .append("\"name\": \"").append(cleanString(book.getSubject().getName())).append("\"}")
-                        .append("}");
-            }
-
-            // Séparateur de virgule entre les objets
-            if (i < myList.size() - 1) {
-                json.append(",");
-            }
-        }
-        json.append("]");
-        return json.toString();
-    }
-
-
-    // Méthode pour nettoyer les chaînes (trim et vérification des nulls)
-    private String cleanString(String input) {
-        return input != null ? input.trim() : "";
     }
     private S parseSearchParams(String query) {
         if (query == null || query.isEmpty()) return null;
         query = query.replaceAll("[\n\r\t]", "").trim();
 
-        // Remplacement par Map<String, String>
         Map<String, String> queryParams = HttpUtils.parseQueryParams(query);
 
         try {
@@ -278,7 +211,7 @@ public class handler<T, S> implements HttpHandler {
 
             for (Map.Entry<String, String> entry : queryParams.entrySet()) {
                 String key = entry.getKey();
-                String value = entry.getValue(); // Directement une chaîne
+                String value = entry.getValue();
                 if (searchVM instanceof BookSearchVM) {
                     BookSearchVM bookSearchVM = (BookSearchVM) searchVM;
                     if ("idAuthor".equals(key)) {
