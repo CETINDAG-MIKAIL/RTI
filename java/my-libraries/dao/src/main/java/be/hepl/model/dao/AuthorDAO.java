@@ -6,6 +6,8 @@ import be.hepl.model.entity.Subject;
 import be.hepl.model.viewmodel.AuthorSearchVM;
 import be.hepl.model.viewmodel.SubjectSearchVM;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -33,7 +35,6 @@ public class AuthorDAO implements CRUD<Author, AuthorSearchVM> {
     public Author getById(Integer id) {
         for (Author author : authors) {
             if (author.getId() == id) {
-                System.out.println("getById : parametre id :" + id);
                 return author;
             }
         }
@@ -95,11 +96,10 @@ public class AuthorDAO implements CRUD<Author, AuthorSearchVM> {
                     where += "AND authors.first_name LIKE ? ";
                 }
                 if (search.getBirthDate() != null && search.getBirthDate().length() > 0) {
-                    where += "AND authors.birth_date = ? ";
+                    where += "AND TRIM(authors.birth_date) = ? ";
                 }
                 sql += where;
             }
-
             PreparedStatement stmt = connectDB.getConn().prepareStatement(sql);
 
             if (search != null) {
@@ -110,7 +110,13 @@ public class AuthorDAO implements CRUD<Author, AuthorSearchVM> {
                 }
                 if (search.getLastName() != null && search.getLastName().length() > 0) {
                     paramNumber++;
-                    stmt.setString(paramNumber, "%" + search.getLastName() + "%");
+                    String decodedLastName = null;
+                    try {
+                        decodedLastName = URLDecoder.decode(search.getLastName(), "UTF-8");
+                    } catch (UnsupportedEncodingException e) {
+                        e.printStackTrace();
+                    }
+                    stmt.setString(paramNumber, "%" + decodedLastName + "%");
                 }
                 if (search.getFirstName() != null && search.getFirstName().length() > 0) {
                     paramNumber++;
@@ -119,9 +125,8 @@ public class AuthorDAO implements CRUD<Author, AuthorSearchVM> {
                 if (search.getBirthDate() != null) {
                     paramNumber++;
                     stmt.setString(paramNumber, search.getBirthDate());
-                }
+                 }
             }
-
             ResultSet rs = stmt.executeQuery();
             authors.clear();
             while (rs.next()) {
@@ -134,11 +139,13 @@ public class AuthorDAO implements CRUD<Author, AuthorSearchVM> {
             }
             stmt.close();
         } catch (SQLException ex) {
+            // Afficher un message explicatif pour le debug
             Logger.getLogger(AuthorDAO.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
             return authors;
         }
     }
+
 
     @Override
     public void update(Author author) {

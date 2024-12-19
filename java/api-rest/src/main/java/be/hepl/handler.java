@@ -63,13 +63,9 @@ public class handler<T, S> implements HttpHandler {
     }
 
     private void handleGet(HttpExchange exchange) throws IOException {
-        System.out.println("handle get");
         String query = exchange.getRequestURI().getQuery();
-        System.out.println("query: " + query);
         S search = parseSearchParams(query); // Conversion query string -> SearchVM
-        System.out.println("search: " + search);
         List<T> myList = dao.read(search); // Dao attend un SubjectSearchVM
-        System.out.println(myList);
         JsonArray jsonArray = new JsonArray(); // Créer un tableau JSON
 
         // Pour chaque objet dans la liste, convertissez-le en JsonObject et ajoutez-le au JsonArray
@@ -77,16 +73,12 @@ public class handler<T, S> implements HttpHandler {
             JsonObject jsonObject = JsonUtils.convertToJsonObject(item); // Convertissez chaque item en JsonObject
             jsonArray.add(jsonObject); // Ajoutez l'objet JSON au tableau
         }
-        System.out.println("jsonArray" + jsonArray);
         ResponseHelper.sendSuccessResponse(exchange, jsonArray.toString()); // Envoi de la réponse
     }
 
     private void handlePost(HttpExchange exchange) throws IOException {
-        System.out.println("handle post");
         String requestBody = HttpUtils.readRequestBody(exchange);
-        System.out.println("requestBody: " + requestBody);
         T entity = JsonUtils.fromJson(requestBody, entityClass);
-        System.out.println("entity: " + entity);
         if (entity == null) throw new IllegalArgumentException("Données JSON invalides");
         dao.create(entity);
         ResponseHelper.sendSuccessResponse(exchange, "Entité créée avec succès");
@@ -94,10 +86,11 @@ public class handler<T, S> implements HttpHandler {
 
     private void handlePut(HttpExchange exchange) throws IOException {
         String query = exchange.getRequestURI().getQuery();
+        System.out.println("query: " + query);
         String requestBody = HttpUtils.readRequestBody(exchange);
-
+        System.out.println("requestBody: " + requestBody);
         Map<String, String> queryParams = HttpUtils.parseQueryParams(query);
-
+        System.out.println("queryParams: " + queryParams);
         Integer id = null;
         if (queryParams.containsKey("id")) {
             Object idValue = queryParams.get("id");
@@ -202,13 +195,11 @@ public class handler<T, S> implements HttpHandler {
         return input != null ? input.trim() : "";
     }
     private S parseSearchParams(String query) {
-        System.out.println("parseSearchParams: " + query);
         if (query == null || query.isEmpty()) return null;
         query = query.replaceAll("[\n\r\t]", "").trim();
 
         // Remplacement par Map<String, String>
         Map<String, String> queryParams = HttpUtils.parseQueryParams(query);
-        System.out.println("queryParams: " + queryParams);
 
         try {
             S searchVM = searchClass.getDeclaredConstructor().newInstance();
@@ -216,18 +207,15 @@ public class handler<T, S> implements HttpHandler {
             for (Map.Entry<String, String> entry : queryParams.entrySet()) {
                 String key = entry.getKey();
                 String value = entry.getValue(); // Directement une chaîne
-                System.out.println("Checking key: " + key);
                 if (searchVM instanceof BookSearchVM) {
                     BookSearchVM bookSearchVM = (BookSearchVM) searchVM;
                     if ("idAuthor".equals(key)) {
-                        System.out.println("idAuthor: " + value);
                         Author author = new Author();
                         author.setId(Integer.parseInt(value));
 
                         bookSearchVM.setAuthor(author);
                     }
                     else if ("idSubject".equals(key)) {
-                        System.out.println("idSubject: " + value);
                         Subject subject = new Subject();
                         subject.setId(Integer.parseInt(value));
 
@@ -277,7 +265,6 @@ public class handler<T, S> implements HttpHandler {
                     searchClass.getMethod("setMinStockQuantity", Integer.class).invoke(searchVM, minStockQuantity);
                 }
             }
-            System.out.println("searchVM final: " + searchVM);
             return searchVM;
         } catch (Exception e) {
             e.printStackTrace();

@@ -158,17 +158,14 @@ public class BookDAO implements CRUD<Book, BookSearchVM> {
             sql.append(" ORDER BY books.id ASC;");
 
 
-            System.out.println("SQL : ---" + sql);
             PreparedStatement stmt = connectDB.getConn().prepareStatement(sql.toString());
 
             // Setting parameters for the prepared statement
 
             if (search != null) {
-                System.out.println("Search Parameters:");
                 int paramNumber = 0;
                 if (search.getAuthor() != null && search.getAuthor().getId() != null) {
                     stmt.setInt(++paramNumber, search.getAuthor().getId());
-                    System.out.println("Author ID: " + search.getAuthor().getId());
                 }
                 if (search.getAuthor() != null) {
                     // Ajout des paramètres pour prénom et nom de l'auteur (modification ici)
@@ -182,14 +179,12 @@ public class BookDAO implements CRUD<Book, BookSearchVM> {
                 if (search.getSubject() != null) {
                      if(search.getSubject().getId() != null) {
                          stmt.setInt(++paramNumber, search.getSubject().getId());
-                         System.out.println("Subject ID: " + search.getSubject().getId());
                      }
                      if(search.getSubject().getName() != null && !search.getSubject().getName().isEmpty())
                          stmt.setString(++paramNumber, "%" + search.getSubject().getName() + "%");
                 }
                 if (search.getId() != null) {
                     stmt.setInt(++paramNumber, search.getId());
-                    System.out.println("Book ID: " + search.getId());
                 }
                 if (search.getTitle() != null && !search.getTitle().isEmpty()) {
                     String decodedTitle = null;
@@ -199,7 +194,6 @@ public class BookDAO implements CRUD<Book, BookSearchVM> {
                         e.printStackTrace();
                     }
                     stmt.setString(++paramNumber, "%" + decodedTitle + "%");
-                    System.out.println("Book Title: " + decodedTitle);
                 }
                 if (search.getIsbn() != null && !search.getIsbn().isEmpty()) {
                     stmt.setString(++paramNumber, "%" + search.getIsbn().trim().toLowerCase() + "%");
@@ -226,14 +220,10 @@ public class BookDAO implements CRUD<Book, BookSearchVM> {
                     stmt.setInt(++paramNumber, search.getMaxPublishYear());
                 }
             }
-            System.out.println("stmt : ------------" + stmt);
             ResultSet rs = stmt.executeQuery();
-            System.out.println("Result: ----------" + rs);
 
             // Processing the results
-            System.out.println("111111111111111111111111111111111111111111111111111&");
             while (rs.next()) {
-                System.out.println("2222222222222222222222222222222222222222");
                 // Fetching the book details
                 Integer id = rs.getInt("book_id");
                 String title = rs.getString("books.title");
@@ -257,7 +247,6 @@ public class BookDAO implements CRUD<Book, BookSearchVM> {
 
                 // Creating and adding the book to the list
                 Book book = new Book(id, author, subject, title, isbn, pageCount, stockQuantity, publishYear, price);
-                System.out.println("Book -----------------" + book);
                 books.add(book);
             }
             stmt.close();
