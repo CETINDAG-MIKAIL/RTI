@@ -130,7 +130,6 @@ editButton.addEventListener("click", () => {
     }
 
     const criteria = {
-        id: idField.value.trim(),
         firstName: firstNameField.value.trim(),
         lastName: lastNameField.value.trim(),
         birthDate: birthDateField.value.trim()
@@ -140,7 +139,7 @@ editButton.addEventListener("click", () => {
         Object.entries(criteria).filter(([key, value]) => value !== null && value !== "")
     );
 
-    updateRow("authors", filteredCriteria)
+    updateRow("authors", idField.value.trim(), filteredCriteria)
         .then(response => {
             infoMessage.classList.remove("error-info-message");
             infoMessage.classList.add("succes-info-message");

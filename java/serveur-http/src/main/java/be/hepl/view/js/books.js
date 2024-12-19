@@ -229,7 +229,6 @@ editButton.addEventListener("click", () => {
     }
 
     const criteria = {
-        id: idField.value.trim(),
         title: titleField.value.trim(),
         idAuthor: idAuthorField.value.trim(),
         idSubject: idSubjectField.value.trim(),
@@ -244,7 +243,7 @@ editButton.addEventListener("click", () => {
         Object.entries(criteria).filter(([key, value]) => value !== null && value !== "")
     );
 
-    updateRow("books", filteredCriteria)
+    updateRow("books", idField.value.trim(), filteredCriteria)
         .then(response => {
             infoMessage.classList.remove("error-info-message");
             infoMessage.classList.add("succes-info-message");
