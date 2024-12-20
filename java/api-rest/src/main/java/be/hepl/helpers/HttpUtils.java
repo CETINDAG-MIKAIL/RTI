@@ -10,17 +10,14 @@ import java.util.Map;
 
 public class HttpUtils {
 
+
     public static String readRequestBody(HttpExchange exchange) throws IOException {
         InputStream body = exchange.getRequestBody();
-        System.out.println("body : "+ body);
-        StringBuilder stringBuilder = new StringBuilder();
-        int byteRead;
-        while ((byteRead = body.read()) != -1) {
-            stringBuilder.append((char) byteRead);
-        }
-        System.out.println("stringBuilder : "+ stringBuilder);
-        return stringBuilder.toString();
-
+        byte[] bytes = body.readAllBytes(); // Lit tout le contenu de l'InputStream
+        String result = new String(bytes, StandardCharsets.UTF_8); // Convertit les octets en String
+        System.out.println("body : " + body);
+        System.out.println("result : " + result);
+        return result;
     }
     public static Map<String, String> parseQueryParams(String query) {
         Map<String, String> queryParams = new HashMap<>();

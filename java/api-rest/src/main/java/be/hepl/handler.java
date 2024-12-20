@@ -47,7 +47,6 @@ public class handler<T, S> implements HttpHandler {
 
         try {
             System.out.println("handle switch: " + method);
-            System.out.println(exchange);
             System.out.println(exchange.getRequestURI());
             switch (method) {
                 case "GET" -> handleGet(exchange);
@@ -57,7 +56,6 @@ public class handler<T, S> implements HttpHandler {
                 default -> ResponseHelper.sendErrorResponse(exchange, 405, "Méthode non autorisée");
             }
         } catch (IllegalArgumentException e) {
-            System.out.println(e.getMessage());
             ResponseHelper.sendErrorResponse(exchange, 400, e.getMessage());
         } catch (Exception e) {
             e.printStackTrace();
