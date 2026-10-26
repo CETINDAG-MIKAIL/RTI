@@ -26,30 +26,111 @@ Le système est conçu pour trois utilisations :
 
 > Ce dépôt présente un projet pédagogique, et non une plateforme e-commerce prête à être déployée en production. Les modules et fonctionnalités ci-dessous sont décrits à partir des fichiers présents dans le dépôt ; leur bon fonctionnement de bout en bout dépend de la configuration des différents serveurs et de la base de données.
 
-## Aperçu de l'interface web
+## Découvrir les interfaces
+
+Le projet réunit **plusieurs applications avec des utilisateurs et des interfaces différentes** : deux clients d’encodage, un poste de vente, un client d’achat sécurisé et une administration web.
+
+> **À propos des images :** l’archive contient les illustrations d’accueil du site (`welcome.png` et `welcome-dark.png`), mais **aucune capture d’écran exportée** des fenêtres Qt et Swing. Les aperçus ci-dessous sont donc des schémas explicatifs des écrans et non de fausses captures d’exécution.
+
+### 01 · Administration web — catalogue et gestion
 
 <div align="center">
-
-![Illustration d'accueil de l'application RTI](java/serveur-http/src/main/java/be/hepl/view/images/welcome.png)
-
-*Visuel d'accueil présent dans le frontend du projet (et non capture d'une session de démonstration).*
-
+  <img src="java/serveur-http/src/main/java/be/hepl/view/images/welcome.png" alt="Illustration d'accueil du site d'administration, thème clair" width="47%" />
+  <img src="java/serveur-http/src/main/java/be/hepl/view/images/welcome-dark.png" alt="Illustration d'accueil du site d'administration, thème sombre" width="47%" />
+  <p><em>Deux ressources graphiques originales du frontend, version claire et version sombre.</em></p>
 </div>
 
-L'interface web comporte des pages dédiées aux **livres**, **auteurs** et **sujets**, avec des fichiers HTML, CSS et JavaScript distincts. Le dépôt inclut également une variante graphique `welcome-dark.png`.
+L’administration possède une page d’accueil et des vues dédiées aux **livres**, aux **auteurs** et aux **sujets**. Les scripts JavaScript du dépôt séparent les requêtes de recherche, d’ajout, de modification et de suppression ; une feuille de style et un script spécifiques gèrent le thème.
+
+| Page    | Fichier HTML                                                                       | Script associé                                                               |
+| ------- | ---------------------------------------------------------------------------------- | ---------------------------------------------------------------------------- |
+| Accueil | [`index.html`](java/serveur-http/src/main/java/be/hepl/view/html/index.html)       | Styles de l’accueil                                                          |
+| Livres  | [`books.html`](java/serveur-http/src/main/java/be/hepl/view/html/books.html)       | [`books.js`](java/serveur-http/src/main/java/be/hepl/view/js/books.js)       |
+| Auteurs | [`authors.html`](java/serveur-http/src/main/java/be/hepl/view/html/authors.html)   | [`authors.js`](java/serveur-http/src/main/java/be/hepl/view/js/authors.js)   |
+| Sujets  | [`subjects.html`](java/serveur-http/src/main/java/be/hepl/view/html/subjects.html) | [`subjects.js`](java/serveur-http/src/main/java/be/hepl/view/js/subjects.js) |
+
+### 02 · Encodage des livres — C++ / Qt
+
+**Public :** employés chargés du référencement des ouvrages. Cette interface communique avec le serveur C++ d’encodage via le protocole **OBEP**.
+
+```text
+┌────────────────────── ENCODAGE · Qt ───────────────────────┐
+│ Session : Connexion / Déconnexion                         │
+├────────────────────────────────────────────────────────────┤
+│ Titre       [........................................]    │
+│ ISBN        [................]  Année [........]          │
+│ Auteur      [ sélectionner ▼ ] [+ Ajouter un auteur]      │
+│ Sujet       [ sélectionner ▼ ] [+ Ajouter un sujet ]      │
+│ Pages       [......]  Stock [......]  Prix [......]        │
+│                                                            │
+│                   [ Ajouter un livre ]                     │
+├────────────────────────────────────────────────────────────┤
+│                 Livres encodés durant la session           │
+└────────────────────────────────────────────────────────────┘
+```
+
+_Représentation schématique, pas une capture du logiciel._
+
+**Code :** [`ClientBookEncoderQt/`](moon-VMware/ClientBookEncoderQt/) · **Serveur :** [`Encodage_S/`](moon-VMware/Encodage_S/)
+
+### 03 · Encodage des livres — Java Swing
+
+Une **seconde interface desktop** propose le même type de workflow d’encodage, cette fois en Java Swing. Son intérêt technique est de partager le même protocole OBEP avec l’application Qt : le serveur d’encodage peut donc dialoguer avec des clients écrits dans différents langages.
+
+**Composants identifiés dans le dépôt :** fenêtre principale, dialogue de connexion, dialogue d’ajout d’auteur, dialogue d’ajout de sujet et table des livres.
+
+**Code :** [`client-encoder-java/`](java/client-encoder-java/) · [`MainWindow.java`](java/client-encoder-java/src/main/java/be/hepl/vue/window/MainWindow.java)
+
+### 04 · Point de vente — client d’achat Java Swing
+
+**Public :** vendeur en magasin. L’interface permet de travailler avec un client identifié, de rechercher des ouvrages et de préparer un panier. Elle utilise le protocole **BSPP**.
+
+```text
+┌───────────────────── ACHAT · VENDEUR ─────────────────────┐
+│ Client : [ nom ] [ prénom ]  [ Rechercher / Créer ]       │
+├────────────────────────────────────────────────────────────┤
+│ Catalogue                         │ Panier                 │
+│ Recherche [...................]    │ Livre     Qté   Prix   │
+│ Livre          Auteur     Prix     │ ────────────────────   │
+│ ───────────────────────────────    │                       │
+│ [ Sélectionner ] Qté [ 1 ]         │ [ Retirer ] [ Vider ]  │
+│ [ Ajouter au panier ]              │ [ Valider l'achat ]    │
+└────────────────────────────────────────────────────────────┘
+```
+
+_Schéma de présentation, et non capture de fonctionnement._
+
+**Code :** [`client-achat-java/`](java/client-achat-java/) · [`MainWindow.java`](java/client-achat-java/src/main/java/Window/MainWindow.java)
+
+### 05 · Achat à distance — client Java sécurisé
+
+Cette variante du client d’achat est destinée au **client final**. Elle dispose de sa propre fenêtre de connexion et de son interface de gestion de panier. Ses échanges réseau reposent sur le protocole **BSPPS**, version sécurisée du protocole d’achat. Le dépôt contient des classes d’aide cryptographique et des ressources de clés.
+
+**Code :** [`client-achat-java-S/`](java/client-achat-java-S/) · [`MainWindow.java`](java/client-achat-java-S/src/main/java/Window/mainWindow/MainWindow.java)
+
+### 06 · Serveurs et API — interfaces techniques
+
+Ces composants ne sont pas des fenêtres destinées aux utilisateurs, mais constituent le cœur du système :
+
+- **Serveur d’encodage C++ :** reçoit les commandes OBEP des clients Qt et Swing.
+- **Serveur d’achat Java :** traite les échanges BSPP et BSPPS et les opérations sur les paniers.
+- **API REST Java :** expose des ressources relatives aux livres, auteurs et sujets.
+- **Serveur HTTP Java :** sert le frontend d’administration.
+
+**Pour ajouter de véritables captures au portfolio :** après lancement du projet, des images comme `docs/screenshots/encodage-qt.png`, `encodage-java.png`, `achat-vendeur.png`, `achat-securise.png` et `administration-web.png` peuvent être ajoutées au dépôt, puis référencées dans cette section. Elles ne sont pas incluses actuellement.
 
 ## Technologies
 
-| Couche | Technologies | Rôle |
-|---|---|---|
-| Réseau et serveur d'encodage | C/C++, sockets TCP, POSIX threads | Échanges clients–serveur et traitement concurrent |
-| Client desktop d'encodage | Qt / C++ et Java Swing | Gestion du catalogue |
-| Achat en magasin | Java, Swing, `java.net` | Recherche de livres et gestion du panier |
-| Achat sécurisé | Java, Bouncy Castle | Échanges utilisant des mécanismes cryptographiques |
-| Persistance | MySQL, JDBC, DAO | Gestion des entités et des transactions métier |
-| API d'administration | Java, HTTP, JSON | Accès REST aux livres, auteurs et sujets |
-| Interface d'administration | HTML, CSS, JavaScript | Consultation et opérations d'administration |
-| Construction | Maven, CMake | Build des modules Java et C++ |
+| Couche                       | Technologies                      | Rôle                                               |
+| ---------------------------- | --------------------------------- | -------------------------------------------------- |
+| Réseau et serveur d'encodage | C/C++, sockets TCP, POSIX threads | Échanges clients–serveur et traitement concurrent  |
+| Client desktop d'encodage    | Qt / C++ et Java Swing            | Gestion du catalogue                               |
+| Achat en magasin             | Java, Swing, `java.net`           | Recherche de livres et gestion du panier           |
+| Achat sécurisé               | Java, Bouncy Castle               | Échanges utilisant des mécanismes cryptographiques |
+| Persistance                  | MySQL, JDBC, DAO                  | Gestion des entités et des transactions métier     |
+| API d'administration         | Java, HTTP, JSON                  | Accès REST aux livres, auteurs et sujets           |
+| Interface d'administration   | HTML, CSS, JavaScript             | Consultation et opérations d'administration        |
+| Construction                 | Maven, CMake                      | Build des modules Java et C++                      |
 
 ## Architecture
 
@@ -66,16 +147,16 @@ flowchart TB
   API -->|DAO / JDBC| DB
 ```
 
-*Vue logique simplifiée : la communication entre la page web et l'API dépend des scripts et de la configuration exécutée.*
+_Vue logique simplifiée : la communication entre la page web et l'API dépend des scripts et de la configuration exécutée._
 
 ### Protocoles réseau
 
-| Protocole | Usage | Implémentation |
-|---|---|---|
-| **OBEP** | Online Books Encoding Protocol : authentification et encodage du catalogue | Client C++ / Qt, client Java et serveur C++ |
-| **BSPP** | Books Shopping Payment Protocol : opérations de recherche et de panier | Clients et serveur Java |
-| **BSPPS** | Variante sécurisée du protocole d'achat | Client/serveur Java et fonctions cryptographiques |
-| **HTTP / REST** | Gestion distante du catalogue | Serveur HTTP, API Java et frontend JS |
+| Protocole       | Usage                                                                      | Implémentation                                    |
+| --------------- | -------------------------------------------------------------------------- | ------------------------------------------------- |
+| **OBEP**        | Online Books Encoding Protocol : authentification et encodage du catalogue | Client C++ / Qt, client Java et serveur C++       |
+| **BSPP**        | Books Shopping Payment Protocol : opérations de recherche et de panier     | Clients et serveur Java                           |
+| **BSPPS**       | Variante sécurisée du protocole d'achat                                    | Client/serveur Java et fonctions cryptographiques |
+| **HTTP / REST** | Gestion distante du catalogue                                              | Serveur HTTP, API Java et frontend JS             |
 
 ## Fonctionnalités couvertes par le code
 
@@ -177,14 +258,14 @@ Le `CMakeLists.txt` définit deux cibles : **`ServerApp`** (serveur d'encodage) 
 
 Le fichier `config.properties` à la racine contient notamment :
 
-| Paramètre | Usage |
-|---|---|
-| `NUM_THREADS` | Nombre de threads configuré |
-| `IP_ENCODING`, `PORT_ENCODING` | Adresse du serveur d'encodage |
-| `IP_PURCHASE`, `PORT_PURCHASE` | Serveur d'achat standard |
-| `IP_PURCHASE_SECURE`, `PORT_PURCHASE_SECURE` | Serveur d'achat sécurisé |
-| `PORT_ADMIN_API` | Port de l'API REST |
-| `PORT_ADMIN_HTTP` | Port de l'interface HTTP |
+| Paramètre                                    | Usage                         |
+| -------------------------------------------- | ----------------------------- |
+| `NUM_THREADS`                                | Nombre de threads configuré   |
+| `IP_ENCODING`, `PORT_ENCODING`               | Adresse du serveur d'encodage |
+| `IP_PURCHASE`, `PORT_PURCHASE`               | Serveur d'achat standard      |
+| `IP_PURCHASE_SECURE`, `PORT_PURCHASE_SECURE` | Serveur d'achat sécurisé      |
+| `PORT_ADMIN_API`                             | Port de l'API REST            |
+| `PORT_ADMIN_HTTP`                            | Port de l'interface HTTP      |
 
 **Exemple de configuration locale** (à adapter à vos machines) :
 
